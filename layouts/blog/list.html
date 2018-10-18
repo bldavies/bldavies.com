@@ -1,0 +1,24 @@
+{{ partial "header.html" . }}
+
+<div class="banner">
+  <div class="container">
+    <h1>{{ .Title | markdownify }}</h1>
+    {{ .Content }}
+  </div>
+</div>
+
+<div class="container">
+  <ul class="blog-index">
+    {{ range .Data.Pages.GroupByDate "2006" }}
+      <h2>{{ .Key }}</h2>
+      {{ range .Pages }}
+        <li>
+          <a href="{{ .Permalink }}">{{ .Title | markdownify }}</a>
+          <time>{{ .Date.Format "Jan 02, 2006" }}</time>
+        </li>
+      {{ end }}
+    {{ end }}
+  </ul>
+</div>
+
+{{ partial "footer.html" . }}

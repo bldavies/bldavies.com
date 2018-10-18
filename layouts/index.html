@@ -1,0 +1,12 @@
+{{ partial "header.html" . }}
+
+<div class="container">
+  <div class="home-content-outer">
+    <div class="home-content-inner">
+      <img src="/images/portrait.jpg" class="portrait">
+      {{ .Content }}
+    </div>
+  </div>
+</div>
+
+{{ partial "footer.html" . }}

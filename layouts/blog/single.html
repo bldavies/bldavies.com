@@ -1,0 +1,16 @@
+{{ partial "header.html" . }}
+
+<div class="banner">
+  <div class="container">
+    <h1>{{ .Title | markdownify }}</h1>
+    <p>
+      <time>Posted on {{ .Date.Format "January 02, 2006" }}</time>
+    </p>
+  </div>
+</div>
+
+<div class="container">
+  {{ .Content }}
+</div>
+
+{{ partial "footer.html" . }}

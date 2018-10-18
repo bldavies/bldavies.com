@@ -1,0 +1,12 @@
+baseurl: "/"
+blackfriday:
+  fractions: false
+disableKinds: ["taxonomy", "taxonomyTerm", "sitemap"]
+footnotereturnlinkcontents: "↩"
+ignoreFiles: ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
+params:
+  author: Ben Davies
+  email: ben.davies@motu.org.nz
+  github: https://github.com/bldavies
+  linkedin: https://www.linkedin.com/in/bl-davies/
+title: "Ben Davies"

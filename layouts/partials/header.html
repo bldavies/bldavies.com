@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ "css/style.css" | relURL}}">
+  <link rel="stylesheet" href="{{ "css/fonts.css" | relURL}}">
+  {{ if eq .URL "/" }}
+    <title>{{ .Site.Title }}</title>
+  {{ else }}
+    <title>{{ replace .Title "*" "" }} - {{ .Site.Title }}</title>
+  {{ end }}
+</head>
+
+<body>
+<header>
+  <div class="container">
+      <a href="/">{{ .Site.Title }}</a>
+      <nav>
+        <a href="/about/">About</a>
+        <a href="/research/">Research</a>
+        <a href="/cv/">CV</a>
+        <a href="/blog/">Blog</a>
+      </nav>
+    </div>
+</header>
+
+<div class="content">
