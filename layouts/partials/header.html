@@ -9,6 +9,7 @@
   {{ else }}
     <title>{{ replace .Title "*" "" }} - {{ .Site.Title }}</title>
   {{ end }}
+  {{ template "_internal/google_analytics.html" . }}
 </head>
 
 <body>
