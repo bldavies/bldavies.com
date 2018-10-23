@@ -4,20 +4,14 @@ date: "2018-03-01"
 tags: [igraph, networks, R, Pokémon]
 ---
 
-I recently discovered R's [`igraph`](http://igraph.org) package and have been using it to analyse the social network of wild Pokémon species as suggested by their habitat choices.
-This post summarises my findings.
+In this post, I use R's [`igraph`](http://igraph.org) package to analyse the social network of wild Pokémon species as suggested by their habitat choices.
 The source code and data are available on [GitHub](https://github.com/bldavies/pokenet).
 
 ## Matching species with their habitats
 
 I infer habitats from random encounter events in the international versions of Pokémon Red, Blue and Yellow.[^random]
 I store these events in a data frame named `encounters`.
-Each row of `encounters` has three attributes:
-
-1. the `location` of the encounter;
-2. the `species` encountered; and
-3. the encountered species' primary `type`.
-
+Each encounter has three attributes: the `location`, the `species` encountered and that species' primary `type`.
 I use these data to generate a species-location incidence matrix:
 
 ```r
@@ -33,9 +27,9 @@ pokemon <- data.frame(species = rownames(habits), ubiquity = rowSums(habits))
 ```
 
 Goldeen, Magikarp and Poliwag are the most ubiquitous species.
-These species each habitate in 24 unique locations across the Kanto region.
+Each habitate in 24 unique locations across the Kanto region.
 
-The boxplots below show the distribution of `ubiquity` according to species' primary type.
+The boxplots below show the distribution of `ubiquity` by species' primary type.
 Water-types have the highest median ubiquity, closely followed by Grass- and Normal-types.
 Species with Ghost, Fairy or Dragon as their primary type habitate in a single location.
 
@@ -48,13 +42,13 @@ I store these sums as follows:
 locations <- data.frame(name = colnames(habits), diversity = colSums(habits))
 ```
 
-I compute the average value of `diversity` across the locations in which each species habitates via
+I compute the mean (hereafter "average") value of `diversity` across the locations in which each species habitates via
 
 ```r
 pokemon$average_diversity <- colSums(t(habits) * locations$diversity) / pokemon$ubiquity
 ```
 
-`ubiquity` and `average_diversity` share a correlation coefficient of about -0.22, suggesting that the two attributes share a weak negative relationship.
+`ubiquity` and `average_diversity` share a correlation coefficient of about -0.22, suggesting that they share a weak negative relationship.
 Thus, on average, more ubiquitous species tend to live in less diverse locations.
 However, this relationship is skewed by a large number of species that cohabitate in one or two locations as shown in the chart below.
 
@@ -67,7 +61,6 @@ This cluster has a strong positive effect on mean `average_diversity` among spec
 
 ## The cohabitation network
 
-I further probe my data by analysing species' tendency to cohabitate.
 Species reveal their preference toward socialising with other species through their choice of whether to share habitats.
 Thus, the more frequently two species cohabitate, the stronger is their implied social connection.
 
@@ -83,6 +76,8 @@ Each entry `cohabits[i, j]` is equal to the number of locations in which species
 
 <!-- 1. two species are adjacent if and only if they cohabitate, and -->
 <!-- 2. the weight of each edge is equal to the number of locations in which the two incident species cohabitate. -->
+
+### Estimating the strength of species' social ties
 
 The raw cohabitation counts are an imperfect measure of the strength of the social ties between species.
 For example, ubiquitous species tend to have higher cohabitation counts with all other species and so appear to be more social.
@@ -115,6 +110,8 @@ net <- graph.adjacency(jaccard(cohabits), weighted = TRUE, mode = "undirected")
 net <- simplify(net)  # Remove loops
 ```
 
+### Identifying the strongest connections
+
 The cohabitation network contains 1,549 (about 31%) of the 4,950 possible edges between its 100 vertices.
 However, many of these edges have low weight and correspond to weak social connections between species, whereas I'm most interested in identifying which species share strong social connections.
 
@@ -145,16 +142,18 @@ augmented_msf <- function (G) {
 
 The third and fourth lines in the definition of `augmented_msf` identify the edges of `G` with which to augment its MSF.
 For example, if `G` has order 20 and size 100 then the MSF of `G` is augmented by adding those edges in `G` with weights equal to or greater than the weight of the edge at the 80th percentile.
-This approach adds 143 edges to the MSF of `net`, rather than the predicted 100, because the 100th highest-weight edge in `net` shares a weight of 0.5 with 128 other edges.
+<!-- This approach adds 143 edges to the MSF of `net`, rather than the predicted 100, because the 100th highest-weight edge in `net` shares a weight of 0.5 with 128 other edges. -->
 
-The augmented MSF of `net` contains 242 edges---producing an average vertex degree of 4.84---and is drawn below.
+### Visualising the network
+
+The augmented MSF of `net` contains 242 edges and is drawn below.
 Each vertex is coloured according to the corresponding species' primary type and scaled according to that species' ubiquity.
 I use [Fruchterman and Reingold's (1991)](http://onlinelibrary.wiley.com/doi/10.1002/spe.4380211102/abstract) force-directed algorithm for determining vertices' layout.
 
 ![](https://raw.githubusercontent.com/bldavies/pokenet/master/images/augmented-msf.svg?sanitize=true)
 
 The cohabitation network has two components: one large component of 98 different species and many types, and one isolated pair of Ground-types.
-The latter contains Diglett and Dugtrio, which cohabitate exclusively in Diglett's Cave.
+The latter contains Diglett and Dugtrio, which exclusively habitate in Diglett's Cave.
 Water-types are most socially connected to other Water-types, suggesting that there are few amphibious species in the Kanto region that spend most of their time in the water.
 Poison-types tend to be closely connected to Ground- and Rock-types, which are, presumably, immune to toxicity.
 
@@ -165,7 +164,7 @@ There is also a small cluster of Fire- and Poison-types that cohabitate inside P
 ## Estimating species' social influence
 
 The structure of `net` reveals information about species' social influence.
-A simple measure of such influence is the [degree centrality](https://en.wikipedia.org/wiki/Centrality#Degree_centrality) of each species: the number of other species with which each species cohabitates.
+A simple measure of such influence is the [degree centrality](https://en.wikipedia.org/wiki/Centrality#Degree_centrality) of each species, which counts the number of other cohabitating species.
 The table below displays the species with the highest six degree centralities in the cohabitation network.
 
 | Species  | Type   | Degree |
@@ -177,16 +176,15 @@ The table below displays the species with the highest six degree centralities in
 | Kingler  | Water  | 64     |
 | Ditto    | Normal | 56     |
 
-The three most degree-central species are also the three most ubiquitous, and each cohabitates with 82 of the 99 other species in my sample.
-These three species have many social ties, but---as suggested by their absence from the visualisation of `net`---each of these ties is relatively weak.
+The three most degree-central species are also the three most ubiquitous and cohabitate with 82 of the 99 other species in my sample.
 Eight of the 10 most degree-central species are Water-types.
 
 The [betweenness centrality](https://en.wikipedia.org/wiki/Centrality#Betweenness_centrality) of each species measures the frequency with which that species lies on the shortest path between others in the cohabitation network.
-Intuitively, more betweenness-central species tend to have more control over the spread of information due to their relative criticality within other species' communication channels.
+Intuitively, more betweenness-central species tend to have more control over the spread of information due to their relative criticality in other species' communication channels.
 
 The six most betweenness-central species are tabulated below.
 Goldeen, Magikarp and Poliwag are important conduits of information due to their high ubiquity.
-Cubone takes fifth place because it is the only species through which Gastly and Haunter---both found exclusively inside Pokémon Tower--can communicate with species in the Safari Zone.
+Cubone takes fifth place because it is the only species through which Gastly and Haunter---both found exclusively inside Pokémon Tower---can communicate with species in the Safari Zone.
 
 | Species  | Betweenness |
 | :------- | ----------: |
@@ -210,7 +208,7 @@ The chart below plots species' betweenness centralities against their transitivi
 The two attributes share a strong, negative and convex relationship.
 Species whose cohabitants also cohabitate are less betweenness-central because the former lack exclusive control of their cohabitants' channels for sharing information.
 The exceptions to this trend are Cubone and Pikachu, which have unusually high and low betweenness centralities, respectively.
-Pikachu habitate in two locations (Viridian Forest and the Kanto Power Plant), each of which contain a small number of species that very frequently cohabitate and that generally have much higher degree centralities.
+Pikachu habitate in two locations (Viridian Forest and the Kanto Power Plant), each of which contain a small number of species that frequently cohabitate and that generally have much higher degree centralities.
 As a result, Pikachu have an unusually low betweenness centrality because their cohabitants are able to communicate with each other directly and with other species indirectly through their wider social networks.
 
 ![](https://raw.githubusercontent.com/bldavies/pokenet/master/images/betweenness-transitivity.svg?sanitize=true)
@@ -228,17 +226,6 @@ location_net <- graph.adjacency(cocontains, mode = "undirected")
 ```
 
 The graph `location_net` contains 542 (about 60%) of the 903 possible edges between its 43 vertices.
-The degree centralities of these vertices are computed via
-
-```r
-locations$degree <- degree(location_net)
-```
-
-I also compute the average ubiquity of each location:
-
-```r
-locations$average_ubiquity <- colSums(habits * pokemon$ubiquity) / locations$diversity
-```
 
 The locations with the six highest average ubiquities are tabulated below.
 Viridian City and Pallet Town have the least unique demographies; the few species that habitate in these locations tend to also habitate in many other locations.
@@ -253,14 +240,9 @@ That Viridian City's average ubiquity and degree centrality are similar suggests
 | Cinnabar Island | 16.00            | 25     | 7         |
 | Route 1         | 16.00            | 24     | 2         |
 
-Finally, I compute the betweenness centrality of each location via
 
-```r
-locations$betweenness <- betweenness(location_net)
-```
-
-The table below shows the top six most betweenness-central locations.
-Route 10 appears to offer a valuable path through which species can efficiently transmit information.
+Finally, the table below shows the top six most betweenness-central locations.
+Route 10 appears to be an important junction for information flows between species.
 This is likely due to the diversity of its contained species, and that Routes 10 and 11 boast the highest degree centralities in the cocontainment network.
 The Safari Zone, another highly diverse location, is also an important information relay.
 

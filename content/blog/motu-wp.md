@@ -5,11 +5,8 @@ tags: [igraph, networks, R, Motu]
 ---
 
 Earlier this year I joined [Motu](https://motu.nz), an economic and public policy research institute based in Wellington, New Zealand.
-One of Motu's objectives is to disseminate the research conducted by staff and affiliates, often through the working paper series hosted on its website.
-In this post, I analyse the coauthorship networks among Motu researchers based on working paper publications.
-
+In this post, I analyse the coauthorship network among Motu researchers based on working paper publications.
 The source code and data used in my analysis are available [here](https://github.com/bldavies/motu-wp).
-Hyperlinks are provided where suitable.
 
 ## Collecting and preparing the data
 
@@ -22,7 +19,7 @@ The Python script [`urls.py`](https://github.com/bldavies/motu-wp/blob/master/co
 I use [Beautiful Soup](https://www.crummy.com/software/BeautifulSoup/) to parse the source HTML and the regular expression library `re` to extract elements of interest.
 Although [regular expressions and HTML generally don't play nicely](https://stackoverflow.com/questions/1732348/regex-match-open-tags-except-xhtml-self-contained-tags), they seemed to cooperate in meeting my specific needs.
 
-The output of `urls.py` is a file named [`urls.csv`](https://github.com/bldavies/motu-wp/blob/master/data/urls.csv) that stores the list of working paper years, numbers and URLs.
+`urls.py` outputs a file named [`urls.csv`](https://github.com/bldavies/motu-wp/blob/master/data/urls.csv) that stores the list of working paper years, numbers and URLs.
 Each URL points to a landing page for the associated working paper containing, for example, abstract and citation metadata.
 A second script, [`linked-authors.py`](https://github.com/bldavies/motu-wp/blob/master/code/linked-authors.py), loops through each URL and queries the associated metadata for a list of authors.
 I extract only those authors with outgoing hyperlinks because
@@ -30,8 +27,8 @@ I extract only those authors with outgoing hyperlinks because
 1. the hyperlinked URL provides a unique and consistent author ID, and
 2. it is much easier to perform a regular expression search for `<a href="(.*?)">` than to distinguish the different uses of commas case-by-case.
 
-The result is a file named [`linked-authors.csv`](https://github.com/bldavies/motu-wp/blob/master/data/linked-authors.csv) containing working paper years and numbers, and the associated authors' names and IDs.
-This file excludes the authors of three papers for which there is no landing page linked from the main directory.
+The resulting file [`linked-authors.csv`](https://github.com/bldavies/motu-wp/blob/master/data/linked-authors.csv) contains working paper years and numbers, and the associated authors' names and IDs.
+It excludes the authors of three papers for which there is no landing page linked from the main directory.
 
 After generating the aforementioned CSVs, I migrate from Python to R and begin my analysis.
 The first step is to import the [`igraph`](http://igraph.org/r/) package for working with network objects, load several packages from the [tidyverse](https://www.tidyverse.org) to help with plotting and data manipulation, and of course read in the data:
@@ -81,10 +78,11 @@ Those papers are distributed across Motu's research fields as shown in the chart
 ![](https://raw.githubusercontent.com/bldavies/motu-wp/master/figures/field-counts.svg?sanitize=true)
 
 The variation in working paper counts reflects the variation in fields' tenure within Motu's research portfolio.
-Environment and Resources, contributing 67 working papers, has been around since the series began; Human Rights, appearing only once in the series, is a relatively new but thriving component of Motu's ongoing research.
+Environment and Resources, contributing 67 working papers, has been around since the series began; Human Rights, appearing only once in the series, is a relatively new research field for Motu.
 
 The authorship network `bip` is drawn below using [Fruchterman and Reingold's (1991)](https://onlinelibrary.wiley.com/doi/abs/10.1002/spe.4380211102) force-directed algorithm.
-Squares denote working papers and are coloured by research field, while each circle denotes an author and is scaled according to the number of working papers (co)written by that author.
+Squares denote working papers and are coloured by research field.
+Each circle denotes an author and is scaled according to the number of working papers (co)written by that author.
 
 ![](https://raw.githubusercontent.com/bldavies/motu-wp/master/figures/author-network.svg?sanitize=true)
 
@@ -132,22 +130,23 @@ common_neighbour_rate <- function (G) {
 }
 ```
 
-The function `common_neighbour_rate` works by computing the geodesic distances between each pair of vertices in `G`, defining binary indicator variables (as entries of the matrix `B`) for whether each distance is equal to two and taking the average of those variables over all possible vertex pairs; its name comes from recognising that "coauthor" is a context-specific synonym for "neighbouring vertex."
+The function `common_neighbour_rate` works by computing the geodesic distances between each pair of vertices in `G`, defining binary indicator variables (as entries of the matrix `B`) for whether each distance is equal to two and taking the average of those variables over all possible vertex pairs.
+Its name comes from recognising that "coauthor" is a context-specific synonym for "neighbouring vertex."
 
 Within the LCC of `net`, the average distance between any two authors is equal to 2.5 while the maximum such distance---the *diameter* of the LCC---is equal to five.
-These numbers suggest a smallness about the world inhabited by Motu working paper authors: if you ask anyone if they've written a paper with so-and-so, the answer you'll get is probably, "no, but I know someone who knows someone who has."
+These numbers suggest a smallness about the world inhabited by Motu working paper authors: if you ask anyone if they've written a paper with so-and-so, the answer you'll get is probably, "no, but I've written with someone who has written with someone that has."
 It appears that, at least in terms of geodesic distances, Motu researchers are seldom far apart.
 
 ### Testing for small-worldness
 
-[Watts and Strogatz (1998)](https://www.nature.com/articles/30918) formalise the idea of small-worldness in a fantastic article written for *Nature*.[^strogatz]
+[Watts and Strogatz (1998)](https://www.nature.com/articles/30918) formalise the idea of small-worldness.[^strogatz]
 They identify small-world networks as those that are
 
 > highly clustered ... yet have small characteristic path lengths.
 
 The extent to which a network is clustered is determined by its [clustering coefficient](https://en.wikipedia.org/wiki/Clustering_coefficient#Global_clustering_coefficient), while the characteristic path length is simply the mean geodesic distance between pairs of vertices.
 Intuitively, a network is small-world if it has local communities whose links are mostly internal but with a few external links that facilitate fast inter-community exchange.
-For example, most flights undertaken by New Zealanders comprise travel within our dense domestic network, but a Cantabrian wanting to holiday in Bangkok or Dubai need only make a short pitstop in Sydney.
+For example, most flights undertaken by New Zealanders comprise travel within our dense domestic network, but a Cantabrian wanting to holiday in Bangkok or Dubai need only make a pitstop in Sydney.
 The latter acts as a hub that connects many distant cities in the same way that the three shaded vertices in the map of `net` above connect many otherwise distant authors.
 
 [Humphries and Gurney (2008)](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0002051) describe a method for determining small-worldness using random graphs.
@@ -180,30 +179,16 @@ small_world_baselines <- function (G, sample_size = 1000, seed = 0) {
 
 The coauthorship network `net` has clustering coefficient 0.24 and mean distance 2.48, with baseline comparators of 0.06 and 2.95, respectively.
 Thus, `net` is about four times as clustered as is expected for a network with its density and has slightly shorter geodesic distances than would be obtained by allocating edges randomly.
-These facts are positive indicators of small-worldness, and reflect widespread collaboration between authors both within and across research fields.
+These facts positively indicate small-worldness, and reflect widespread collaboration between authors within and between research fields.
 
 Humphries and Gurney define a *small-world coefficient* by taking the ratio of observed and expected clustering coefficients, and dividing the result by the ratio of observed and expected mean distances.
-Such a ratio should be larger than one for small-world networks.
-Indeed, the coauthorship network `net` obtains a small-world coefficient of 4.60, thereby passing the Humphries-Gurney small-worldness test.
+This quotient is larger than one for small-world networks.
+The coauthorship network `net` obtains a small-world coefficient of 4.60, thereby passing the Humphries-Gurney small-worldness test.
 
 ## Subsampling by field
 
 Finally, I analyse the coauthorship network within Motu's five largest research fields.
-I first add two new variables to `fields` via
-
-```r
-fields <- fields %>%
-  left_join(data) %>%
-  group_by(field_name, field_id) %>%
-  summarise(num_papers = n_distinct(paper_id),
-            num_authors = n_distinct(author_id)) %>%
-  ungroup() %>%
-  filter(num_authors > 1)
-```
-
-The Human Rights coauthorship network comprises a single vertex with no edges and so admits few meaningful network statistics---hence its exclusion from my subsample analysis.
-
-For each field in `fields`, I filter the corresponding working papers from `data` and recompute several statistics mentioned earlier using the subsample data.
+I filter the working papers from `data` that correspond to each field and recompute several statistics mentioned earlier using the subsample data.
 The first set of statistics is shown in the table below.
 
 Field | Papers | Authors | Edge Density | LCC Order | LCC Diameter
@@ -215,8 +200,9 @@ Wellbeing and Macroeconomics | 35 | 19 | 0.13 | 14 | 2
 Productivity and Innovation | 23 | 18 | 0.18 | 18 | 4
 
 Environment and Resources boasts the largest number of authors as well as working papers. However, it has the least dense coauthorship network, containing only 8% of all possible edges.
-The Productivity and Innovation coauthorship network is the most dense, and all 18 of its authors are connected by a path of at most four coauthorships.
-The largest connected component of the Wellbeing and Macroeconomics coauthorship network is the smallest among the five fields; however, every pair of authors within the LCC either are coauthors or share a common coauthor.
+The Productivity and Innovation coauthorship network is the most dense.
+All 18 of its contained authors are connected by a path of at most four coauthorships.
+The largest connected component of the Wellbeing and Macroeconomics coauthorship network is the smallest among the five fields; however, every pair of authors within its LCC are coauthors or share a common coauthor.
 
 I also test each field's coauthorship network for small-worldness using the Humphries-Gurney procedure.
 The results are tabulated below.
@@ -229,7 +215,7 @@ Urban and Regional | 0.17 (0.09) | 2.13 (3.04) | 2.69
 Wellbeing and Macroeconomics | 0.19 (0.11) | 1.77 (2.88) | 2.76
 Productivity and Innovation | 0.36 (0.17) | 2.26 (2.40) | 2.26
 
-All five fields have small-world coefficients greater than one, thereby satisfying Humphries and Gurney's criterion.
+All five fields have small-world coefficients greater than one, and therefore satisfy Humphries and Gurney's criterion.
 However, the ratio of observed and baseline clustering coefficients is not as large in any field as it is in the full coauthorship network.
 Moreover, only two fields have mean distances close to those expected in an equivalent Erdös-Rényi random graph.
 The best candidate for a small world---that is, a world with high clustering and as-random geodesic distances---is the Productivity and Innovation coauthorship network, despite it having the lowest small-world coefficient.
@@ -238,4 +224,4 @@ I suspect that network size adds considerable noise to these estimates.
 Even the full coauthorship network `net` is barely large enough to exhibit any global structure that can be distinguished from randomness.
 Applying the Humphries-Gurney test to a larger network, or implementing a more robust procedure such as that proposed by [Telesford et al. (2011)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3604768/), may yield cleaner results.
 
-[^strogatz]: The digitized version of this article is locked behind a paywall. Fortunately, Strogatz hosts a PDF copy on [his website](http://www.stevenstrogatz.com/articles/collective-dynamics-of-small-world-networks-pdf).
+[^strogatz]: The linked article is locked behind a paywall. However, Strogatz hosts [a free copy](http://www.stevenstrogatz.com/articles/collective-dynamics-of-small-world-networks-pdf) on his website.
