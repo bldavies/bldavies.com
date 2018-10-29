@@ -1,5 +1,6 @@
 ---
 title: Coauthorship Networks at Motu
+date: "2018-06-21"
 tags: [igraph, networks, R, Motu]
 ---
 

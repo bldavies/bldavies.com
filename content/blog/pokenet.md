@@ -1,5 +1,6 @@
 ---
 title: Habitat Choices of First-Generation Pokémon
+date: "2018-03-01"
 tags: [igraph, networks, R, Pokémon]
 ---
 

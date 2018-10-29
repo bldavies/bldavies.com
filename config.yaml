@@ -3,8 +3,6 @@ blackfriday:
   fractions: false
 disableKinds: ["taxonomy", "taxonomyTerm", "sitemap"]
 footnotereturnlinkcontents: "↩"
-frontmatter:
-  date: [":filename", ":default"]
 googleAnalytics: UA-123726505-2
 ignoreFiles: ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 params:
