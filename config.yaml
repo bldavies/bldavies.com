@@ -12,6 +12,4 @@ params:
   email: ben.davies@motu.org.nz
   github: https://github.com/bldavies
   linkedin: https://www.linkedin.com/in/bl-davies/
-permalinks:
-  blog: /blog/:slug/
 title: "Ben Davies"
