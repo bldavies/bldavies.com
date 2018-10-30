@@ -3,7 +3,7 @@ blackfriday:
   fractions: false
 disableKinds: ["taxonomy", "taxonomyTerm", "sitemap"]
 footnotereturnlinkcontents: "↩"
-googleAnalytics: UA-123726505-2
+googleAnalytics: UA-123726505-3
 ignoreFiles: ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 params:
   author: Ben Davies
