@@ -262,6 +262,6 @@ Readers who want to keep digging can find the data at [the GitHub repository for
 
 [^random]: Restricting to random encounters excludes starter Pokémon, species obtainable only through evolution and "special" encounters (e.g., the Electrodes inside the Kanto Power Plant and the legendary birds) from the sample.
 
-[^prod-space]: This technique is based on [Hidalgo et al.'s (2007)](http://science.sciencemag.org/content/317/5837/482) method of representing the product space of internationally traded goods.
+[^prod-space]: This technique is based on [Hidalgo *et al.*'s (2007)](http://science.sciencemag.org/content/317/5837/482) method of representing the product space of internationally traded goods.
 
 [^prim]: For example, consider applying a greedy algorithm such as [Prim's](https://en.wikipedia.org/wiki/Prim's_algorithm) to a cohabitation network that contains (i) a large clique of species that cohabitate in a single location and (ii) several species that are spread across many different locations. The algorithm will first connect each species in the clique and then, in order to avoid creating cycles, branch out to connect the relatively weakly connected species until a spanning forest is formed. The resulting subgraph will be a MSF but will contain edges that have lower weights than some of the omitted edges in the clique.

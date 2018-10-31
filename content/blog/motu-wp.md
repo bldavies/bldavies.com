@@ -222,6 +222,6 @@ The best candidate for a small world---that is, a world with high clustering and
 
 I suspect that network size adds considerable noise to these estimates.
 Even the full coauthorship network `net` is barely large enough to exhibit any global structure that can be distinguished from randomness.
-Applying the Humphries-Gurney test to a larger network, or implementing a more robust procedure such as that proposed by [Telesford et al. (2011)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3604768/), may yield cleaner results.
+Applying the Humphries-Gurney test to a larger network, or implementing a more robust procedure such as that proposed by [Telesford *et al.* (2011)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3604768/), may yield cleaner results.
 
 [^strogatz]: The linked article is locked behind a paywall. However, Strogatz hosts [a free copy](http://www.stevenstrogatz.com/articles/collective-dynamics-of-small-world-networks-pdf) on his website.
