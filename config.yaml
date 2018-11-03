@@ -10,4 +10,6 @@ params:
   email: ben.davies@motu.org.nz
   github: https://github.com/bldavies
   linkedin: https://www.linkedin.com/in/bl-davies/
+pygmentsCodefences: true
+pygmentsStyle: "pygments"
 title: "Ben Davies"
