@@ -1,0 +1,2 @@
+cd "$(dirname "$0")"
+pandoc data/cv.yaml -o static/cv.pdf --template=static/cv.tex --latex-engine=pdflatex

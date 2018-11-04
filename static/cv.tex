@@ -1,0 +1,72 @@
+\documentclass[a4paper,11pt,oneside]{memoir}
+
+\title{Curriculum Vitae}
+\author{$name$}
+
+\usepackage{mathpazo}
+\usepackage[T1]{fontenc}
+\usepackage[margin=1in,includefoot]{geometry}
+\usepackage{nohyperref}
+
+\makeevenfoot{plain}{$name$}{}{Page~\thepage\ of~\thelastpage}
+\makeoddfoot{plain}{$name$}{}{Page~\thepage\ of~\thelastpage}
+\OnehalfSpacing
+\pagestyle{plain}
+\raggedright
+\setaftersecskip{1em}
+\setbeforesecskip{2em}
+\setlength{\parindent}{0pt}
+\setsecheadstyle{\large\bfseries}
+\setsecnumdepth{part}
+\setsubsecheadstyle{\bfseries}
+
+\newcommand{\entry}[1]{\par\hangindent=2em #1}
+
+\begin{document}
+
+    \begin{center}
+        {\Large\bfseries\MakeUppercase{$name$}\par}\vskip\aftersecskip
+        \today\par\vskip\beforesecskip
+    \end{center}
+
+    \parbox{\textwidth}{%
+        \parbox[t]{0.5\textwidth}{%
+            $for(address)$
+                $address$\par
+                $endfor$
+            }
+        \hfill
+        \parbox[t]{0.3\textwidth}{\raggedleft $email$\par $website$\par $phone$}
+    }\par
+
+    \section{Education}
+
+    $for(education)$
+        \entry{$education$}
+    $endfor$
+
+    \section{Experience}
+
+    $for(experience)$
+        \entry{$experience$}
+    $endfor$
+
+    \section{Scholarships and Awards}
+
+    $for(honours)$
+        \entry{$honours$}
+    $endfor$
+
+    \section{Publications}
+
+    $for(publications)$
+        \entry{$publications$}
+    $endfor$
+
+    \section{Seminars and Conference Presentations}
+
+    $for(presentations)$
+        \entry{$presentations$}
+    $endfor$
+
+\end{document}

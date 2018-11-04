@@ -8,17 +8,12 @@
 </div>
 
 <div class="container">
-  <h2 id="working-papers">Working papers</h2>
   <ol class="research-index" reversed>
-    <li>
-      Davies, B. and R. Watt (2017). "<a href="https://ideas.repec.org/p/cbt/econwp/17-05.html">Bundling and Insurance of Independent Risks</a>." Working Papers in Economics 17/05, University of Canterbury.
-    </li>
-  </ol>
-  <h2 id="other">Other</h2>
-  <ol class="research-index" reversed>
-    <li>
-      Davies, B. (2017). "Insurance Demand with Endogenous Saving." Honours thesis, University of Canterbury.
-    </li>
+  {{ range .Site.Data.cv.publications }}
+  <li>
+    {{ . | markdownify }}
+  </li>
+  {{ end }}
   </ol>
 </div>
 

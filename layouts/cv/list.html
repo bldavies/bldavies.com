@@ -1,0 +1,41 @@
+{{ partial "header.html" . }}
+
+<div class="banner">
+  <div class="container">
+    <h1>{{ .Title | markdownify }}</h1>
+    {{ .Content }}
+  </div>
+</div>
+
+<div class="container">
+  <h2>Education</h2>
+  <ul>
+    {{ range .Site.Data.cv.education }}
+      <li>
+        {{ . | markdownify }}
+      </li>
+    {{ end }}
+  </ul>
+  <h2>Experience</h2>
+  <ul>
+    {{ range .Site.Data.cv.experience }}
+      <li>
+        {{ . | markdownify }}
+      </li>
+    {{ end }}
+  </ul>
+  <h2>Scholarships and awards</h2>
+  <ul>
+    {{ range .Site.Data.cv.honours }}
+      <li>
+        {{ . | markdownify }}
+      </li>
+    {{ end }}
+  </ul>
+  <h2>Publications</h2>
+  <p>
+    My publications are listed <a href="/research">here</a>.
+  </p>
+</div>
+
+{{ partial "footer.html" . }}
