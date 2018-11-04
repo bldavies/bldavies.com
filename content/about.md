@@ -12,6 +12,6 @@ The latter became a working paper that I presented at [the 44th EGRIE conference
 
 At Motu, I work with [Dave Maré](https://motu.nz/about-us/people/dave-mare/) on a project that involves estimating the relatedness and complexity of economic activities using New Zealand census data.
 Our work is funded through [Te Pūnaha Matatini](https://www.tepunahamatatini.ac.nz), a Centre of Research Excellence focussed on networks and complex systems.
-I also ran a [Deep South dialogue](https://www.deepsouthchallenge.co.nz/dialogues) on climate change adaptation within the transport sector.
+I also ran a [dialogue](https://www.deepsouthchallenge.co.nz/dialogues) on climate change adaptation within the transport sector on behalf of the [Deep South National Science Challenge](https://www.deepsouthchallenge.co.nz).
 
 I spend my leisure time reading, writing, playing guitar and staying fit.
