@@ -1,2 +1,4 @@
+#!/usr/bin/env bash
+
 cd "$(dirname "$0")"
-pandoc data/cv.yaml -o static/cv.pdf --template=static/cv.tex --latex-engine=pdflatex
+pandoc data/cv.yaml -o static/cv.pdf --template=static/cv.tex --latex-engine=xelatex

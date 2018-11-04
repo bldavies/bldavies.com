@@ -10,6 +10,8 @@ params:
   email: ben.davies@motu.org.nz
   github: https://github.com/bldavies
   linkedin: https://www.linkedin.com/in/bl-davies/
+  repec: https://ideas.repec.org/f/pda777
+  scholar: https://scholar.google.co.nz/citations?user=iet9PyAAAAAJ
 pygmentsCodefences: true
 pygmentsStyle: "pygments"
 title: "Ben Davies"

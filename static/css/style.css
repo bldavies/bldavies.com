@@ -86,14 +86,6 @@ ul {
   list-style: none;
   padding: 0;
 }
-.footnotes li,
-.research-index li {
-  padding: 0 0 1rem;
-}
-.footnotes li:last-child,
-.research-index li:last-child {
-  padding: 0;
-}
 
 pre {
   background-color: #f6f8fa;

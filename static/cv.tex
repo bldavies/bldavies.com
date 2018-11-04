@@ -41,32 +41,40 @@
 
     \section{Education}
 
-    $for(education)$
-        \entry{$education$}
-    $endfor$
+        $for(education)$
+            \entry{$education$}
+        $endfor$
 
     \section{Experience}
 
-    $for(experience)$
-        \entry{$experience$}
-    $endfor$
+        $for(experience)$
+            \entry{$experience$}
+        $endfor$
 
     \section{Scholarships and Awards}
 
-    $for(honours)$
-        \entry{$honours$}
-    $endfor$
+        $for(honours)$
+            \entry{$honours$}
+        $endfor$
 
     \section{Publications}
 
-    $for(publications)$
-        \entry{$publications$}
-    $endfor$
+        $for(publications)$
+            \entry{$publications$}
+        $endfor$
 
-    \section{Seminars and Conference Presentations}
+    \section{Conference Presentations}
 
-    $for(presentations)$
-        \entry{$presentations$}
-    $endfor$
+        \subsection{Papers}
+
+            $for(conferences.papers)$
+                \entry{$conferences.papers$}
+            $endfor$
+
+        \subsection{Posters}
+
+            $for(conferences.posters)$
+                \entry{$conferences.posters$}
+            $endfor$
 
 \end{document}

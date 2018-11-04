@@ -8,7 +8,7 @@
 </div>
 
 <div class="container">
-  <h2>Education</h2>
+  <h2 id="education">Education</h2>
   <ul>
     {{ range .Site.Data.cv.education }}
       <li>
@@ -16,7 +16,7 @@
       </li>
     {{ end }}
   </ul>
-  <h2>Experience</h2>
+  <h2 id="experience">Experience</h2>
   <ul>
     {{ range .Site.Data.cv.experience }}
       <li>
@@ -24,7 +24,7 @@
       </li>
     {{ end }}
   </ul>
-  <h2>Scholarships and awards</h2>
+  <h2 id="scholarships-and-awards">Scholarships and awards</h2>
   <ul>
     {{ range .Site.Data.cv.honours }}
       <li>
@@ -32,10 +32,34 @@
       </li>
     {{ end }}
   </ul>
-  <h2>Publications</h2>
+  <h2 id="publications">Publications</h2>
   <p>
-    My publications are listed <a href="/research">here</a>.
+    More information is available on my <a>Google Scholar</a> and <a>RePEc</a> pages.
   </p>
+  <ol reversed>
+    {{ range .Site.Data.cv.publications }}
+    <li>
+      {{ . | markdownify }}
+    </li>
+    {{ end }}
+  </ol>
+  <h2 id="conferences">Conference presentations</h2>
+  <h3>Papers</h3>
+  <ol reversed>
+    {{ range .Site.Data.cv.conferences.papers }}
+      <li>
+        {{ . | markdownify }}
+      </li>
+    {{ end }}
+  </ol>
+  <h3>Posters</h3>
+  <ol reversed>
+    {{ range .Site.Data.cv.conferences.posters }}
+      <li>
+        {{ . | markdownify }}
+      </li>
+    {{ end }}
+  </ol>
 </div>
 
 {{ partial "footer.html" . }}
