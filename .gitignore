@@ -3,6 +3,7 @@
 .Rapp.history
 .RData
 .Rhistory
+serve
 
 # folders
 .Rproj.user
