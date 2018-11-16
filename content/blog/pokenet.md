@@ -33,7 +33,7 @@ The boxplots below show the distribution of `ubiquity` by species' primary type.
 Water-types have the highest median ubiquity, closely followed by Grass- and Normal-types.
 Species with Ghost, Fairy or Dragon as their primary type habitate in a single location.
 
-![](https://raw.githubusercontent.com/bldavies/pokenet/master/images/ubiquity-distribution.svg?sanitize=true)
+![](https://raw.githubusercontent.com/bldavies/pokenet/master/figures/ubiquity-distribution.svg?sanitize=true)
 
 The column sums of `habits` count the number of unique species that habitate in each location.
 I store these sums as follows:
@@ -52,7 +52,7 @@ pokemon$average_diversity <- colSums(t(habits) * locations$diversity) / pokemon$
 Thus, on average, more ubiquitous species tend to live in less diverse locations.
 However, this relationship is skewed by a large number of species that cohabitate in one or two locations as shown in the chart below.
 
-![](https://raw.githubusercontent.com/bldavies/pokenet/master/images/avgdiversity-ubiquity.svg?sanitize=true)
+![](https://raw.githubusercontent.com/bldavies/pokenet/master/figures/avgdiversity-ubiquity.svg?sanitize=true)
 
 The chart plots `average_diversity` against `ubiquity`, along with the least-squares line of best fit.
 <!-- Observations in this and all other charts are coloured by the corresponding species' primary type, and are plotted with a small amount of noise in order to reveal coincident points that would otherwise be hidden. -->
@@ -150,7 +150,7 @@ The augmented MSF of `net` contains 242 edges and is drawn below.
 Each vertex is coloured according to the corresponding species' primary type and scaled according to that species' ubiquity.
 I use [Fruchterman and Reingold's (1991)](http://onlinelibrary.wiley.com/doi/10.1002/spe.4380211102/abstract) force-directed algorithm for determining vertices' layout.
 
-![](https://raw.githubusercontent.com/bldavies/pokenet/master/images/augmented-msf.svg?sanitize=true)
+![](https://raw.githubusercontent.com/bldavies/pokenet/master/figures/augmented-msf.svg?sanitize=true)
 
 The cohabitation network has two components: one large component of 98 different species and many types, and one isolated pair of Ground-types.
 The latter contains Diglett and Dugtrio, which exclusively habitate in Diglett's Cave.
@@ -199,7 +199,7 @@ The chart below compares species' betweenness and degree centralities.
 With the exception of Cubone, more betweenness-central species tend to have more cohabitants.
 Water-types are relatively inefficient at accumulating betweenness centrality when they expand their social network, whereas Electric-types appear to gain a relatively large amount of betweenness centrality per extra cohabitant.
 
-![](https://raw.githubusercontent.com/bldavies/pokenet/master/images/betweenness-degree.svg?sanitize=true)
+![](https://raw.githubusercontent.com/bldavies/pokenet/master/figures/betweenness-degree.svg?sanitize=true)
 
 Species with densely connected social networks are unlikely to be very betweenness-central because their cohabitants can share information with each other directly.
 The probability that two of a species' cohabitants also cohabitate is given by the [transitivity](https://en.wikipedia.org/wiki/Clustering_coefficient#Local_clustering_coefficient) of the corresponding vertex in `net`.
@@ -211,7 +211,7 @@ The exceptions to this trend are Cubone and Pikachu, which have unusually high a
 Pikachu habitate in two locations (Viridian Forest and the Kanto Power Plant), each of which contain a small number of species that frequently cohabitate and that generally have much higher degree centralities.
 As a result, Pikachu have an unusually low betweenness centrality because their cohabitants are able to communicate with each other directly and with other species indirectly through their wider social networks.
 
-![](https://raw.githubusercontent.com/bldavies/pokenet/master/images/betweenness-transitivity.svg?sanitize=true)
+![](https://raw.githubusercontent.com/bldavies/pokenet/master/figures/betweenness-transitivity.svg?sanitize=true)
 
 ## The cocontainment network
 
