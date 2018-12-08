@@ -36,8 +36,8 @@ $honours$
 $endfor$
 
 
-NON-REFEREED PUBLICATIONS
-=========================
+PUBLICATIONS
+============
 $for(publications)$
 
 $publications.citation$
