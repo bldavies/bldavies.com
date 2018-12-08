@@ -1,0 +1,60 @@
+BENJAMIN DAVIES
+===============
+
+$for(address)$
+$address$
+$endfor$
+
+Email: $email$
+Website: $website$
+Phone: $phone$
+
+Citizenship: $citizenship$
+
+
+EDUCATION
+=========
+$for(education)$
+
+$education$
+$endfor$
+
+
+EXPERIENCE
+==========
+$for(experience)$
+
+$experience$
+$endfor$
+
+
+SCHOLARSHIPS AND AWARDS
+=======================
+$for(honours)$
+
+$honours$
+$endfor$
+
+
+NON-REFEREED PUBLICATIONS
+=========================
+$for(publications)$
+
+$publications.citation$
+$endfor$
+
+
+WORK IN PROGRESS
+================
+$for(wip)$
+
+$wip$
+$endfor$
+
+
+CONFERENCE PRESENTATIONS
+========================
+$for(conferences)$
+
+$conferences.citation$
+$endfor$

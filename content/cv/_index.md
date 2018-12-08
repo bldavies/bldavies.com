@@ -2,4 +2,4 @@
 title: Curriculum Vitae
 ---
 
-My CV is also available [in PDF format](/cv.pdf).
+My CV is also available in [plain text](/cv.txt) and [PDF](/cv.pdf) formats.

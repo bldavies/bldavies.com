@@ -39,25 +39,40 @@
   <ol reversed>
     {{ range .Site.Data.cv.publications }}
     <li>
-      {{ . | markdownify }}
+      {{ .citation | markdownify }}
+      {{ if .repec }}
+        [<a href="{{ .repec }}">RePEc</a>]
+      {{ end }}
     </li>
     {{ end }}
   </ol>
+  <h2 id="work-in-progress">Work in progress</h2>
+  <ul>
+    {{ range .Site.Data.cv.wip }}
+      <li>
+        {{ htmlUnescape (replace (. | markdownify) "\\" "") }}
+      </li>
+    {{ end }}
+  </ul>
   <h2 id="conferences">Conference presentations</h2>
   <h3>Papers</h3>
   <ol reversed>
-    {{ range .Site.Data.cv.conferences.papers }}
-      <li>
-        {{ . | markdownify }}
-      </li>
+    {{ range .Site.Data.cv.conferences }}
+      {{ if eq .type "paper" }}
+        <li>
+          {{ .citation | markdownify }}
+        </li>
+      {{ end }}
     {{ end }}
   </ol>
   <h3>Posters</h3>
   <ol reversed>
-    {{ range .Site.Data.cv.conferences.posters }}
-      <li>
-        {{ . | markdownify }}
-      </li>
+    {{ range .Site.Data.cv.conferences }}
+      {{ if eq .type "poster" }}
+        <li>
+          {{ .citation | markdownify }}
+        </li>
+      {{ end }}
     {{ end }}
   </ol>
 </div>

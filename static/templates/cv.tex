@@ -5,6 +5,7 @@
 
 \usepackage{mathpazo}
 \usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
 \usepackage[margin=1in,includefoot]{geometry}
 \usepackage{nohyperref}
 
@@ -20,7 +21,7 @@
 \setsecnumdepth{part}
 \setsubsecheadstyle{\bfseries}
 
-\newcommand{\entry}[1]{\par\hangindent=2em #1}
+\newcommand{\entry}[1]{\par\hangindent=2.5em #1}
 
 \begin{document}
 
@@ -60,21 +61,19 @@
     \section{Publications}
 
         $for(publications)$
-            \entry{$publications$}
+            \entry{$publications.citation$}
+        $endfor$
+
+    \section{Work in Progress}
+
+        $for(wip)$
+            \entry{$wip$}
         $endfor$
 
     \section{Conference Presentations}
 
-        \subsection{Papers}
-
-            $for(conferences.papers)$
-                \entry{$conferences.papers$}
-            $endfor$
-
-        \subsection{Posters}
-
-            $for(conferences.posters)$
-                \entry{$conferences.posters$}
-            $endfor$
+        $for(conferences)$
+            \entry{$conferences.citation$}
+        $endfor$
 
 \end{document}

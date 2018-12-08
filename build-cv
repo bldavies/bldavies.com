@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
 
 cd "$(dirname "$0")"
-pandoc data/cv.yaml -o static/cv.pdf --template=static/cv.tex --latex-engine=xelatex
+pandoc data/cv.yaml -o static/cv.pdf --template=static/templates/cv.tex
+pandoc data/cv.yaml -o static/cv.txt --template=static/templates/cv.txt --filter ./static/filters/delink.py --wrap=preserve
+
