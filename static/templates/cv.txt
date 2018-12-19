@@ -44,14 +44,6 @@ $publications.citation$
 $endfor$
 
 
-WORK IN PROGRESS
-================
-$for(wip)$
-
-$wip$
-$endfor$
-
-
 CONFERENCE PRESENTATIONS
 ========================
 $for(conferences)$
