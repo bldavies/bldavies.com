@@ -1,6 +1,5 @@
 ---
 title: Guest Appearances on *The Joe Rogan Experience*
-date: "2018-09-26"
 tags: [Joe Rogan, podcasts, Google Trends, time series, signal processing, R]
 ---
 
