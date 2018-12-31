@@ -1,4 +1,4 @@
-baseurl: "/"
+baseurl: "https://bldavies.com/"
 blackfriday:
   fractions: false
 disableKinds: ["taxonomy", "taxonomyTerm", "sitemap"]
