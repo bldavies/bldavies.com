@@ -9,7 +9,7 @@
   {{ else }}
     <title>{{ replace .Title "*" "" }} - {{ .Site.Title }}</title>
   {{ end }}
-  {{ if not .Site.BuildDrafts }}
+  {{ if in (.Site.BaseURL | string) "bldavies.com" }}
     {{ template "_internal/google_analytics.html" . }}
   {{ end }}
 </head>
