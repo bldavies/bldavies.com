@@ -10,22 +10,20 @@ The source code and figures used in my analysis are available [here](https://git
 
 ## Setup and authentication
 
-The first step is to register for API access on [Strava's API settings page](https://www.strava.com/settings/api/).
+Strava uses [OAuth 2.0](https://oauth.net/2/) to authorise access to the API data.
+The first step to becoming authorised is to register for access on [Strava's API settings page](https://www.strava.com/settings/api/).
 I put "localhost" in the "Authorization Callback Domain" field.
-Upon completing the registration form, the page provides two important values: an integer client ID and an alpha-numeric "secret."
+Upon completing the registration form, the page provides two important values: an integer client ID and an alpha-numeric client secret.
 I store these values in `credentials.yaml`, which I structure as
 
 ```yaml
----
 client_id: xxxxxxxxx
 secret: xxxxxxxxx
----
 ```
 
 and import into R using the `read_yaml` function from the [`yaml`](https://cran.r-project.org/package=yaml) package.
 
-The next step is to authenticate with Strava, which uses [the OAuth 2.0 protocol](https://oauth.net/2/) to grant access to users' data.
-This involves creating an OAuth application for interacting with the API and describing an endpoint through which to send authentication requests.
+Next, I create an OAuth application for interacting with the API and an endpoint through which to send authentication requests.
 I use the `oauth_app` and `oauth_endpoint` functions from [`httr`](https://cran.r-project.org/package=httr):
 
 ```r
@@ -39,7 +37,7 @@ endpoint <- oauth_endpoint(
 )
 ```
 
-I create an OAuth access token to send the authentication request to my Strava account.
+Finally, I create an OAuth access token to send the authentication request to my Strava account.
 This token encapsulates the application and endpoint defined above.
 Running
 
@@ -48,7 +46,7 @@ token <- oauth2.0_token(endpoint, app, as_header = FALSE, cache = FALSE)
 ```
 
 opens a browser window at a web page for accepting the authentication request.
-Doing so provides a confirmation message:
+Doing so redirects me to the callback domain ("localhost") and prints a confirmation message:
 
 > Authentication complete. Please close this page and return to R.
 
