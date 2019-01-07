@@ -14,6 +14,7 @@ params:
   linkedin: https://www.linkedin.com/in/bl-davies/
   repec: https://ideas.repec.org/f/pda777
   scholar: https://scholar.google.co.nz/citations?user=iet9PyAAAAAJ
+  orcid: https://orcid.org/0000-0002-1749-4567
 pygmentsCodefences: true
 pygmentsStyle: "pygments"
 title: Ben Davies
