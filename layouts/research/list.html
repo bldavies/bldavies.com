@@ -4,37 +4,12 @@
   <div class="container">
     <h1>{{ .Title | markdownify }}</h1>
     <p>
-      My CV is also available in <a href="{{ "/cv.txt" | relURL }}">plain text</a> and  <a href="{{ "/cv.pdf" | relURL }}">PDF</a> format.
-      More information can be gleaned from my <a href="{{ .Site.Params.linkedin }}">LinkedIn</a>, <a href="{{ .Site.Params.scholar }}">Google Scholar</a>, <a href="{{ .Site.Params.repec }}">RePEc</a> and <a href="{{ .Site.Params.orcid }}">ORCID</a> profiles.
+      More information is available on my <a href="{{ .Site.Params.scholar }}">Google Scholar</a>, <a href="{{ .Site.Params.repec }}">RePEc</a> and <a href="{{ .Site.Params.orcid }}">ORCID</a> profiles.
     </p>
   </div>
 </div>
 
 <div class="container">
-  <h2 id="education">Education</h2>
-  <ul>
-    {{ range .Site.Data.cv.education }}
-      <li>
-        {{ . | markdownify }}
-      </li>
-    {{ end }}
-  </ul>
-  <h2 id="experience">Experience</h2>
-  <ul>
-    {{ range .Site.Data.cv.experience }}
-      <li>
-        {{ . | markdownify }}
-      </li>
-    {{ end }}
-  </ul>
-  <h2 id="scholarships-and-awards">Scholarships and awards</h2>
-  <ul>
-    {{ range .Site.Data.cv.honours }}
-      <li>
-        {{ . | markdownify }}
-      </li>
-    {{ end }}
-  </ul>
   <h2 id="publications">Publications</h2>
   <ol reversed>
     {{ range .Site.Data.cv.publications }}
