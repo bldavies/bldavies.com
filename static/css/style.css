@@ -222,3 +222,20 @@ footer {
     margin: 1rem 0.5rem 0;
   }
 }
+
+
+/* Publications */
+
+.publication-link {
+  border: 1px solid #1269d3;
+  border-radius: 0.25rem;
+  display: inline-block;
+  font-size: 80%;
+  margin-right: 0.2rem;
+  padding: 0 0.2rem;
+}
+.publication-link:hover {
+  color: white;
+  background-color: #1269d3;
+  text-decoration: none;
+}

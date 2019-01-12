@@ -11,37 +11,32 @@
 
 <div class="container">
   <h2 id="publications">Publications</h2>
-  <ol reversed>
-    {{ range .Site.Data.cv.publications }}
-    <li>
-      {{ .citation | markdownify }}
-      {{ if .repec }}
-        [<a href="{{ .repec }}">RePEc</a>]
-      {{ end }}
-    </li>
-    {{ end }}
-  </ol>
+  {{ range .Site.Data.cv.publications }}
+    <p>
+      <div>{{ .citation | markdownify }}</div>
+      {{ if .github_url }}<a href="{{ .github_url }}" class="publication-link">GitHub</a>{{ end }}
+      {{ if .repec_url }}<a href="{{ .repec_url }}" class="publication-link">RePEc</a>{{ end }}
+    </p>
+  {{ end }}
   <h2 id="conferences">Conference presentations</h2>
   <h3>Papers</h3>
-  <ol reversed>
-    {{ range .Site.Data.cv.conferences }}
-      {{ if eq .type "paper" }}
-        <li>
-          {{ .citation | markdownify }}
-        </li>
-      {{ end }}
+  {{ range .Site.Data.cv.conferences }}
+    {{ if eq .type "paper" }}
+      <p>
+        <div>{{ .citation | markdownify }}</div>
+        {{ if .pdf_url }}<a href="{{ .pdf_url }}" class="publication-link">PDF</a>{{ end }}
+      </p>
     {{ end }}
-  </ol>
+  {{ end }}
   <h3>Posters</h3>
-  <ol reversed>
-    {{ range .Site.Data.cv.conferences }}
-      {{ if eq .type "poster" }}
-        <li>
-          {{ .citation | markdownify }}
-        </li>
-      {{ end }}
+  {{ range .Site.Data.cv.conferences }}
+    {{ if eq .type "poster" }}
+      <p>
+        <div>{{ .citation | markdownify }}</div>
+        {{ if .pdf_url }}<a href="{{ .pdf_url }}" class="publication-link">PDF</a>{{ end }}
+      </p>
     {{ end }}
-  </ol>
+  {{ end }}
 </div>
 
 {{ partial "footer.html" . }}
