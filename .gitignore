@@ -8,4 +8,5 @@ serve
 
 # folders
 .Rproj.user
+data/strava-api-access
 public

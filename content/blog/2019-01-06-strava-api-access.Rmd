@@ -3,10 +3,32 @@ title: Accessing the Strava API with R
 tags: [Strava, API, fitness, running, cycling, R]
 ---
 
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(dev = "svg",
+                      echo = TRUE,
+                      fig.ext = "svg",
+                      message = FALSE,
+                      warning = FALSE)
+
+library(dplyr)
+library(ggplot2)
+library(ggridges)
+library(googleway)
+library(httr)
+library(jsonlite)
+library(lubridate)
+library(scales)
+library(tidyr)
+library(yaml)
+
+DATA_DIR <- "../../data/strava-api-access/"
+
+credentials <- read_yaml(paste0(DATA_DIR, "credentials.yaml"))
+```
+
 [Strava](https://www.strava.com/) is an online platform for storing and sharing fitness data.
 Strava [provides an API](https://developers.strava.com) for accessing such data at the activity (e.g., run or cycle) level.
 In this post, I explain how to extract data from the Strava API using R, and I analyse my running and cycling data from 2018.
-The source code and figures used in my analysis are available [here](https://github.com/bldavies/strava-api-access/).
 
 ## Setup and authentication
 
@@ -26,7 +48,7 @@ and import into R using the `read_yaml` function from the [`yaml`](https://cran.
 Next, I create an OAuth application for interacting with the API and an endpoint through which to send authentication requests.
 I use the `oauth_app` and `oauth_endpoint` functions from [`httr`](https://cran.r-project.org/package=httr):
 
-```r
+```{r, eval = FALSE}
 library(httr)
 
 app <- oauth_app("strava", credentials$client_id, credentials$secret)
@@ -41,7 +63,7 @@ Finally, I create an OAuth access token to send the authentication request to my
 This token encapsulates the application and endpoint defined above.
 Running
 
-```r
+```{r, eval = FALSE}
 token <- oauth2.0_token(endpoint, app, as_header = FALSE, cache = FALSE)
 ```
 
@@ -56,7 +78,7 @@ After authenticating with Strava, I use a sequence of HTTP requests to extract a
 The API returns multiple pages of data, each containing up to 200 activities.
 I use a while loop to iterate over pages, using the `fromJSON` function from [`jsonlite`](https://cran.r-project.org/package=jsonlite) to parse the extracted data:
 
-```r
+```{r, eval = FALSE}
 library(jsonlite)
 
 data_list <- list()
@@ -79,8 +101,16 @@ while (!done) {
 
 Finally, I use the `rbind_pages` function from `jsonlite` to collate the activity data into a single data frame:
 
-```r
+```{r, eval = FALSE}
 data <- rbind_pages(data_list)
+```
+
+```{r save-cache, eval = FALSE, echo = FALSE}
+saveRDS(data, paste0(DATA_DIR, "cache.rds"))
+```
+
+```{r load-cache, eval = TRUE, echo = FALSE}
+data <- readRDS(paste0(DATA_DIR, "cache.rds"))
 ```
 
 ## Analysing the data
@@ -88,7 +118,7 @@ data <- rbind_pages(data_list)
 The Strava API provides a wealth of data to analyse.
 Running
 
-```r
+```{r, eval = FALSE}
 names(data)
 ```
 
@@ -98,21 +128,100 @@ For example, the bar chart below plots my total distance run and cycled during e
 I ran less during New Zealand's winter months: June--August.
 With more years of data, I could quantify my sensitivity to cold temperatures by identifying the seasonal component of my monthly distance series.
 
-![](https://raw.githubusercontent.com/bldavies/strava-api-access/master/figures/monthly-distances.svg?sanitize=true)
+```{r monthly-distances, echo = FALSE, fig.width = 8, height = 4.5}
+data %>%
+  filter(type %in% c("Run", "Ride"),
+         year(start_date_local) == 2018) %>%
+  mutate(type = replace(type, type == "Run", "Running"),
+         type = replace(type, type == "Ride", "Cycling"),
+         month = floor_date(as_datetime(start_date_local), "month")) %>%
+  group_by(month, type) %>%
+  summarise(distance = sum(distance) / 1000) %>%
+  ungroup() %>%
+  ggplot(aes(month, distance, fill = type)) +
+  geom_bar(stat = "identity") +
+  labs(x = NULL,
+       y = NULL,
+       title = "Kilometres run and cycled during each month of 2018",
+       fill = NULL) +
+  scale_fill_brewer(palette = "Set1") +
+  scale_x_datetime(breaks = date_breaks("month"),
+                   expand = c(0, 0),
+                   label = date_format("%b")) +
+  scale_y_continuous(expand = c(0, 0)) +
+  theme_minimal() +
+  theme(legend.position = "bottom",
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        plot.title = element_text(face = "bold", hjust = 0.5, margin = margin(b = 10), size = 16))
+```
 
 The temporal data provided by the API indicate the times of day at which athletes are most active.
 For example, the density plots below show the distribution of my running activity for each weekday during 2018.
 I ran mostly during lunch breaks or in the evenings on work days, and around midday on weekends.
 
-![](https://raw.githubusercontent.com/bldavies/strava-api-access/master/figures/active-time.svg?sanitize=true)
+```{r active-time, echo = FALSE, fig.width = 8, fig.height = 4.5}
+boundaries <- data %>%
+  filter(type == "Run",
+         year(start_date_local) == 2018) %>%
+  group_by(id) %>%
+  summarise(start = as_datetime(start_date_local),
+            end = start + seconds(elapsed_time),
+            weekday = wday(start, week_start = 1)) %>%
+  ungroup() %>%
+  mutate(start = floor_date(start, "minute"),
+         end = floor_date(end, "minute")) %>%
+  gather(boundary, time, start, end) %>%
+  mutate(boundary = factor(boundary, levels = c("start", "end")))
+tibble(time = seq(min(boundaries$time), max(boundaries$time), by = 60)) %>%
+  left_join(boundaries) %>%
+  mutate(active = boundary == "start") %>%  # Exclude last partial minute
+  fill(id, weekday, active) %>%  # Fill in active minutes from start to end
+  filter(active) %>%
+  mutate(date = as_date(time),
+         time = time - months(month(date) - 1) - days(day(date) - 1)) %>%  # Isolate time variation
+  ggplot(aes(time, factor(-weekday))) +
+  geom_density_ridges() +
+  coord_cartesian(clip = "off") +
+  labs(x = NULL,
+       y = NULL,
+       title = "Distribution of active running time by weekday during 2018") +
+  scale_x_datetime(date_labels = "%I:%M %p",
+                   expand = c(0, 0)) +
+  scale_y_discrete(expand = c(0, 0),
+                   labels = c("Sun", "Sat", "Fri", "Thu", "Wed", "Tue", "Mon")) +
+  theme_minimal() +
+  theme(panel.grid.minor.x = element_blank(),
+        plot.title = element_text(face = "bold", hjust = 0.5, margin = margin(b = 10), size = 16))
+```
 
 The Strava API also provides spatial data on running and cycling routes.
 Each activity is associated with an [encoded polyline](https://developers.google.com/maps/documentation/utilities/polylinealgorithm), which stores the geographic coordinates of points along each route.
 Plotting these polylines reveals a map of where athletes travel during their runs and cycles.
 For example, the image below maps my Wellington running routes from 2018.
-These routes include coastal areas, such as Petone beach in the northeast, and inland areas, such as the Zealandia fenceline in the southwest.
+These routes include coastal areas, such as Petone Beach in the northeast, and inland areas, such as the Zealandia fenceline in the southwest.
 
-![](https://raw.githubusercontent.com/bldavies/strava-api-access/master/figures/wellington-routes.svg?sanitize=true)
+```{r wellington-routes, echo = FALSE, fig.width = 8, fig.height = 4.5}
+wellington_data <- data %>%
+  filter(type == "Run",
+         year(start_date_local) == 2018,
+         start_longitude > 174)
+polylines_list <- list()
+for (i in 1 : nrow(wellington_data)) {
+  polylines_list[[i]] <- decode_pl(wellington_data$map.summary_polyline[i])
+  polylines_list[[i]]$id <- wellington_data$id[i]
+}
+do.call(rbind, polylines_list) %>%
+  ggplot(aes(lon, lat, group = id)) +
+  geom_path() +
+  labs(title = "Map of Wellington running routes from 2018") +
+  coord_fixed() +
+  theme_minimal() +
+  theme(axis.text = element_blank(),
+        axis.title = element_blank(),
+        panel.grid = element_blank(),
+        plot.title = element_text(face = "bold", hjust = 0.5, margin = margin(b = 10), size = 16))
+```
 
 ## Acknowledgements
 
