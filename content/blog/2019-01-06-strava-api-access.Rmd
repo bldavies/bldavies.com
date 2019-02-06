@@ -128,7 +128,7 @@ For example, the bar chart below plots my total distance run and cycled during e
 I ran less during New Zealand's winter months: June--August.
 With more years of data, I could quantify my sensitivity to cold temperatures by identifying the seasonal component of my monthly distance series.
 
-```{r monthly-distances, echo = FALSE, fig.width = 8, height = 4.5}
+```{r monthly-distances, echo = FALSE, fig.width = 8, fig.height = 4.5}
 data %>%
   filter(type %in% c("Run", "Ride"),
          year(start_date_local) == 2018) %>%
