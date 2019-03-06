@@ -14,6 +14,7 @@
   {{ range .Site.Data.cv.publications }}
     <p>
       <div>{{ .citation | markdownify }}</div>
+      {{ if .abstract_url }}<a href="{{ .abstract_url }}" class="publication-link">Abstract</a>{{ end }}
       {{ if .github_url }}<a href="{{ .github_url }}" class="publication-link">GitHub</a>{{ end }}
       {{ if .repec_url }}<a href="{{ .repec_url }}" class="publication-link">RePEc</a>{{ end }}
     </p>
