@@ -237,3 +237,10 @@ footer {
   background-color: #1269d3;
   text-decoration: none;
 }
+.pdf-link {
+  border-color: red;
+  color: red;
+}
+.pdf-link:hover {
+  background-color: red;
+}

@@ -15,8 +15,8 @@
     <p>
       <div>{{ .citation | markdownify }}</div>
       {{ if .abstract_url }}<a href="{{ .abstract_url }}" class="publication-link">Abstract</a>{{ end }}
-      {{ if .github_url }}<a href="{{ .github_url }}" class="publication-link">GitHub</a>{{ end }}
-      {{ if .repec_url }}<a href="{{ .repec_url }}" class="publication-link">RePEc</a>{{ end }}
+      {{ if .data_url }}<a href="{{ .data_url }}" class="publication-link">Data</a>{{ end }}
+      {{ if .pdf_url }}<a href="{{ .pdf_url }}" class="publication-link pdf-link">PDF</a>{{ end }}
     </p>
   {{ end }}
   <h2 id="conferences">Conference presentations</h2>
@@ -34,7 +34,7 @@
     {{ if eq .type "poster" }}
       <p>
         <div>{{ .citation | markdownify }}</div>
-        {{ if .pdf_url }}<a href="{{ .pdf_url }}" class="publication-link">PDF</a>{{ end }}
+        {{ if .pdf_url }}<a href="{{ .pdf_url }}" class="publication-link pdf-link">PDF</a>{{ end }}
       </p>
     {{ end }}
   {{ end }}
