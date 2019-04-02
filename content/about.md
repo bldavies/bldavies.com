@@ -4,8 +4,6 @@ title: About
 
 I'm a research analyst at [Motu](https://motu.nz), a non-profit economic  research institute in Wellington, New Zealand.
 I work with [Dave Maré](https://motu.nz/about-us/people/dave-mare/) and [Adam Jaffe](https://motu.nz/about-us/people/adam-jaffe/) on a range of projects that combine economics with network science.
-These projects are funded through [Te Pūnaha Matatini](https://www.tepunahamatatini.ac.nz), a Centre of Research Excellence focused on networks and complex systems.
-<!-- I also coordinated a [Deep South dialogue](https://www.deepsouthchallenge.co.nz/dialogues) on climate change adaptation within the transport sector. -->
 
 I joined Motu in 2018 after completing a BSc(Hons) in economics and mathematics at the University of Canterbury (UC).
 My honours thesis analysed the relationship between insurance and savings as tools for hedging future income.
