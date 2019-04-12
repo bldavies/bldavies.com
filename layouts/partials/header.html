@@ -6,7 +6,7 @@
   <link rel="stylesheet" href="{{ "css/style.css" | relURL }}">
   {{ partial "head_highlightjs" . }}
   <link rel="stylesheet" href="{{ "css/hljs-overrides.css" | relURL }}">
-  {{ if eq .URL "/" }}
+  {{ if eq .RelPermalink "/" }}
     <title>{{ .Site.Title }}</title>
   {{ else }}
     <title>{{ replace .Title "*" "" }} - {{ .Site.Title }}</title>
