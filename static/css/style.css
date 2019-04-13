@@ -78,6 +78,11 @@ img {
   max-width: 200px;
 }
 
+li ol,
+li ul {
+  margin: 0;
+}
+
 ol,
 ul {
   padding-left: 2rem;
