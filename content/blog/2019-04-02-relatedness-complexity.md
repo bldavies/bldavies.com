@@ -9,12 +9,12 @@ The full text for that article is quoted below.
 > ## Introduction
 > 
 > Current European regional policy encourages regions to build on their strengths by diversifying into activities that draw upon existing knowledge bases.
-> This “smart specialisation” approach encourages entrepreneurship, innovation and long-term growth by fostering local interactions between workers with complementary knowledge and skills.
+> This "smart specialisation" approach encourages entrepreneurship, innovation and long-term growth by fostering local interactions between workers with complementary knowledge and skills.
 > 
 > [Balland et al. (2018)][balland-etal-2018] define a framework for analysing smart specialisation using the ideas of relatedness and complexity.
 > Expanding into activities that are related to existing specialisations carries low growth risk because local workers already possess the knowledge and skills needed to conduct those activities.
-> Expanding into complex activities delivers the highest expected economic returns because such activities “form the basis for long-run competitive advantage.”
-> Balland et al.’s framework identifies low-risk, high-return development opportunities as locally under-represented activities with high local relatedness and high complexity.
+> Expanding into complex activities delivers the highest expected economic returns because such activities "form the basis for long-run competitive advantage."
+> Balland et al.'s framework identifies low-risk, high-return development opportunities as locally under-represented activities with high local relatedness and high complexity.
 > 
 > We examine the contribution of relatedness and complexity to urban employment growth in New Zealand.
 > This allows us to evaluate the efficacy of implementing smart specialisation policies in New Zealand by identifying whether the associated mechanisms appear to influence employment dynamics.
@@ -22,26 +22,26 @@ The full text for that article is quoted below.
 > ## Data and methods
 > 
 > Our analysis uses historical New Zealand census data aligned to current industry, occupation and urban area codes.
-> We select 50 “cities” (urban areas) and 200 “activities” (industry-occupation pairs) with persistently high employment in census years 1981, 1991, 2001 and 2013.
+> We select 50 "cities" (urban areas) and 200 "activities" (industry-occupation pairs) with persistently high employment in census years 1981, 1991, 2001 and 2013.
 > Our selected activities span 61 industries and nine occupations.
 > 
-> We recognise activities as being “related” if they require similar inputs.
+> We recognise activities as being "related" if they require similar inputs.
 > We infer such similarities from employee co-location patterns.
-> These patterns reveal firms’ shared preferences for using spatially heterogeneous resources, which encourage firms engaged in related activities to co-locate in order to benefit from agglomeration economies.
+> These patterns reveal firms' shared preferences for using spatially heterogeneous resources, which encourage firms engaged in related activities to co-locate in order to benefit from agglomeration economies.
 > 
-> We measure activities’ relatedness using weighted correlations of local employment shares.
+> We measure activities' relatedness using weighted correlations of local employment shares.
 > Our approach extends discrete measures used in previous studies by recognising variation in the extent of local specialisation and by adjusting for differences in employment data quality between geographic areas.
 > 
-> We recognise activities as being “complex” if they rely on specialised combinations of complementary inputs.
+> We recognise activities as being "complex" if they rely on specialised combinations of complementary inputs.
 > For example, consulting is more complex than lecturing because consultants need local clients while lecturers do not rely as much on other activities being present locally.
 > 
 > We define activity complexity using the second eigenvector of the row-standardised activity relatedness matrix.
-> Our approach generalises [Calderelli et al.’s (2012)][calderelli-etal-2012] eigenvector approximation of [Hidalgo and Hausmann’s (2009)][hidalgo-hausmann-2009] Method of Reflections.
+> Our approach generalises [Calderelli et al.'s (2012)][calderelli-etal-2012] eigenvector approximation of [Hidalgo and Hausmann's (2009)][hidalgo-hausmann-2009] Method of Reflections.
 > We use a similar approach, applied to the transpose of the city-activity employment matrix, to estimate city complexity.
 > 
 > ## Mapping relatedness
 > 
-> We define an “activity space” that captures the network structure of activities based on our relatedness estimates.
+> We define an "activity space" that captures the network structure of activities based on our relatedness estimates.
 > We describe activity space by a weighted network in which nodes correspond to activities and in which edges have weight equal to the relatedness between pairs of activities.
 > The subnetwork induced by the 500 edges of largest weight is shown below, with nodes coloured by occupation.
 > 
@@ -59,7 +59,7 @@ The full text for that article is quoted below.
 > This effect rises to 0.98 percentage points when we control for city complexity.
 > More locally related activities experienced slower growth, especially in complex cities.
 > 
-> Balland et al.’s (2018) framework suggests that complex activities with high local relatedness offer the strongest prospects for future growth.
+> Balland et al.'s (2018) framework suggests that complex activities with high local relatedness offer the strongest prospects for future growth.
 > If this were true then we would expect a strong positive coefficient on the interaction of local relatedness and activity complexity.
 > Our estimates show only a weak and insignificant interaction.
 > 
