@@ -10,33 +10,16 @@
 </div>
 
 <div class="container">
-  <h2 id="publications">Publications</h2>
-  {{ range .Site.Data.cv.publications }}
+  <h2>Working Papers</h2>
+  {{ range .Site.Data.publications.working_papers }}
     <p>
-      <div>{{ .citation | markdownify }}</div>
-      {{ if .abstract_url }}<a href="{{ .abstract_url }}" class="publication-link">Abstract</a>{{ end }}
-      {{ if .data_url }}<a href="{{ .data_url }}" class="publication-link">Data</a>{{ end }}
-      {{ if .pdf_url }}<a href="{{ .pdf_url }}" class="publication-link pdf-link">PDF</a>{{ end }}
+      <div>
+        "{{ .title }}{{ if .coauthors }}" (with {{ .coauthors }}).{{ else }}."{{ end }}
+      </div>
+      {{ if .links.abstract }}<a href="{{ .links.abstract }}" class="publication-link">Abstract</a>{{ end }}
+      {{ if .links.data }}<a href="{{ .links.data }}" class="publication-link">Data</a>{{ end }}
+      {{ if .links.pdf }}<a href="{{ .links.pdf }}" class="publication-link pdf-link">PDF</a>{{ end }}
     </p>
-  {{ end }}
-  <h2 id="conferences">Conference presentations</h2>
-  <h3>Papers</h3>
-  {{ range .Site.Data.cv.conferences }}
-    {{ if eq .type "paper" }}
-      <p>
-        <div>{{ .citation | markdownify }}</div>
-        {{ if .pdf_url }}<a href="{{ .pdf_url }}" class="publication-link">PDF</a>{{ end }}
-      </p>
-    {{ end }}
-  {{ end }}
-  <h3>Posters</h3>
-  {{ range .Site.Data.cv.conferences }}
-    {{ if eq .type "poster" }}
-      <p>
-        <div>{{ .citation | markdownify }}</div>
-        {{ if .pdf_url }}<a href="{{ .pdf_url }}" class="publication-link pdf-link">PDF</a>{{ end }}
-      </p>
-    {{ end }}
   {{ end }}
 </div>
 

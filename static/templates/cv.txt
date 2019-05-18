@@ -16,7 +16,7 @@ EDUCATION
 =========
 $for(education)$
 
-$education$
+$education$.
 $endfor$
 
 
@@ -24,7 +24,7 @@ EXPERIENCE
 ==========
 $for(experience)$
 
-$experience$
+$experience$.
 $endfor$
 
 
@@ -32,21 +32,21 @@ SCHOLARSHIPS AND AWARDS
 =======================
 $for(honours)$
 
-$honours$
+$honours$.
 $endfor$
 
 
-PUBLICATIONS
-============
-$for(publications)$
+WORKING PAPERS
+==============
+$for(working_papers)$
 
-$publications.citation$
+"$working_papers.title$$if(working_papers.coauthors)$" (with $working_papers.coauthors$).$else$."$endif$
 $endfor$
 
 
-CONFERENCE PRESENTATIONS
-========================
-$for(conferences)$
+SEMINARS AND CONFERENCE PRESENTATIONS
+=====================================
+$for(presentations)$
 
-$conferences.citation$
+$presentations.year$: $presentations.venues$.
 $endfor$

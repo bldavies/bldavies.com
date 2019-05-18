@@ -19,9 +19,8 @@
 \setlength{\parindent}{0pt}
 \setsecheadstyle{\large\bfseries}
 \setsecnumdepth{part}
-\setsubsecheadstyle{\bfseries}
 
-\newcommand{\entry}[1]{\par\hangindent=2.5em #1}
+\newcommand{\entry}[1]{\par\hangindent=0.4in #1}
 
 \begin{document}
 
@@ -43,31 +42,31 @@
     \section{Education}
 
         $for(education)$
-            \entry{$education$}
+            \entry{$education$.}
         $endfor$
 
     \section{Experience}
 
         $for(experience)$
-            \entry{$experience$}
+            \entry{$experience$.}
         $endfor$
 
     \section{Scholarships and Awards}
 
         $for(honours)$
-            \entry{$honours$}
+            \entry{$honours$.}
         $endfor$
 
-    \section{Publications}
+    \section{Working Papers}
 
-        $for(publications)$
-            \entry{$publications.citation$}
+        $for(working_papers)$
+            \entry{``$working_papers.title$$if(working_papers.coauthors)$'' (with $working_papers.coauthors$).$else$.''$endif$}
         $endfor$
 
-    \section{Conference Presentations}
+    \section{Seminars and Conference Presentations}
 
-        $for(conferences)$
-            \entry{$conferences.citation$}
+        $for(presentations)$
+            \entry{\parbox[b]{0.4in}{{\itshape $presentations.year$}: }$presentations.venues$.}
         $endfor$
 
 \end{document}

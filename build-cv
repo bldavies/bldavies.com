@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
 cd "$(dirname "$0")"
-pandoc data/cv.yaml -o static/cv.pdf --template=static/templates/cv.tex
-pandoc data/cv.yaml -o static/cv.txt --template=static/templates/cv.txt --wrap=preserve
+pandoc data/cv.yaml data/presentations.yaml data/publications.yaml -o static/cv.pdf --template=static/templates/cv.tex
+pandoc data/cv.yaml data/presentations.yaml data/publications.yaml -o static/cv.txt --template=static/templates/cv.txt --wrap=preserve
 
