@@ -205,6 +205,9 @@ footer {
 .footer-links {
   display: inline-block;
 }
+.footer-disclaimer {
+  margin-top: 2rem;
+}
 .footer-links {
   float: right;
 }
