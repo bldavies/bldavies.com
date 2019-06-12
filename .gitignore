@@ -3,10 +3,13 @@
 .Rapp.history
 .RData
 .Rhistory
-DRAFT*
 serve
+todo.md
 
 # folders
 .Rproj.user
+archive
 data/strava-api-access
+drafts
+ideas
 public
