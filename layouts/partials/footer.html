@@ -3,8 +3,10 @@
   {{ partial "footer_highlightjs" . }}
   <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.js"></script>
   <script>anchors.add();</script>
+  {{ if and (.Params.math) (or (in (string .Content) "\\") (in (string .Content) "$")) }}
   <script src="{{ "js/math-code.js" | relURL }}"></script>
   <script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+  {{ end }}
   <div class="container">
     <div class="footer-legal">
       &copy; 2018&ndash;{{ dateFormat "2006" now }} {{ .Site.Params.Author }}
