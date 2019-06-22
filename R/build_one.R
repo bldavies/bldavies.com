@@ -8,7 +8,7 @@
 local({
   a <- commandArgs(TRUE)
   d <- gsub("^content/", "", a[1])
-  d <- gsub("([0-9]+-[0-9]+-[0-9]+-)(.*?)[.][A-Za-z]+$", "\\2", d)  # Isolate slug
+  d <- gsub("^([0-9]+-[0-9]+-[0-9]+-)?(.*?)[.][A-Za-z]+$", "\\2", d)  # Isolate slug
   knitr::opts_chunk$set(
     fig.path = sprintf("%s/", d),
     fig.cap = "",  # Remove default alt text
