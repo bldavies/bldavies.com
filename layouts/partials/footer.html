@@ -4,20 +4,16 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.js"></script>
   <script>anchors.add();</script>
   {{ if and (.Params.math) (or (in (string .Content) "\\") (in (string .Content) "$")) }}
-  <script src="{{ "js/math-code.js" | relURL }}"></script>
-  <script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script src="{{ "js/math-code.js" | relURL }}"></script>
+    <script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
   {{ end }}
   <div class="container">
     <div class="footer-legal">
       &copy; 2018&ndash;{{ dateFormat "2006" now }} {{ .Site.Params.Author }}
     </div>
     <div class="footer-links">
-      <a href="mailto:{{ .Site.Params.Email }}">Email</a>
-      <a href="{{ .Site.Params.Github }}">GitHub</a>
-      <a href="{{ .Site.Params.Linkedin }}">LinkedIn</a>
-    </div>
-    <div class="footer-disclaimer">
-      Except where stated otherwise, all website content is licensed under a <a href="https://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>. All code snippets are licensed under the MIT license. Views expressed are solely my own, and not those of any current, past, or future employer.
+      <a href="/about/#contact">Contact</a>
+      <a href="/disclaimer/">Disclaimer</a>
     </div>
   </div>
 </footer>
