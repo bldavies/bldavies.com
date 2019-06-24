@@ -74,7 +74,9 @@ img {
   max-width: 100%;
 }
 .portrait {
-  border-radius: 100%;
+  border-radius: 1%;
+  float: left;
+  margin: 0.3rem 1rem 0 0;
   max-width: 200px;
 }
 
@@ -179,18 +181,6 @@ header nav {
   min-height: calc(100vh - 3.35rem - 5.35rem);
 }
 
-.home-content-inner {
-  max-width: 480px;
-  min-width: 75%;
-  text-align: center;
-}
-.home-content-outer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: calc(100vh - 3.35rem - 5.35rem);
-}
-
 
 
 /* Footer */
@@ -228,6 +218,20 @@ footer {
     margin: 1rem 0.5rem 0;
   }
 }
+
+
+
+/* Latest posts */
+
+.latest-posts-index {
+  margin: 0;
+  list-style: none;
+  padding: 0;
+}
+.latest-posts-item {
+  margin: 1.5rem 0;
+}
+
 
 
 /* Publications */
