@@ -31,7 +31,7 @@ Pooling across all ages masks variation in educational attainment rates between 
 I present this variation in the line chart below, which compares educational attainment by age and sex.
 The chart presents mean age group shares over a rolling five-year window, muting some of the noise in attainment rates caused by random fluctuations between consecutive years of age.
 
-![](/blog/2019-07-01-college-degrees-demographics/attainment-line-1.svg)
+![](/blog/college-degrees-demographics/attainment-line-1.svg)
 
 Young females have higher educational attainment rates than young males, but the decline in such rates with age is steeper among females than males.
 Both sexes experience a spike in attainment between the ages of 60 and 70, corresponding to graduation dates during the late 1960s and early 1970s.
@@ -43,7 +43,7 @@ For example, to the extent that (i) there are more male science graduates than f
 If field selection is the only source of differences in educational attainment then there should be no difference in the within-field shares of male and female graduates with post-graduate degrees.
 I compare such shares in the scatterplots below, in which points correspond to degree fields and have radii proportional to the number of graduates in each field.
 
-![](/blog/2019-07-01-college-degrees-demographics/attainment-scatter-1.svg)
+![](/blog/college-degrees-demographics/attainment-scatter-1.svg)
 
 The gap between the OLS fitted lines and 45-degree reference lines imply that, on average, male graduates are more likely to hold post-graduate degrees than female graduates in the same field.
 This discrepancy appears to be larger for doctorates than for other post-graduate degrees.
@@ -54,13 +54,13 @@ The bar chart below plots the eight most common degree fields among male and fem
 Both business and accounting rank among the most common fields for graduates of each sex.
 Nursing and education are more common among females, while computer science and engineering are more common among males.
 
-![](/blog/2019-07-01-college-degrees-demographics/fields-bar-1.svg)
+![](/blog/college-degrees-demographics/fields-bar-1.svg)
 
 The frequency at which people graduate with degrees in different fields may vary over time due to changes in social preferences or labour market conditions.
 The line chart below plots the shares of graduates who studied electrical engineering or psychology, statified by age and sex.
 The chart presents mean age group shares over a rolling five-year window.
 
-![](/blog/2019-07-01-college-degrees-demographics/fields-line-1.svg)
+![](/blog/college-degrees-demographics/fields-line-1.svg)
 
 The trough in male electrical engineering graduates and spike in psychology graduates between the ages of 60 and 70 both coincide with the spike in educational attainment following the Higher Education Act of 1965.
 The Act may have encouraged males to substitute from electrical engineering (or from not studying) to psychology by changing the relative benefits and costs of becoming qualified in each field.
@@ -71,7 +71,7 @@ For example, the bar chart below shows the fields most frequently paired with ec
 Males economics graduates appear to make similar pairing choices to female economics graduates.
 Males pair mathematics with physics about as often as with computer science, while females do so only about half as often.
 
-![](/blog/2019-07-01-college-degrees-demographics/pairs-1.svg)
+![](/blog/college-degrees-demographics/pairs-1.svg)
 
 Field pair frequencies provide insight into the intellectual connections between fields.
 Such connections may reflect fields using similar techniques (e.g., economics and finance) or providing complementary skills (e.g., mathematics and computer science).
