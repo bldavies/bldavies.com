@@ -1,0 +1,253 @@
+---
+title: 'College Degrees in the US: Demographics'
+tags: [education, demographics, PUMS, R]
+---
+
+```{r setup, echo = FALSE}
+knitr::opts_chunk$set(dev = 'svg', fig.ext = 'svg', fig.height = 4.5, fig.width = 8,
+                      message = FALSE, warning = FALSE, paged.print = FALSE)
+
+library(ggplot2)
+
+theme_set(
+  theme_minimal(base_size = 11) +
+    theme(panel.grid.minor = element_blank(),
+          plot.subtitle = element_text(margin = margin(b = 10), size = 13),
+          plot.title = element_text(face = 'bold', margin = margin(b = 10), size = 16),
+          strip.text = element_text(face = 'bold', hjust = 0, margin = margin(b = 5), size = 12))
+)
+```
+
+Each year, the US Census Bureau [publishes](https://www.census.gov/programs-surveys/acs/data/pums.html) a set of Public Use Microdata Sample (PUMS) files containing responses to the American Community Survey (ACS).
+In this post, I use the 2016 ACS PUMS data to explore the variation in educational attainment and degree field choices between demographic groups.
+The source data are available on [GitHub][repo-url].
+
+```{r data-import, echo = FALSE}
+library(readr)
+
+read_data <- function (x) read_csv(paste0('https://raw.githubusercontent.com/bldavies/college-degrees/master/data/', x))
+attainment <- read_data('attainment.csv')
+fields <- read_data('fields.csv')
+observations <- read_data('observations.csv')
+```
+
+```{r data, echo = FALSE}
+library(dplyr)
+
+data <- observations %>%
+  mutate(sex = c('Male', 'Female')[female + 1]) %>%
+  left_join(attainment) %>%
+  mutate(level_desc = factor(level_desc, levels = attainment$level_desc))
+```
+
+## Educational attainment
+
+The table below reports educational attainment rates for each sex, pooled across all ages and degree fields.
+Overall, a randomly selected female is more likely to have a college degree than a randomly selected male.
+However, fewer females pursue doctoral degrees than males; male graduates are about 1.4 times more likely to have a doctorate than female graduates.
+
+```{r attainment-table, echo = FALSE}
+library(knitr)
+library(tidyr)
+
+data %>%
+  count(sex, level_desc, wt = weight) %>%
+  add_count(sex, wt = n, name = 'tot') %>%
+  mutate(share = 100 * n / tot) %>%
+  select(-n, -tot) %>%
+  spread(sex, share) %>%
+  kable(digits = 2,
+        col.names = c('Degree level', '% of females', '% of males'))
+```
+
+Pooling across all ages masks variation in educational attainment rates between age groups.
+I present this variation in the line chart below, which compares educational attainment by age and sex.
+The chart presents mean age group shares over a rolling five-year window, muting some of the noise in attainment rates caused by random fluctuations between consecutive years of age.
+
+```{r attainment-line, echo = FALSE}
+library(ggplot2)
+library(zoo)
+
+data %>%
+  count(age, sex, level, level_desc, wt = weight) %>%
+  group_by(sex, age) %>%
+  mutate(share = 100 * n / sum(n)) %>%
+  filter(level > 0) %>%
+  mutate(cumu_share = cumsum(share)) %>%
+  group_by(sex, level) %>%
+  mutate(cumu_share_ma = rollmean(cumu_share, 5, na.pad = TRUE)) %>%
+  ggplot(aes(age, cumu_share_ma, col = level_desc)) +
+  geom_line() +
+  facet_wrap(~paste0(sex, 's')) +
+  labs(x = 'Age on survey date',
+       y = 'Share of sample (%)',
+       title = 'Comparing educational attainment rates between sexes',
+       subtitle = 'Based on mean age group shares over rolling five-year window',
+       col = 'Highest degree level') +
+  theme(legend.position = 'bottom')
+```
+
+Young females have higher educational attainment rates than young males, but the decline in such rates with age is steeper among females than males.
+Both sexes experience a spike in attainment between the ages of 60 and 70, corresponding to graduation dates during the late 1960s and early 1970s.
+This spike could be due to the [Higher Education Act of 1965](https://en.wikipedia.org/wiki/Higher_Education_Act_of_1965), which "strengthen[ed] the educational resources of [US] colleges and universities" and "provide[d] financial assistance for students in post-secondary and higher education."
+The spike is most apparent among males.
+
+Differences in educational attainment could reflect differences in degree field choices.
+For example, to the extent that (i) there are more male science graduates than female science graduates, and (ii) science graduates tend to pursue doctoral degrees more often than non-science graduates, we would expect to see more doctorates among males than females.
+If field selection is the only source of differences in educational attainment then there should be no difference in the within-field shares of male and female graduates with post-graduate degrees.
+I compare such shares in the scatterplots below, in which points correspond to degree fields and have radii proportional to the number of graduates in each field.
+
+```{r attainment-scatter, echo = FALSE}
+weights <- data %>%
+  mutate(field2 = ifelse(is.na(field2), field1, field2),
+         weight = weight / 2) %>%
+  gather(key, field, field1, field2) %>%
+  count(age, sex, level, level_desc, field, wt = weight)
+
+weights %>%
+  filter(level > 0) %>%
+  count(sex, level, level_desc, field, wt = n) %>%
+  add_count(field, wt = n, name = 'field_tot') %>%
+  add_count(sex, field, wt = n, name = 'group_tot') %>%
+  mutate(share = 100 * n / group_tot) %>%
+  filter(level > 1) %>%
+  select(-n, -group_tot) %>%
+  spread(sex, share) %>%
+  ggplot(aes(Male, Female)) +
+  geom_point(aes(size = field_tot), show.legend = FALSE) +
+  geom_smooth(method = 'lm', aes(weight = field_tot)) +
+  geom_abline(intercept = 0, slope = 1, lty = 'dashed') +
+  facet_wrap(~level_desc, scales = 'free') +
+  labs(x = 'Share of male graduates (%)',
+       y = 'Share of female graduates (%)',
+       title = 'Comparing post-graduate degree attainment between sexes',
+       subtitle = 'With OLS fitted lines (blue) and 45-degree reference lines (dashed)')
+```
+
+The gap between the OLS fitted lines and 45-degree reference lines imply that, on average, male graduates are more likely to hold post-graduate degrees than female graduates in the same field.
+This discrepancy appears to be larger for doctorates than for other post-graduate degrees.
+
+## Degree fields
+
+The bar chart below plots the eight most common degree fields among male and female graduates.
+Both business and accounting rank among the most common fields for graduates of each sex.
+Nursing and education are more common among females, while computer science and engineering are more common among males.
+
+```{r fields-bar, echo = FALSE, fig.height = 5}
+weights %>%
+  filter(level > 0) %>%
+  count(sex, field, wt = n) %>%
+  add_count(sex, wt = n, name = 'tot') %>%
+  mutate(share = 100 * n / tot) %>%
+  group_by(sex) %>%
+  top_n(8, share) %>%
+  select(-n, -tot) %>%
+  left_join(fields) %>%
+  ggplot(aes(reorder(paste(field_desc, sex), share, sum), share)) +
+  geom_col(aes(fill = sex), alpha = 0.75, show.legend = FALSE) +
+  geom_text(aes(y = 0.1, label = field_desc), hjust = 0, size = 3) +
+  coord_flip() +
+  facet_wrap(~paste0(sex, 's'), scales = 'free') +
+  labs(x = NULL,
+       y = 'Share of graduates (%)',
+       title = 'Which degree fields are most common?',
+       subtitle = 'Based on shares of graduates of each sex, pooled across all ages and degree levels',
+       fill = 'Sex') +
+  scale_x_discrete(labels = NULL, expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) +
+  theme(panel.grid.major.y = element_blank())
+```
+
+The frequency at which people graduate with degrees in different fields may vary over time due to changes in social preferences or labour market conditions.
+The line chart below plots the shares of graduates who studied electrical engineering or psychology, statified by age and sex.
+The chart presents mean age group shares over a rolling five-year window.
+
+```{r fields-line, echo = FALSE}
+weights %>%
+  filter(level > 0) %>%
+  count(age, sex, field, wt = n) %>%
+  add_count(age, sex, wt = n, name = 'tot') %>%
+  mutate(share = 100 * n / tot) %>%
+  group_by(sex, field) %>%
+  mutate(share_ma = rollmean(share, 5, na.pad = TRUE)) %>%
+  ungroup() %>%
+  left_join(fields) %>%
+  arrange(field_desc, age) %>%
+  filter(field_desc %in% c('Electrical Engineering', 'Psychology')) %>%
+  ggplot(aes(age, share_ma, group = sex)) +
+  geom_line(aes(col = sex)) +
+  facet_wrap(~field_desc) +
+  labs(x = 'Age on survey date',
+       y = 'Share of graduates (%)',
+       title = 'Comparing field choices over time',
+       subtitle = 'Based on mean age group shares over rolling five-year window',
+       col = 'Sex') +
+  theme(legend.justification = c(1, 1),
+        legend.position = c(1, 1))
+```
+
+The trough in male electrical engineering graduates and spike in psychology graduates between the ages of 60 and 70 both coincide with the spike in educational attainment following the Higher Education Act of 1965.
+The Act may have encouraged males to substitute from electrical engineering (or from not studying) to psychology by changing the relative benefits and costs of becoming qualified in each field.
+For example, increasing access to federal loans may have encouraged students to pursue degrees with less certain job prospects by delaying the private burden of paying tuition.
+
+The PUMS data report up to two degree fields for each respondent, allowing me to estimate the frequency of field pairings within the US population.
+For example, the bar chart below shows the fields most frequently paired with economics and mathematics among graduates of each sex.
+Males economics graduates appear to make similar pairing choices to female economics graduates.
+Males pair mathematics with physics about as often as with computer science, while females do so only about half as often.
+
+```{r pairs, echo = FALSE}
+library(widyr)
+
+get_field_desc <- function(x) fields$field_desc[which(fields$field == x)]
+
+plot_data <- data %>%
+  filter(level > 0) %>%
+  mutate(field2 = ifelse(is.na(field2), field1, field2)) %>%
+  count(sex, field1, field2, wt = weight) %>%
+  mutate(id = row_number()) %>%
+  gather(key, field, field1, field2) %>%
+  group_by(sex) %>%
+  pairwise_count(field, id, n, diag = TRUE) %>%
+  mutate(field1 = sapply(item1, get_field_desc),
+         field2 = sapply(item2, get_field_desc)) %>%
+  filter(field1 %in% c('Economics', 'Mathematics')) %>%
+  add_count(sex, field1, wt = n, name = 'group_tot') %>%
+  mutate(share = 100 * n / group_tot) %>%
+  arrange(-share) %>%
+  filter(item1 != item2) %>%
+  mutate(include = rank(-share) <= 8) %>%
+  group_by(item1, item2) %>%
+  filter(sum(include) > 0) %>%
+  group_by(sex, item1) %>%
+  mutate(pos = (sex == 'Male') * rank(share)) %>%
+  group_by(item1, item2) %>%
+  mutate(pos = max(pos)) %>%
+  ungroup()
+
+label_data <- plot_data %>%
+  filter(sex == 'Male') %>%
+  mutate(y = ifelse(field1 == 'Economics', 0.05, 0.1))
+
+plot_data %>%
+  ggplot(aes(reorder(paste(field2, field1), pos, min), share)) +
+  geom_col(aes(fill = sex), alpha = 0.75, position = 'dodge') +
+  geom_text(data = label_data, aes(y = y, label = field2), hjust = 0, nudge_x = 0.225, size = 3) +
+  coord_flip() +
+  facet_wrap(~paste(field1, 'graduates'), scales = 'free') +
+  labs(x = NULL,
+       y = 'Share of graduates (%)',
+       title = 'What else do economics and mathematics graduates study?',
+       subtitle = 'Based on shares of graduates of each sex, pooled across all ages and degree levels',
+       fill = 'Sex') +
+  scale_x_discrete(labels = NULL, expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) +
+  theme(legend.justification = c(1, 0),
+        legend.position = c(1, 0),
+        panel.grid.major.y = element_blank())
+```
+
+Field pair frequencies provide insight into the intellectual connections between fields.
+Such connections may reflect fields using similar techniques (e.g., economics and finance) or providing complementary skills (e.g., mathematics and computer science).
+I plan to explore these connections in future posts.
+
+[repo-url]: https://github.com/bldavies/college-degrees/
