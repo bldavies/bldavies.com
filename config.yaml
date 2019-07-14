@@ -6,7 +6,7 @@ footnotereturnlinkcontents: "↩"
 frontmatter:
   date: [":filename", ":default"]
 googleAnalytics: UA-123726505-4
-ignoreFiles: ["blog/archive/*", "\\.rds$", "\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
+ignoreFiles: ["blog/archive/*", "\\.RData$", "\\.rds$", "\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 outputs:
   home: ["HTML", "JSON", "RSS"]
 params:
