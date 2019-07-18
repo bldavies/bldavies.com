@@ -310,3 +310,5 @@ clean_data <- function (df) {
            text = ifelse(column == "portfolio" & text == "Minister Little", "Attorney-General", text))
 }
 ```
+
+

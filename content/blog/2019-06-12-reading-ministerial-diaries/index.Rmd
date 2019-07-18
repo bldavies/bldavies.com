@@ -249,3 +249,7 @@ For example, Minister Parker's frequent interactions with MBIE officials appear 
 
 ```{r appendix, ref.label='define-clean_data'}
 ```
+
+```{r session-info, echo = FALSE}
+writeLines(capture.output(sessioninfo::session_info()), 'session-info.log')
+```

@@ -282,3 +282,5 @@ The PageRank centralities produced using co-occurrence counts appear to correlat
 
 
 [^notes]: Ryan Tibshirani [provides excellent notes](http://www.stat.cmu.edu/~ryantibs/datamining/lectures/03-pr.pdf) on how PageRank handles disconnected components and "dangling" nodes.
+
+

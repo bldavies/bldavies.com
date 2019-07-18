@@ -227,3 +227,7 @@ save.image('data/workspace.RData')
 ```
 
 [^notes]: Ryan Tibshirani [provides excellent notes](http://www.stat.cmu.edu/~ryantibs/datamining/lectures/03-pr.pdf) on how PageRank handles disconnected components and "dangling" nodes.
+
+```{r session-info, echo = FALSE}
+writeLines(capture.output(sessioninfo::session_info()), 'session-info.log')
+```

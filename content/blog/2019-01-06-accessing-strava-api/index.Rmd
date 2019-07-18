@@ -227,3 +227,7 @@ This post is informed by several online resources.
 [Mark Aberdour's blog post](http://www.open-thoughts.com/2017/01/the-quantified-cyclist-analysing-strava-data-using-r/) helped me understand the process for authenticating with Strava.
 Reading [the `rStrava` package's source code](https://github.com/fawda123/rStrava) helped me understand how to extract data from the Strava API.
 I got the idea for plotting active running time distributions from [this GitHub repository](https://github.com/marcusvolz/strava).
+
+```{r session-info, echo = FALSE}
+writeLines(capture.output(sessioninfo::session_info()), 'session-info.log')
+```
