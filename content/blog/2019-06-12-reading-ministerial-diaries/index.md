@@ -265,7 +265,7 @@ The `idf` column identifies both language-specific stop words (e.g., "a") and co
 The chart below presents the highest tf-idf words for each portfolio.
 These words reveal organisations (e.g., the Parliamentary Counsel Office) and individuals (e.g., [Cecilia Malmström](https://ec.europa.eu/commission/commissioners/2014-2019/malmstrom_en)) that are missing from the diary-wide word frequencies computed above.
 
-![](/blog/ministerial-diaries/highest-tf-idf-1.svg)
+![](highest-tf-idf-1.svg)
 
 The chart also reveals which interactions correspond to which portfolios.
 For example, Minister Parker's frequent interactions with MBIE officials appear to be most associated with the Economic Development portfolio, while his interactions with Minister Sage appear to involve both the Environment and Associate Finance portfolios.

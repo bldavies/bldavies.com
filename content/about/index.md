@@ -2,7 +2,7 @@
 title: About
 ---
 
-<img src="/images/portrait.jpg" class="portrait">
+<img src="portrait.jpg" class="portrait">
 
 I'm a research analyst at [Motu](https://motu.nz), a non-profit economic  research institute in Wellington, New Zealand.
 I work with [Dave Maré](https://motu.nz/about-us/people/dave-mare/) and [Adam Jaffe](https://motu.nz/about-us/people/adam-jaffe/) on a range of projects that combine economics with network science.
@@ -14,4 +14,4 @@ I spend my leisure time reading, writing, playing guitar and staying fit.
 
 ### Contact
 
-Contact me by <a href="mailto:{{< param email >}}">Email</a>, or find me on <a href="{{< param github >}}">GitHub</a> or <a href="{{< param linkedin >}}">LinkedIn</a>.
+Contact me by <a href="mailto:{{< param email >}}">email</a>, or find me on <a href="{{< param github >}}">GitHub</a> or <a href="{{< param linkedin >}}">LinkedIn</a>.

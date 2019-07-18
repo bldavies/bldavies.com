@@ -45,7 +45,7 @@ The full text for that article is quoted below.
 > We describe activity space by a weighted network in which nodes correspond to activities and in which edges have weight equal to the relatedness between pairs of activities.
 > The subnetwork induced by the 500 edges of largest weight is shown below, with nodes coloured by occupation.
 > 
-> ![](/blog/relatedness-complexity/activity-space.svg)
+> ![](activity-space.svg)
 > 
 > At the centre of our map is a tightly connected, nest-shaped cluster of low-skill occupations in the distributive services sector.
 > To the right of this cluster is a group of medium- to low-skill occupations in the construction, retail and healthcare sectors.

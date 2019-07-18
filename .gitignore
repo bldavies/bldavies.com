@@ -10,9 +10,7 @@ todo.md
 # folders
 .Rproj.user
 archive
-data/college-degrees
-data/ministerial-diaries
-data/strava-api-access
+content/blog/*/data
 drafts
 ideas
 public
