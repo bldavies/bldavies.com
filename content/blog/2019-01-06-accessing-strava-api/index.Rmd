@@ -229,5 +229,5 @@ Reading [the `rStrava` package's source code](https://github.com/fawda123/rStrav
 I got the idea for plotting active running time distributions from [this GitHub repository](https://github.com/marcusvolz/strava).
 
 ```{r session-info, echo = FALSE}
-writeLines(capture.output(sessioninfo::session_info()), 'session-info.log')
+writeLines(capture.output(sessioninfo::session_info()), 'session.log')
 ```

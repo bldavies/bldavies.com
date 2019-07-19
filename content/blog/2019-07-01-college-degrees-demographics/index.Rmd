@@ -253,5 +253,5 @@ I plan to explore these connections in future posts.
 [repo-url]: https://github.com/bldavies/college-degrees/
 
 ```{r session-info, echo = FALSE}
-writeLines(capture.output(sessioninfo::session_info()), 'session-info.log')
+writeLines(capture.output(sessioninfo::session_info()), 'session.log')
 ```

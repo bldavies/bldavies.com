@@ -251,5 +251,5 @@ For example, Minister Parker's frequent interactions with MBIE officials appear 
 ```
 
 ```{r session-info, echo = FALSE}
-writeLines(capture.output(sessioninfo::session_info()), 'session-info.log')
+writeLines(capture.output(sessioninfo::session_info()), 'session.log')
 ```
