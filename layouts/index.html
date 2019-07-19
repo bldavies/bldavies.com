@@ -21,7 +21,6 @@
             {{ $.Scratch.Set "summary" ((delimit (findRE "(<p.*?>(.|\n)*?</p>\\s*)+" .Content) "[&hellip;] ") | plainify | truncate 250 " &hellip;" | replaceRE "&amp;" "&" | safeHTML) }}
           {{ end }}
           <p>{{ $.Scratch.Get "summary" }}</p>
-          <p><a href="{{ .Permalink }}">Read more &raquo</a></p>
         </div>
       </li>
     {{ end }}
