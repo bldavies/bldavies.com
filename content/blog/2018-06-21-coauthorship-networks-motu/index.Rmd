@@ -3,7 +3,9 @@ title: Coauthorship Networks at Motu
 tags: [igraph, networks, R, Motu]
 ---
 
-
+```{r setup, echo = FALSE}
+knitr::opts_chunk$set(dev = 'svg', fig.ext = 'svg', message = FALSE, warning = FALSE)
+```
 
 Earlier this year I joined [Motu](https://motu.nz), an economic and public policy research institute based in Wellington, New Zealand.
 In this post, I analyse the coauthorship network among Motu researchers based on working paper publications.
@@ -28,8 +30,7 @@ It excludes the authors of five papers for which either (i) there is no landing 
 
 I read in the data as follows:
 
-
-```r
+```{r}
 library(dplyr)
 library(readr)
 
@@ -44,48 +45,100 @@ papers   <- get_data('papers.csv')
 [`papers.csv`](https://github.com/bldavies/motu-wp/blob/master/data/papers.csv) links each paper to its research area.
 I merge `areas`, `authors` and `papers` into a single tibble `data`:
 
-
-```r
+```{r}
 data <- authors %>%
   left_join(papers) %>%
   left_join(areas)
 ```
-
+```{r, echo = FALSE}
+# Restrict to data used in original post
+data <- data %>%
+  filter(substr(paper, 1, 2) != '19') %>%
+  filter(!(substr(paper, 1, 2) == '18' & substr(paper, 4, 5) > '08'))
+```
 
 ## The authorship network
 
 I next construct an authorship network by pairing papers with their authors using the information contained in `data`.
 I achieve this by defining an author-paper incidence matrix
 
-
-```r
+```{r}
 incidence <- table(data$author, data$paper)
 ```
 
 and using that matrix to create a bipartite network `bip`:
 
-
-```r
+```{r}
 library(igraph)
 
 bip <- graph.incidence(incidence)
 ```
  
-The authorship network `bip` contains 74 authors who collectively wrote 232 working papers over the 2003--2018 sample period.
+The authorship network `bip` contains `r dim(incidence)[1]` authors who collectively wrote `r dim(incidence)[2]` working papers over the 2003--2018 sample period.
 Those papers are distributed across Motu's research areas as shown in the chart below.
 
-![](area-counts-1.svg)
+```{r area-counts, echo = FALSE, fig.width = 8, fig.height = 4}
+library(ggplot2)
+library(stringr)
+
+data %>%
+  group_by(area_name, area_colour) %>%
+  summarise(n = n_distinct(paper)) %>%
+  ungroup() %>%
+  ggplot(aes(reorder(str_wrap(area_name, width = 15), -n), n)) +
+  geom_bar(aes(fill = area_colour), stat = 'identity') +
+  labs(x = NULL,
+       y = 'Number of working papers',
+       title = 'Number of working papers by research area') +
+  scale_fill_identity() +
+  scale_x_discrete(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) +
+  theme_minimal(base_size = 11) +
+  theme(panel.grid = element_blank(),
+        plot.title = element_text(face = 'bold', margin = margin(b = 10), size = 16))
+```
 
 The variation in working paper counts reflects the variation in areas' tenure within Motu's research portfolio.
-Environment and Resources, contributing 67 working papers, has been around since the series began; Human Rights, appearing only once in the series, is a relatively new research area for Motu.
+Environment and Resources, contributing `r data %>% distinct(paper, area) %>% filter(area == 'environment-and-resources') %>% nrow()` working papers, has been around since the series began; Human Rights, appearing only once in the series, is a relatively new research area for Motu.
 
 The authorship network `bip` is drawn below using [Fruchterman and Reingold's (1991)](https://onlinelibrary.wiley.com/doi/abs/10.1002/spe.4380211102) force-directed algorithm.
 Squares denote working papers and are coloured by research area.
 Each circle denotes an author and is scaled according to the number of working papers (co)written by that author.
 
-![](author-network-1.svg)
+```{r author-network, echo = FALSE, fig.width = 6, fig.height = 6}
+# Compute author and paper attributes
+authors_attr <- data %>%
+  filter(author %in% V(bip)$name) %>%
+  group_by(author) %>%
+  summarise(num_papers = n_distinct(paper)) %>%
+  ungroup()
+papers_attr <- data %>%
+  group_by(paper, area) %>%
+  summarise(num_authors = n_distinct(author)) %>%
+  ungroup() %>%
+  left_join(areas) %>%
+  select(paper, area, area_colour, num_authors)
 
-A striking feature of `bip` is the presence of three high-degree vertices, or *hubs*, each representing an author of at least 48 working papers.
+# Prettify network
+E(bip)$color <- 'gray80'
+V(bip)$color[V(bip)$type == FALSE] <- 'gray60'
+V(bip)$color[V(bip)$type == FALSE][authors_attr$num_papers >= 30] <- 'gray35'
+V(bip)$color[V(bip)$type == TRUE] <- as.character(papers_attr$area_colour)
+V(bip)$frame.color <- V(bip)$color
+V(bip)$label <- NA
+V(bip)$shape <- c('circle', 'square')[V(bip)$type + 1]
+V(bip)$size <- 3
+authors_attr$radius <- 1 + 5 * sqrt(authors_attr$num_papers / max(authors_attr$num_papers))
+V(bip)$size[V(bip)$type == FALSE] <- authors_attr$radius
+
+# Plot network
+par(mar = rep(0, 4))
+set.seed(0)
+bip_layout <- layout_with_fr(bip)
+plot(bip, layout = bip_layout)
+```
+
+A striking feature of `bip` is the presence of three high-degree vertices, or *hubs*, each representing an author of at least `r sort(authors_attr$num_papers, decreasing = TRUE)[3]` working papers.
 These hubs are shaded in the map of `bip` shown above.
 Another feature is the variation in area diversity within authors' individual corpuses.
 Urban and Regional authors tend to also write papers on Wellbeing and Macroeconomics, while Environment and Resources authors are more specialised.
@@ -95,8 +148,7 @@ Urban and Regional authors tend to also write papers on Wellbeing and Macroecono
 Projecting `bip` onto the set of authors yields a coauthorship network in which two authors are adjacent if they have written a paper together.
 I define such a projection via
 
-
-```r
+```{r}
 net <- bipartite.projection(bip)[[1]]
 ```
 
@@ -105,26 +157,35 @@ According to this measure, maximally similar authors always write together while
 Again, I use the Fruchterman-Reingold algorithm for distributing vertices in the plane.
 The resulting map of `net` is shown below.
 
-![](coauthor-network-1.svg)
+```{r coauthor-network, echo = FALSE, fig.width = 4, fig.height = 4}
+# Define function for computing Jaccard matrix
+jaccard <- function (C) {
+  U <- matrix(rep(diag(C), nrow(C)), ncol = nrow(C))
+  H <- U + t(U) - C
+  J <- C / H
+  return (J)
+}
 
-The coauthorship network is sparse, containly only 168 (about 6%) of the 2,701 possible edges between its 74 vertices.
+# Resize vertices
+V(net)$size <- V(net)$size ^ 1.33
+
+# Plot network
+par(mar = rep(0, 4))
+set.seed(0)
+net_layout <- jaccard(incidence %*% t(incidence)) %>%
+  graph.adjacency(mode = "undirected", weighted = TRUE) %>%
+  simplify() %>%
+  layout_with_fr()
+plot(net, layout = net_layout)
+```
+
+The coauthorship network is sparse, containly only `r gsize(net)` (about `r round(100 * graph.density(net))`%) of the `r scales::comma(gorder(net) * (gorder(net) - 1) / 2)` possible edges between its `r gorder(net)` vertices.
 However, the largest connected component (LCC) of `net` contains all but six authors, two of whom write exclusively with each other and the remaining four having zero coauthors.
 Such connectivity is facilitated by the three shaded hubs identified above.
 
 ### Hints of small-worldness
 
-
-
-
-
-The sparsity of `net` implies that most pairs of authors aren't coauthors.
-Indeed, the probability that two randomly selected authors are coauthors is given by `net`'s edge density: about 0.06.
-However, it is not unusual for two randomly selected authors to share a common coauthor; within the LCC of `net`, the probability of such an event is about 0.46.
-I calculate this probability by examining the distribution of (unweighted) [geodesic distances](https://en.wikipedia.org/wiki/Distance_(graph_theory)) between the vertices in `net` and determining the proportion of vertex pairs that are distance two apart.
-The following function performs that calculation for an arbitrary connected graph `G`.
-
-
-```r
+```{r common-neighbour-rate, echo = FALSE}
 common_neighbour_rate <- function (G) {
   B <- distances(G, weights = rep(1, gsize(G))) == 2
   num_pairs <- choose(gorder(G), 2)
@@ -133,10 +194,25 @@ common_neighbour_rate <- function (G) {
 }
 ```
 
+```{r echo = FALSE}
+clust <- clusters(net)
+lcc_vertices <- V(net)[which(clust$membership == which.max(clust$csize))]
+lcc <- induced.subgraph(net, lcc_vertices)
+```
+
+The sparsity of `net` implies that most pairs of authors aren't coauthors.
+Indeed, the probability that two randomly selected authors are coauthors is given by `net`'s edge density: about `r round(graph.density(net), 2)`.
+However, it is not unusual for two randomly selected authors to share a common coauthor; within the LCC of `net`, the probability of such an event is about `r round(common_neighbour_rate(lcc), 2)`.
+I calculate this probability by examining the distribution of (unweighted) [geodesic distances](https://en.wikipedia.org/wiki/Distance_(graph_theory)) between the vertices in `net` and determining the proportion of vertex pairs that are distance two apart.
+The following function performs that calculation for an arbitrary connected graph `G`.
+
+```{r ref.label = 'common-neighbour-rate'}
+```
+
 The function `common_neighbour_rate` works by computing the geodesic distances between each pair of vertices in `G`, defining binary indicator variables (as entries of the matrix `B`) for whether each distance is equal to two and taking the average of those variables over all possible vertex pairs.
 Its name comes from recognising that "coauthor" is a context-specific synonym for "neighbouring vertex."
 
-Within the LCC of `net`, the average distance between any two authors is equal to 2.5 while the maximum such distance---the *diameter* of the LCC---is equal to five.
+Within the LCC of `net`, the average distance between any two authors is equal to `r round(mean_distance(lcc), 1)` while the maximum such distance---the *diameter* of the LCC---is equal to five.
 These numbers suggest a smallness about the world inhabited by Motu working paper authors: if you ask anyone if they've written a paper with so-and-so, the answer you'll get is probably, "no, but I've written with someone who has written with someone that has."
 It appears that, at least in terms of geodesic distances, Motu researchers are seldom far apart.
 
@@ -165,8 +241,7 @@ Likewise, random edge assignment disregards community formation, causing Erdös-
 The function below computes the clustering coefficient (known to `igraph` users as `transitivity`) and characteristic path length for a sample of Erdös-Rényi random graphs that are equivalent to an arbitrary graph `G`.
 The sample means of these attributes provide baselines against which to measure the corresponding values observed from `G`.
 
-
-```r
+```{r}
 small_world_baselines <- function (G, sample_size = 1000, seed = 0) {
   set.seed(seed)
   transitivity_samples <- rep(0, sample_size)
@@ -181,15 +256,19 @@ small_world_baselines <- function (G, sample_size = 1000, seed = 0) {
 }
 ```
 
+```{r echo = FALSE}
+C <- transitivity(net, weights = rep(1, gsize(net)))
+L <- mean_distance(net, directed = FALSE)
+baselines <- small_world_baselines(net)
+```
 
-
-The coauthorship network `net` has clustering coefficient 0.24 and mean distance 2.49, with baseline comparators of 0.06 and 2.96.
+The coauthorship network `net` has clustering coefficient `r round(C, 2)` and mean distance `r round(L, 2)`, with baseline comparators of `r round(baselines$transitivity, 2)` and `r round(baselines$mean_distance, 2)`.
 Thus, `net` is about four times as clustered as is expected for a network with its density and has slightly shorter geodesic distances than would be obtained by allocating edges randomly.
 These facts positively indicate small-worldness, and reflect widespread collaboration between authors within and between research areas.
 
 Humphries and Gurney define a *small-world coefficient* by taking the ratio of observed and expected clustering coefficients, and dividing the result by the ratio of observed and expected mean distances.
 This quotient is larger than one for small-world networks.
-The coauthorship network `net` obtains a small-world coefficient of 4.67, thereby passing the Humphries-Gurney small-worldness test.
+The coauthorship network `net` obtains a small-world coefficient of `r round((C / baselines$transitivity) / (L / baselines$mean_distance), 2)`, thereby passing the Humphries-Gurney small-worldness test.
 
 ## Subsampling by research area
 
@@ -197,14 +276,44 @@ Finally, I analyse the coauthorship network within Motu's five largest research 
 I filter the working papers from `data` that correspond to each area and recompute several statistics mentioned earlier using the subsample data.
 The first set of statistics is shown in the table below.
 
+```{r echo = FALSE}
+library(knitr)
 
-|Area                         | Papers| Authors| Edge density| LCC order| LCC diameter|
-|:----------------------------|------:|-------:|------------:|---------:|------------:|
-|Environment and Resources    |     67|      37|         0.08|        29|            3|
-|Population and Labour        |     56|      29|         0.13|        26|            4|
-|Urban and Regional           |     50|      32|         0.09|        29|            4|
-|Wellbeing and Macroeconomics |     35|      19|         0.13|        14|            2|
-|Productivity and Innovation  |     23|      18|         0.20|        17|            4|
+# Initialise tibble for storing research area attributes
+areas_attr <- data %>%
+  group_by(area, area_name) %>%
+  summarise(num_papers = n_distinct(paper),
+            num_authors = n_distinct(author)) %>%
+  ungroup() %>%
+  filter(num_authors > 1)
+
+# Iterate over research areas
+for (i in 1 : nrow(areas_attr)) {
+  area_data <- data %>%
+    filter(area == areas_attr$area[i])
+  area_incidence <- table(area_data$author, area_data$paper)
+  area_net <- area_incidence %*% t(area_incidence) %>%
+    graph.adjacency(mode = "undirected") %>%
+    simplify()  #  Remove loops and parallel edges
+  
+  areas_attr$density[i] <- graph.density(area_net)
+  areas_attr$lcc_order[i] <- max(components(area_net)$csize)
+  areas_attr$lcc_diameter[i] <- diameter(area_net, directed = FALSE)
+  
+  area_baselines <- small_world_baselines(area_net)
+  areas_attr$transitivity[i] <- transitivity(area_net)
+  areas_attr$transitivity_baseline[i] <- area_baselines$transitivity
+  areas_attr$mean_distance[i] <- mean_distance(area_net, directed = FALSE)
+  areas_attr$mean_distance_baseline[i] <- area_baselines$mean_distance
+}
+
+# Generate table
+areas_attr %>%
+  arrange(-num_papers) %>%
+  select(area_name, num_papers, num_authors, density, starts_with("lcc")) %>%
+  kable(digits = 2,
+        col.names = c('Area', 'Papers', 'Authors', 'Edge density', 'LCC order', 'LCC diameter'))
+```
 
 Environment and Resources boasts the largest number of authors as well as working papers. However, it has the least dense coauthorship network, containing only 8% of all possible edges.
 The Productivity and Innovation coauthorship network is the most dense.
@@ -213,14 +322,20 @@ The largest connected component of the Wellbeing and Macroeconomics coauthorship
 I also test each area's coauthorship network for small-worldness using the Humphries-Gurney procedure.
 The results are tabulated below.
 
-
-|Area                         | Clustering coefficient (baseline)| Mean distance (baseline)| Small-world coefficient|
-|:----------------------------|---------------------------------:|------------------------:|-----------------------:|
-|Environment and Resources    |                       0.25 (0.08)|              1.93 (3.16)|                    5.13|
-|Population and Labour        |                       0.33 (0.13)|              2.15 (2.56)|                    3.01|
-|Urban and Regional           |                       0.17 (0.09)|              2.13 (3.04)|                    2.71|
-|Wellbeing and Macroeconomics |                       0.19 (0.11)|              1.77 (2.88)|                    2.76|
-|Productivity and Innovation  |                       0.39 (0.19)|              2.24 (2.31)|                    2.17|
+```{r echo = FALSE}
+areas_attr %>%
+  arrange(-num_papers) %>%
+  select(area_name, starts_with('transitivity'), starts_with('mean_dist')) %>%
+  mutate(transitivity_ratio = transitivity / transitivity_baseline,
+         mean_distance_ratio = mean_distance / mean_distance_baseline,
+         coeff = transitivity_ratio / mean_distance_ratio) %>%
+  mutate_if(is.numeric, function(x) round(x, 2)) %>%
+  mutate(trans_text = paste0(transitivity, ' (', transitivity_baseline, ')'),
+         mean_dist_text = paste0(mean_distance, ' (', mean_distance_baseline, ')')) %>%
+  select(area_name, trans_text, mean_dist_text, coeff) %>%
+  kable(align = 'lrrr',
+        col.names = c('Area', 'Clustering coefficient (baseline)', 'Mean distance (baseline)', 'Small-world coefficient'))
+```
 
 All five areas have small-world coefficients greater than one, and therefore satisfy Humphries and Gurney's criterion.
 However, the ratio of observed and baseline clustering coefficients is not as large in any area as it is in the full coauthorship network.
@@ -237,4 +352,6 @@ Applying the Humphries-Gurney test to a larger network, or implementing a more r
 
 [repo]: https://github.com/bldavies/motu-wp
 
-
+```{r session-info, echo = FALSE}
+writeLines(capture.output(sessioninfo::session_info()), 'session.log')
+```
