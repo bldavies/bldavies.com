@@ -1,0 +1,185 @@
+---
+title: "College Degrees in the US: Community Detection"
+tags: [community detection, networks, PUMS, R]
+---
+
+```{r setup, echo = FALSE}
+knitr::opts_chunk$set(dev = 'svg', fig.ext = 'svg', fig.height = 4.5, fig.width = 8,
+                      echo = FALSE, message = FALSE, warning = FALSE)
+
+library(ggplot2)
+
+theme_set(
+  theme_minimal(base_size = 11) +
+    theme(panel.grid.minor = element_blank(),
+          plot.subtitle = element_text(margin = margin(b = 10), size = 13),
+          plot.title = element_text(face = 'bold', margin = margin(b = 10), size = 16),
+          strip.text = element_text(face = 'bold', hjust = 0, margin = margin(b = 5), size = 12))
+)
+```
+
+```{r data-import, echo = FALSE}
+library(dplyr)
+library(igraph)
+library(readr)
+
+load('../2019-07-14-college-degrees-similarity-measures/data/workspace.RData')
+```
+
+In my last [post][prev-post], I compared measures of  similarity among college degree fields.
+My goal in this post is to partition the set of fields such that each field has greater within-part similarities than between-part similarities.
+One approach is to [hierarchically cluster](https://en.wikipedia.org/wiki/Hierarchical_clustering) fields based on their similarities, producing a dendrogram that can be cut at different heights to obtain different partitions.
+Generating the dendrogram restricts my choice set but, ultimately, I still have to choose which partition is "best."
+
+The intellectually honest way forward is to define an objective function on the set of partitions and choose the partition that obtains the function's maximum.
+One such function is network [modularity](https://en.wikipedia.org/wiki/Modularity_(networks)), which captures the extent to which groups of nodes are intra-connected densely but inter-connected sparsely.
+Ranking partitions by modularity removes the need for supervision: rather than making a subjective, potentially biased judgment on which partition is "best," I simply choose the partition that maximises modularity.
+
+Unfortunately, [maximising modularity is hard](https://arxiv.org/abs/physics/0608255).
+In most cases, finding the globally optimal partition is infeasible and a heuristic algorithm must be used to find an approximate solution.
+[Clauset et al. (2004)](https://arxiv.org/abs/cond-mat/0408187) suggest a [greedy](https://en.wikipedia.org/wiki/Greedy_algorithm) algorithm:
+
+1. Assign every node to a unique "community."
+2. Find the pair of communities whose union delivers the greatest increase in modularity. Replace these communities with their union.
+3. Repeat step 2 until the modularity gain is negative or only one community remains.
+
+The term "community" refers to a set of nodes and stems from the use of network science to probe the [community structure](https://en.wikipedia.org/wiki/Community_structure) of social interactions.
+
+I apply Clauset et al.'s algorithm to the networks defined using the co-occurrence, Dice, Jaccard, Ochiai and overlap measures discussed in [my previous post][prev-post], as well as the unweighted network in which fields are adjacent if at least one graduate studied them both.
+The table below presents the number and size of communities detected in each network, and the corresponding maximised modularity values.
+
+```{r}
+# Define unweighted network
+binary_net <- get_network(pmin(C, 1))
+
+# Iterate over networks
+eval_str <- function(x) eval(parse(text = x))
+networks <- c('Unweighted', 'Co-occurrences', 'Dice', 'Jaccard', 'Ochiai', 'Overlap')
+prefixes <- c('binary', 'coocc', 'dice', 'jaccard', 'ochiai', 'overlap')
+for (p in prefixes) {
+  eval_str(paste0(p, '_clust <<- cluster_fast_greedy(', p, '_net)'))
+}
+
+# Define function for accessing community memberships
+communities_call <- function(p) paste0(p, '_clust$membership')
+get_communities  <- function(p) eval_str(communities_call(p))
+
+# Collate community memberships
+func <- function(x) tibble(community = get_communities(x))
+data <- lapply(prefixes, func) %>%
+  bind_rows() %>%
+  mutate(network = rep(networks, each = nrow(fields)),
+         field = rep(fields$field, length(networks)),
+         field_size = rep(diag(C), length(networks))) %>%
+  # Reorder communities by size
+  group_by(network, community) %>%
+  mutate(n_graduates = sum(field_size) / 1e6) %>%
+  group_by(network) %>%
+  mutate(community = dense_rank(-n_graduates)) %>%
+  ungroup()
+
+# Compute maximum modularities
+modularity_call <- function(p) paste0('modularity(', p, '_clust)')
+get_modularity  <- function(p) eval_str(modularity_call(p))
+modularities    <- tibble(network = networks,
+                          modularity = sapply(prefixes, get_modularity))
+
+# Generate table
+data %>%
+  group_by(network, community, n_graduates) %>%
+  summarise(n_fields = n_distinct(field)) %>%
+  group_by(network) %>%
+  summarise(Communities = n(),
+            Fields = paste(range(n_fields), collapse = '--'),
+            `Community sizes (millions of graduates)` = paste(round(range(n_graduates), 1), collapse = '--')) %>%
+  ungroup() %>%
+  left_join(modularities) %>%
+  rename(Network = network,
+         Modularity = modularity) %>%
+  knitr::kable(digits = 3, align = 'c')
+```
+
+Clauset et al.'s algorithm detects eight communities in the Dice, Jaccard, Ochiai and overlap similarity networks, with each community containing at least nine fields and at most 50 fields.
+The Jaccard measure delivers the greatest maximum modularity.
+Ignoring edge weights makes within- and between-part connections harder to separate, leading to few communities being detected.
+
+I identify the "representives" of each community as the fields with the largest ratios of mean within- and between-community similarities.
+I transform these ratios by taking their natural logarithm in order to rein in the extreme values caused by near-zero divisors.
+The following bar chart presents the representatives of each community detected in the Jaccard similarity network.
+
+```{r jaccard-representatives, fig.height = 6}
+# Get community memberships in Jaccard similarity network
+memb <- data$community[which(data$network == 'Jaccard')]
+
+# Compute mean within- and between-community similarities
+within_means <- numeric(nrow(fields))
+between_means <- numeric(nrow(fields))
+for (i in 1 : nrow(fields)) {
+  within_means[i]  <- mean(jaccard_mat[i, setdiff(which(memb == memb[i]), i)])  # Ignore self-similarities
+  between_means[i] <- mean(jaccard_mat[i, which(memb != memb[i])])
+}
+
+# Generate bar chart
+pal <- RColorBrewer::brewer.pal(9, 'Set1')[c(1:5, 7:9)]
+data %>%
+  filter(network == 'Jaccard') %>%
+  left_join(fields) %>%
+  mutate(ratio = within_means / between_means) %>%
+  group_by(community) %>%
+  mutate(max_ratio = max(ratio)) %>%
+  top_n(4, ratio) %>%
+  ungroup() %>%
+  ggplot(aes(reorder(paste(field_desc, community, sep = '__'), ratio), log(ratio))) +
+  geom_col(aes(fill = pal[community]), alpha = 0.5) +
+  geom_text(aes(y = log(max_ratio) / 100, label = field_desc), hjust = 0, size = 3) +
+  coord_flip() +
+  facet_wrap(~paste('Community', community), nrow = 4, scales = 'free') +
+  labs(x = NULL,
+       y = 'Log ratio of mean within- and between-community Jaccard similarities',
+       title = 'Community representatives in Jaccard similarity network') +
+  scale_fill_identity() +
+  scale_x_discrete(labels = NULL, expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) +
+  theme(panel.grid.major.y = element_blank())
+```
+
+Communities 2, 3, 4, 5, 7 and 8 appear to capture business, engineering, media, education, agriculture and biology-related fields.
+Communities 1 and 6 are less clearly classifiable.
+
+The table below presents the demographic compositions of the eight communities detected in the Jaccard similarity network.
+Community 3 contains nearly 30% of degree fields but only about 20% of graduates, and is the most male-dominated among the eight communities detected.
+Community 5 is the most female-dominated and has the highest mean age.
+Educational attainment is lowest in communities 2 and 4, and highest in community 8.
+
+```{r}
+# Aggregate sample weights
+weights <- observations %>%
+  filter(level > 0) %>%
+  mutate(field2 = ifelse(is.na(field2), field1, field2),
+         weight = weight / 2) %>%
+  tidyr::gather(key, field, field1, field2) %>%
+  count(age, female, field, level, wt = weight, name = 'weight')
+
+# Generate table
+data %>%
+  rbind(data) %>%
+  mutate(is_total = row_number() >= n() %/% 2) %>%
+  filter(network == 'Jaccard') %>%
+  left_join(weights) %>%
+  mutate(Community = ifelse(is_total, 'Overall', community)) %>%
+  group_by(Community, is_total) %>%
+  summarise(Fields = n_distinct(field),
+            `Total graduates (millions)` = sum(weight) / 1e6,
+            `Mean graduate age` = sum(age * weight) / sum(weight),
+            `% of graduates female` = 100 * sum(female * weight) / sum(weight),
+            `% of graduates with post-graduate degree` = 100 * sum((level > 1) * weight) / sum(weight)) %>%
+  ungroup() %>%
+  select(-is_total) %>%
+  knitr::kable(digits = 1, align = 'c')
+```
+
+[prev-post]: /blog/college-degrees-similarity-measures/
+
+```{r session-info, echo = FALSE}
+writeLines(capture.output(sessioninfo::session_info()), 'session.log')
+```
