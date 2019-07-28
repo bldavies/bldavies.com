@@ -1,0 +1,71 @@
+---
+title: Updating motu-wp
+tags: [announcement, Motu, web scraping]
+---
+
+```{r setup, echo = FALSE}
+knitr::opts_chunk$set(dev = 'svg', fig.ext = 'svg', message = FALSE, warning = FALSE)
+```
+
+Today I updated the [motu-wp](https://github.com/bldavies/motu-wp) GitHub repository, which stores data on Motu working papers and their authors.
+I made three main changes:
+
+First, I switched from [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/) to [rvest](https://rvest.tidyverse.org) for scraping the working paper directory.
+My original Python [script](https://github.com/bldavies/motu-wp/blob/97c9074908367154fcdddb33d377feb45528e4ae/code/urls.py) used a bunch of regex commands to build the list of working paper URLs, despite warnings that [regular expressions and HTML generally don't cooperate](https://stackoverflow.com/questions/1732348/regex-match-open-tags-except-xhtml-self-contained-tags).
+I should have just used CSS selectors, which I now do using [`data.R`](https://github.com/bldavies/motu-wp/blob/master/code/data.R).
+
+Second, I implemented a caching mechanism for passing information between runs of `data.R`.
+The script queries only papers released since the last run, so adding new papers is faster and requires fewer HTTP requests.
+
+Third, I added working paper titles to the information collected.
+This allows me to, for example, use [tf-idf scores](/blog/reading-ministerial-diaries/#computing-tf-idf-scores) to characterise research areas:
+
+```{r tf-idf, echo = FALSE, fig.width = 8, fig.height = 6}
+# Load packages
+library(dplyr)
+library(ggplot2)
+library(readr)
+library(tidytext)
+
+# Import data
+data_url <- 'https://raw.githubusercontent.com/bldavies/motu-wp/master/data/'
+get_data <- function(x) read_csv(paste0(data_url, x))
+areas    <- get_data('areas.csv')
+papers   <- get_data('papers.csv')
+
+# Compute highest tf-idf words within each area
+papers %>%
+  unnest_tokens(word, title) %>%
+  anti_join(get_stopwords()) %>%
+  filter(!is.na(word)) %>%
+  count(word, area) %>%
+  bind_tf_idf(word, area, n) %>%
+  group_by(area) %>%
+  mutate(max_tf_idf = max(tf_idf)) %>%
+  top_n(7, tf_idf) %>%
+  ungroup() %>%
+  left_join(areas) %>%
+  ggplot(aes(reorder_within(word, tf_idf, area_name), tf_idf * 100)) +
+  geom_col(aes(fill = area_colour), alpha = 0.5) +
+  geom_text(aes(y = 2 * max_tf_idf, label = word), hjust = 0, size = 3) +
+  coord_flip() +
+  facet_wrap(~area_name, scales = 'free') +
+  labs(x = NULL,
+       y = 'tf-idf (hundredths)',
+       title = 'Highest tf-idf words by research area',
+       subtitle = 'Based on working paper titles with stop words removed') +
+  scale_fill_identity() +
+  scale_x_reordered(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) +
+  theme_minimal(base_size = 11) +
+  theme(axis.text.y = element_blank(),
+        panel.grid.major.y = element_blank(),
+        panel.grid.minor = element_blank(),
+        plot.subtitle = element_text(margin = margin(b = 10), size = 13),
+        plot.title = element_text(face = 'bold', margin = margin(b = 10), size = 16),
+        strip.text = element_text(face = 'bold', hjust = 0, margin = margin(b = 5), size = 12))
+```
+
+```{r session-info, echo = FALSE}
+writeLines(capture.output(sessioninfo::session_info()), 'session.log')
+```
