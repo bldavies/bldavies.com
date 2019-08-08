@@ -3,6 +3,7 @@
 <div class="banner">
   <div class="container">
     <h1>{{ .Title | markdownify }}</h1>
+    {{ .Content }}
     <p>
       More information is available on my <a href="{{ .Site.Params.scholar }}">Google Scholar</a>, <a href="{{ .Site.Params.repec }}">RePEc</a> and <a href="{{ .Site.Params.orcid }}">ORCID</a> profiles.
     </p>
@@ -11,16 +12,14 @@
 
 <div class="container">
   <h2>Working Papers</h2>
-  {{ range .Site.Data.publications.working_papers }}
-    <p>
-      <div>
-        "{{ .title }}{{ if .coauthors }}" (with {{ .coauthors }}).{{ else }}."{{ end }}
-      </div>
-      {{ if .links.abstract }}<a href="{{ .links.abstract }}" class="publication-link">Abstract</a>{{ end }}
-      {{ if .links.data }}<a href="{{ .links.data }}" class="publication-link">Data</a>{{ end }}
-      {{ if .links.pdf }}<a href="{{ .links.pdf }}" class="publication-link pdf-link">PDF</a>{{ end }}
-    </p>
-  {{ end }}
+  <ul class="blog-index">
+    {{ range where .Pages ".Params.publication_type" "Working Paper" }}
+      <li>
+        <a href="{{ .Permalink }}">{{ .Title | markdownify }}</a>
+        {{ if .Params.coauthors }}(with {{ .Params.coauthors }}){{ end }}
+      </li>
+    {{ end }}
+  </ul>
 </div>
 
 {{ partial "footer.html" . }}

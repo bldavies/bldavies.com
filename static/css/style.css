@@ -231,25 +231,18 @@ footer {
 
 
 
-/* Publications */
+/* Research */
 
-.publication-link {
+.research-link {
   border: 1px solid #1269d3;
-  border-radius: 0.25rem;
+  border-radius: 1%;
   display: inline-block;
   font-size: 80%;
-  margin-right: 0.2rem;
-  padding: 0 0.2rem;
+  margin-right: 0.5rem;
+  padding: 0.25rem 0.75rem;
 }
-.publication-link:hover {
+.research-link:hover {
   color: white;
   background-color: #1269d3;
   text-decoration: none;
-}
-.pdf-link {
-  border-color: red;
-  color: red;
-}
-.pdf-link:hover {
-  background-color: red;
 }

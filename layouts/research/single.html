@@ -1,0 +1,21 @@
+{{ partial "header.html" . }}
+
+<div class="banner">
+  <div class="container">
+    <h1>{{ .Title | markdownify }}</h1>
+    <p>{{ if .Params.pdf_url }}<a class="research-link" href="{{ .Params.pdf_url }}">PDF</a>{{ end }}{{ if .Params.data_url }}<a class="research-link" href="{{ .Params.data_url }}">Data</a>{{ end }}</p>
+  </div>
+</div>
+
+<div class="container">
+  {{ if .Params.abstract }}
+    <h2>Abstract</h2>
+    <p>{{ .Params.abstract | markdownify }}</p>
+  {{ end }}
+  {{ if .Params.citation }}
+    <h2>Citation</h2>
+    <p>{{ .Params.citation | markdownify }}</p>
+  {{ end }}
+</div>
+
+{{ partial "footer.html" . }}

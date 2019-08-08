@@ -1,16 +1,7 @@
 ---
 working_papers:
-  - date: 2019-03-07
-    title: Relatedness, Complexity and Local Growth
-    coauthors: David C. Maré
-    links:
-      abstract: https://ideas.repec.org/p/mtu/wpaper/19_01.html
-      data: https://github.com/moturesearch/relatedness-complexity/
-      pdf: http://motu-www.motu.org.nz/wpapers/19_01.pdf
-  - date: 2017-08-14
-    title: Bundling and Insurance of Independent Risks
-    coauthors: Richard Watt
-    links:
-      abstract: https://ideas.repec.org/p/cbt/econwp/17-05.html
-      pdf: http://www.econ.canterbury.ac.nz/RePEc/cbt/econwp/1705.pdf
+- title: Relatedness, Complexity and Local Growth
+  coauthors: David C. Maré
+- title: Bundling and Insurance of Independent Risks
+  coauthors: Richard Watt
 ---
