@@ -7,7 +7,7 @@
 </div>
 <div class="container">
   <ul class="latest-posts-index">
-    {{ range $index, $element := first 5 (where .Pages "Section" "blog") }}
+    {{ range $index, $element := first 5 (where .Site.RegularPages "Section" "blog") }}
       <li>
         {{ if ge $index 1 }}
           <hr>

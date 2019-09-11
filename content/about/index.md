@@ -14,4 +14,4 @@ I spend my leisure time reading, writing, playing guitar and staying fit.
 
 ### Contact
 
-Contact me by <a href="mailto:{{< param email >}}">email</a>, or find me on <a href="{{< param github >}}">GitHub</a> or <a href="{{< param linkedin >}}">LinkedIn</a>.
+Get in touch with me by <a href="mailto:{{< param email >}}">email</a>, or find me on <a href="{{< param github >}}">GitHub</a> or <a href="{{< param linkedin >}}">LinkedIn</a>.

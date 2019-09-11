@@ -1,17 +1,7 @@
-# files
-.dropbox
-.Rapp.history
-.RData
-.Rhistory
+_cv
+.Rproj.user
+content/**/data
+content/blog/[a-z]*/
+_*.md
 Makefile
 serve
-todo.md
-
-# folders
-.Rproj.user
-_cv
-archive
-content/blog/*/data
-drafts
-ideas
-public
