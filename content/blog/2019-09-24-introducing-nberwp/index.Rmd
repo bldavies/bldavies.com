@@ -1,0 +1,99 @@
+---
+title: Introducing nberwp
+tags: [NBER, research, rstats, text mining]
+---
+
+```{r setup, echo = F, message = F}
+knitr::opts_chunk$set(message = F, warning = F, paged.print = F,
+                      dev = 'svg',
+                      fig.ext = 'svg', fig.width = 8, fig.height = 4.5)
+
+library(dplyr)
+library(ggplot2)
+library(nberwp)
+
+theme_set(
+  theme_minimal(base_size = 11) +
+    theme(panel.grid.minor = element_blank(),
+          plot.subtitle = element_text(margin = margin(b = 10), size = 13),
+          plot.title = element_text(face = 'bold', margin = margin(b = 10), size = 16),
+          strip.text = element_text(face = 'bold', hjust = 0, margin = margin(b = 5), size = 12))
+)
+```
+
+Today I published [nberwp][nberwp], an R package providing data on [NBER](https://www.nber.org) working papers published between 1973 and 2018.
+It can be installed from GitHub via [remotes](https://github.com/r-lib/remotes):
+
+```{r, eval = F}
+library(remotes)
+install_github('bldavies/nberwp')
+```
+
+nberwp provides a data frame `papers`, each row describing a unique working paper:
+
+```{r}
+papers
+```
+
+`number` uniquely identifies working papers by their positions in the series, while `year` and `month` capture papers' publication dates.
+The chart below uses these dates to show the NBER catalogue's expansion.
+
+```{r papers, echo = F}
+papers %>%
+  count(year) %>%
+  mutate(n = cumsum(n)) %>%
+  ggplot(aes(year, n / 1e3)) +
+  geom_line() +
+  labs(x = 'Year',
+       y = 'Working papers (000s)',
+       title = 'NBER catalogue expansion',
+       subtitle = 'Cumulative NBER working paper publications between 1973 and 2018') +
+  scale_x_continuous(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0), limits = c(0, NA))
+```
+
+`title` facilitates simple text mining, such as determining which words are used in working paper titles most frequently:
+
+```{r}
+library(tidytext)
+
+words <- papers %>%
+  unnest_tokens(word, title) %>%
+  anti_join(get_stopwords()) %>%
+  filter(nchar(gsub('[a-z.]', '', word)) == 0) %>%
+  distinct(number, word)
+
+words %>%
+  count(word, sort = T)
+```
+
+Many papers discuss capital and labour markets, and the effects of public policies.
+The word "evidence" appears in twice as many titles as any other (non-stop) word, which I suspect reflects the growing use of the "\<Issue\>: Evidence from \<context\>" title format:
+
+```{r evidence-from, echo = F}
+library(zoo)
+
+papers %>%
+  mutate(matches = grepl('evidence from', title, ignore.case = T)) %>%
+  group_by(year) %>%
+  summarise(share = 100 * mean(matches)) %>%
+  mutate(share = rollmean(share, 3, na.pad = T)) %>%
+  ggplot(aes(year, share)) +
+  geom_line() +
+  labs(x = 'Year',
+       y = '% of titles',
+       title = 'Growing evidence',
+       subtitle = 'Share of NBER working paper titles containing \"evidence from\", by year') +
+  scale_x_continuous(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0))
+```
+
+The NBER's [RePEc index](https://www.nber.org/RePEc/nbr/nberwo/), from which I derive `papers`, also contains data linking papers to their authors.
+I plan to include these data in a future version of nberwp once I've disambiguated authors' names.
+
+```{r session-info, echo = F}
+options(width = 80)
+writeLines(capture.output(sessioninfo::session_info()), 'session.log')
+```
+
+[nberwp]: https://github.com/bldavies/nberwp
