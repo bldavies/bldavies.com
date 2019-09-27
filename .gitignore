@@ -1,6 +1,5 @@
 _cv
 .Rproj.user
-content/**/data
 content/blog/[a-z]*/
 _*.md
 Makefile
