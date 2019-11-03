@@ -1,0 +1,205 @@
+---
+title: Computing Epicycles
+tags: [animation, Fourier series]
+math: true
+---
+
+```{r setup, echo = FALSE, message = F, warning = F}
+knitr::opts_chunk$set(echo = F, message = F, warning = F)
+
+library(bezier)
+library(dplyr)
+library(gganimate)
+library(ggforce)
+library(ggplot2)
+library(jsonlite)
+library(purrr)
+library(xml2)
+
+theme_set(
+  theme_minimal(base_size = 11)
+)
+```
+
+Earlier this year Grant Sanderson, creator of the YouTube channel [3blue1brown](https://www.3blue1brown.com), posted a [video](https://www.youtube.com/watch?v=r6sGWTCMz2k) explaining how [Fourier series](http://mathworld.wolfram.com/FourierSeries.html) approximate periodic functions using sums of sines and cosines.
+In the video and its [companion](https://www.youtube.com/watch?v=-qgreAUpPwM), Grant animates sets of vectors that rotate on circular orbits and, when summed together, reproduce a range of images defined by closed curves.
+
+Consider, for example, the boundary of GitHub's logo:
+
+```{r plot, dev = 'svg', fig.ext = 'svg', fig.width = 8, fig.height = 4.5}
+
+# Read SVG path as string
+path_str <- read_xml('https://simpleicons.org/icons/github.svg') %>%
+  xml_children() %>%
+  xml_attr('d') %>%
+  {.[2]}
+
+# Parse SVG path using svg-path-parser, installed via Node.js:
+#
+# ```bash
+# brew install node
+# npm install svg-path-parser
+# ```
+path_data <- paste0(
+  'var d=\'', path_str, '\';',
+  'const {parseSVG, makeAbsolute} = require(\'svg-path-parser\');',
+  'const commands = parseSVG(d);',
+  'makeAbsolute(commands);',
+  'console.log(JSON.stringify(commands));'
+) %>%
+  paste0('node -e \"', ., '\"') %>%
+  system(intern = TRUE) %>%
+  fromJSON() %>%
+  select(-relative)
+
+# Compute coordinates by sampling points on cubic Bezier curves
+coordinates <- 2 : nrow(path_data) %>%
+  purrr::map(
+    function(row, n_points = 20) {
+      t <- seq(0, 1, length = n_points)
+      p <- c(unlist(path_data[row, 5:10]), unlist(path_data[row, 3:4])) %>%
+        matrix(nrow = 4, byrow = TRUE)
+      fit <- bezier::bezier(t, p)
+      tibble::tibble(x = fit[, 1], y = fit[, 2], row = row)
+    }
+  ) %>%
+  bind_rows() %>%
+  mutate(x = x - 12, y = 12 - y) %>%  # Centre at origin
+  filter(row == lead(row)) %>%  # Remove duplication at curve endpoints
+  select(-row) %>%
+  mutate_all(round, 4)
+
+# Plot closed curve
+coordinates %>%
+  bind_rows(slice(., 1)) %>%  # Close curve
+  ggplot(aes(x, y)) +
+  geom_polygon(alpha = 0.1) +
+  geom_path() +
+  coord_fixed(clip = 'off') +
+  scale_x_continuous(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0))
+```
+
+Let `$\gamma:[0,1]\to\mathbb{R}^2$` be the closed curve in `$\mathbb{R}^2$` defining the logo's boundary.
+Suppose there is an integer `$n$` such that
+`$$ \gamma(t) = \sum_{k=-n}^n \gamma_k(t) $$`
+for some set of circular orbits `$\gamma_{-n},\ldots,\gamma_n:[0,1]\to\mathbb{R}^2$` and for all times `$t\in[0,1]$`.
+(Negative and positive subscripts correspond to clockwise and anti-clockwise orbits.
+Both may be necessary to reconstruct `$\gamma$`.)
+Each orbit `$\gamma_k$` has time `$t$` position defined by the vector
+`$$ \gamma_k(t) = \begin{bmatrix} r_k \cos(2\pi k t + \theta_k) \\ r_k \sin(2\pi k t + \theta_k) \end{bmatrix} $$`
+for some radius `$r_k$`, angular speed `$2\pi k$` rad/s and initial phase `$\theta_k$`.
+Consequently, the curves `$x,y:[0,1]\to\mathbb{R}$` defining the horizontal and vertical components of `$\gamma$` must satisfy the system
+`$$ \begin{align} x(t) &= \sum_{k=-n}^n r_k\cos(2\pi k t + \theta_k) \\ y(t) &= \sum_{k=-n}^n r_k\sin(2\pi k t + \theta_k) \end{align} $$`
+of identities.
+Let `$z:[0,1]\to\mathbb{C}$` be the curve with `$z(t)=x(t)+iy(t)$` for all `$t\in[0,1]$`.
+[Euler's formula](http://mathworld.wolfram.com/EulerFormula.html) gives
+`$$ \begin{align} z(t) &= \sum_{k=-n}^n r_k(\cos(2\pi k t + \theta_k) + i \sin(2\pi k t + \theta_k)) \\ &= \sum_{k=-n}^n r_k \exp(2\pi i k t + i\theta_k) \\ &= \sum_{k=-n}^n c_k \exp(2\pi i k t), \end{align} $$`
+where each Fourier coefficient `$c_k=r_k\exp(i\theta_k)$` has modulus `$\lvert c_k\rvert=r_k$` and (principal) argument `$\mathrm{Arg}(c_k)=\theta_k$`.
+Now, notice that
+`$$ \begin{align} \int_0^1 z(t) \exp(-2\pi i k t)\, \mathrm{d}\,t &= \int_0^1\left(\sum_{j=-n}^n c_j \exp(2\pi i j t)\right)\exp(-2\pi i k t)\, \mathrm{d}\,t \\ &= \int_0^1c_k\, \mathrm{d}\,t + \sum_{j\not=k} c_j \int_0^1 \exp(2\pi i (j - k)t)\, \mathrm{d}\,t \\ &= c_k \end{align} $$`
+for each `$k$` because
+`$$ \int_0^1 \exp(2\pi i (j - k)t)\, \mathrm{d}\,t = 0 $$`
+for all integers `$j\not=k$` by the `$2\pi i$`-periodicity of the complex exponential function.
+Thus
+`$$ c_k = \int_0^1 z(t) \exp(-2\pi i k t)\, \mathrm{d}\, t, $$`
+which can be calculated using Riemann sums given sample points along the component curves `$x$` and `$y$`.
+Doing this calculation for each `$k$`, and computing the corresponding moduli `$r_{-n},\ldots,r_n$` and arguments `$\theta_{-n},\ldots,\theta_n$`, provides enough information to generate the animation below.
+
+```{r animation}
+# Define function for computing Fourier coefficients for complex signal
+get_fourier_coefficients <- function(z, freqs, ts) {
+  i <- complex(real = 0, imaginary = 1)
+  dt <- ts[2]
+  res <- complex(length(freqs))
+  for (f in 1 : length(freqs)) {
+    # Approximate integral form using Riemann sums
+    for (t in 1 : length(ts)) {
+      res[f] <- res[f] + exp(-2 * pi * i * freqs[f] * ts[t]) * z[t] * dt
+    }
+  }
+  res
+}
+
+# Compute Fourier coefficients
+ts <- (0 : (nrow(coordinates) - 1)) / nrow(coordinates)
+z <- complex(real = coordinates$x, imaginary = coordinates$y)
+frequencies <- -50 : 50
+coefficients <- get_fourier_coefficients(z, frequencies, ts)
+
+# Compute vector displacements (relative to orbital centre) at each time steps
+displacements <- tibble(
+  t = rep(ts, each = length(coefficients)),
+  freq = rep(frequencies, length(ts)),
+  coeff = rep(coefficients, length(ts))
+) %>%
+  mutate(radius = Mod(coeff),
+         phase = Arg(coeff),
+         orbit = dense_rank(abs(freq) + 0.5 * (freq < 0)),
+         angle = phase + 2 * pi * freq * t,
+         x_disp = radius * cos(angle),
+         y_disp = radius * sin(angle))
+
+# Compute vector positions (relative to origin) at each time step
+origin_displacement <- tibble(
+  t = ts,
+  orbit = 0,
+  x_disp = 0,
+  y_disp = 0
+)
+positions <- displacements %>%
+  select(t, orbit, x_disp, y_disp) %>%
+  bind_rows(origin_displacement) %>%
+  arrange(t, orbit) %>%
+  group_by(t) %>%
+  mutate(x_pos = cumsum(x_disp),
+         y_pos = cumsum(y_disp)) %>%
+  ungroup()
+
+# Compute draw positions at each time step
+draw_positions <- positions %>%
+  filter(orbit == max(orbit)) %>%
+  select(t, x = x_pos, y = y_pos)
+
+# Compute orbital centres and radii
+orbits <- positions %>%
+  group_by(t) %>%
+  mutate(x0 = lag(x_pos),
+         y0 = lag(y_pos),
+         r = sqrt(x_disp ^ 2 + y_disp ^ 2)) %>%
+  ungroup() %>%
+  select(t, orbit, x0, y0, r) %>%
+  filter(orbit > 0 & orbit < 30)
+
+# Animate epicycles
+plot_data <- positions %>%
+  left_join(draw_positions) %>%
+  right_join(orbits) %>%
+  group_by(orbit) %>%
+  filter(row_number() %% 3 == 1) %>%  # Skip time steps
+  ungroup()
+timed_coordinates <- tibble()
+for (t in sort(unique(plot_data$t))) {
+  timed_coordinates <- timed_coordinates %>%
+    bind_rows(mutate(bind_rows(coordinates, slice(coordinates, 1)), t = t))
+}
+p <- plot_data %>%
+  ggplot() +
+  geom_circle(data = filter(plot_data, orbit > 1), aes(x0 = x0, y0 = y0, r = r), col = 'grey75') +
+  geom_path(aes(x_pos, y_pos), col = 'grey50') +
+  geom_polygon(data = timed_coordinates, aes(x, y), alpha = 0.1) +
+  geom_point(aes(x, y), size = 4) +
+  coord_fixed(clip = 'off') +
+  labs(x = NULL,
+       y = NULL) +
+  scale_x_continuous(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) +
+  theme_minimal() +
+  transition_time(t)
+animate(p, nframes = n_distinct(plot_data$t), fps = 20, width = 8, height = 4.5, res = 100, units = 'in')
+```
+
+```{r session-info, echo = F}
+options(width = 80)
+writeLines(capture.output(sessioninfo::session_info()), 'session.log')
+```
