@@ -10,8 +10,6 @@ I work with [Dave Maré](https://motu.nz/about-us/people/dave-mare/) and [Adam J
 I joined Motu in 2018 after completing a BSc(Hons) in economics and mathematics at the University of Canterbury.
 [I won the Sir Frank Holmes Prize](https://motu.nz/about-us/news/motu-news-december-2016/#frank) for being New Zealand's top undergraduate economics student.
 
-I spend my leisure time reading, writing, playing guitar and staying fit.
-
-### Contact
-
-Get in touch with me by <a href="mailto:{{< param email >}}">email</a>, or find me on <a href="{{< param github >}}">GitHub</a> or <a href="{{< param linkedin >}}">LinkedIn</a>.
+This website is built using [blogdown](https://github.com/rstudio/blogdown) and [Hugo](https://gohugo.io), and deployed via [Netlify](https://www.netlify.com).
+Except where stated otherwise, all website content is licensed under a [Creative Commons Attribution-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-sa/4.0/).
+Views expressed are solely my own, and not those of any current, past, or future employer.

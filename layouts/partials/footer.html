@@ -14,8 +14,9 @@
       &copy; 2018&ndash;{{ dateFormat "2006" now }} {{ .Site.Params.Author }}
     </div>
     <div class="footer-links">
-      <a href="/about/#contact">Contact</a>
-      <a href="/disclaimer/">Disclaimer</a>
+      <a href="mailto:{{ .Site.Params.Email }}">Email</a>
+      <a href="{{ .Site.Params.Github }}">GitHub</a>
+      <a href="{{ .Site.Params.Linkedin }}">LinkedIn</a>
     </div>
   </div>
 </footer>
