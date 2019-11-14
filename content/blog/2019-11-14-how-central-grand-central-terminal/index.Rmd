@@ -1,0 +1,221 @@
+---
+title: How Central is Grand Central Terminal?
+tags: [networks, nyctrains, rstats, transport]
+---
+
+```{r setup, echo = F, message = F, warning = F}
+knitr::opts_chunk$set(echo = F, message = F, warning = F,
+                      dev = 'svg', fig.ext = '.svg', fig.width = 8, fig.height = 4.5)
+
+# Load packages
+library(dplyr)
+library(ggplot2)
+library(ggraph)
+library(knitr)
+library(igraph)
+library(nyctrains)
+library(tidygraph)
+library(tidyr)
+
+# Set ggplot2 theme
+theme_set(
+  theme_minimal(base_size = 11) +
+    theme(panel.grid.minor = element_blank(),
+          plot.subtitle = element_text(margin = margin(b = 10), size = 13),
+          plot.title = element_text(face = 'bold', margin = margin(b = 10), size = 16),
+          strip.text = element_text(face = 'bold', hjust = 0, margin = margin(b = 5), size = 12))
+)
+```
+
+I spent most of October travelling in the United States.
+I visited a range of large cities with correspondingly large subway systems.
+New York City's is the most extensive, containing [more stops than any other subway system in the world](https://www.citymetric.com/transport/what-largest-metro-system-world-1361).
+Its [crown jewel](http://www.grandcentralterminal.com), Grand Central Terminal, provides access to many cultural and commercial attractions in Midtown Manhattan.
+
+But just how central is Grand Central?
+
+To help me answer this question, I created an R package [nyctrains][nyctrains] that provides data on the NYC subway network.
+These data include scheduled travel times between subway stops.
+I use these times to construct a travel-time-weighted directed network in which stops are adjacent if they occur consecutively along any route.
+I exclude stops along the Staten Island Railway, which is disconnected from the rest of the system.
+The plot below maps the resulting network, with nodes positioned by latitude/longitude and with edges coloured by route.
+(Some routes overlap.)
+
+```{r map, fig.height = 6}
+# Select edges
+edges <- travel_times %>%
+  filter(route_id != 'SI') %>%
+  select(from = source, to = target, weight = travel_time, route_id) %>%
+  left_join(routes)
+
+# Compute network
+net <- edges %>%
+  as_tbl_graph(edge = edges) %>%
+  rename(stop_id = name) %>%
+  mutate(stop_id = as.numeric(stop_id)) %>%
+  left_join(stops)
+
+# Initialise node tibble
+nodes <- tibble(stop_id = V(net)$stop_id) %>%
+  left_join(stops)
+
+# Specify node coordinates
+net_layout <- nodes %>%
+  select(x = stop_lon, y = stop_lat)
+
+# Generate plot
+net %>%
+  mutate(is_gct = grepl('Grand Central', stop_name)) %>%
+  activate(edges) %>%
+  mutate(route_color = replace(route_color, is.na(route_color), '#888888')) %>%
+  ggraph(net_layout) +
+  geom_node_point(aes(col = !is_gct, size = is_gct), show.legend = F) +
+  geom_edge_link0(aes(edge_color = route_color)) +
+  coord_fixed(clip = 'off') +
+  labs(title = 'NYC subway network',
+       subtitle = 'Dark node represents Grand Central Terminal') +
+  scale_x_continuous(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) +
+  scale_color_grey() +
+  scale_edge_color_identity()
+```
+
+Estimating Grand Central's centrality requires choosing a measure.
+One candidate is [betweenness centrality](https://en.wikipedia.org/wiki/Betweenness_centrality).
+Stops are more betweennness-central if trains are more likely to pass through them when taking the fastest route between other stops.
+
+Another candidate measure is [closeness centrality](https://en.wikipedia.org/wiki/Closeness_centrality).
+Stops are more (out-)closeness-central if they have shorter mean fastest travel times to all other stops.
+In the NYC subway network, some of these times are infinite because the network is not [strongly connected](https://en.wikipedia.org/wiki/Strongly_connected_component).
+For example, it is not possible to get from Grand Central to [Aqueduct Racetrack](https://subwaynut.com/ind/aqueduct_racetracka/index.php) without exiting the subway system.
+
+Closeness centrality measures the extent to which stops provide fast access to other stops.
+Another way to measure such access is to count the number of stops that can be reached within a specified time.
+For example, the chart below shows the number of stops that can be reached from Grand Central and Broadway Junction within an hour.
+
+```{r reach}
+# Simplify network
+net <- net %>%
+  activate(edges) %>%
+  group_by(from, to) %>%
+  slice(which.min(weight)) %>%
+  ungroup() %>%
+  activate(nodes)
+
+# Compute shortest path lengths
+fastest_times <- distances(net, mode = 'out') %>%
+  `rownames<-`(V(net)$stop_id) %>%
+  `colnames<-`(V(net)$stop_id)
+
+# Count reachable stops by travel time
+reach_data <- fastest_times %>%
+  as.table() %>%
+  as_tibble(.name_repair = 'unique') %>%
+  `colnames<-`(c('source', 'target', 'travel_time')) %>%
+  filter(!is.infinite(travel_time)) %>%
+  filter(travel_time <= 60 * 60) %>%  # Exclude stops more than one hour away
+  count(stop_id = as.numeric(source), travel_time) %>%
+  complete(stop_id, travel_time, fill = list(n = 0)) %>%
+  group_by(stop_id) %>%
+  arrange(travel_time) %>%
+  mutate(n = cumsum(n),
+         area = (travel_time - lag(travel_time)) * (n + lag(n)) / 2) %>%
+  ungroup()
+
+# Generate plot
+stops %>%
+  filter(grepl('Grand Central', stop_name) | grepl('Broadway Junction', stop_name)) %>%
+  left_join(reach_data) %>%
+  ggplot(aes(travel_time / 60, n, group = stop_id)) +
+  geom_line(aes(col = stop_name)) +
+  coord_cartesian(clip = 'off') +
+  guides(col = guide_legend(title.hjust = 1, label.position = 'left')) +
+  labs(x = 'Travel time (minutes)',
+       y = 'Reachable stops',
+       title = 'Cumulative reach by travel time',
+       subtitle = 'Grand Central provides access to more stops faster than Broadway Junction',
+       col = NULL) +
+  scale_x_continuous(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) +
+  scale_colour_brewer(palette = 'Set1', direction = -1) +
+  theme(legend.justification = c(1, 0),
+        legend.position = c(1, 0))
+```
+
+The number of stops reachable from Grand Central dominates the corresponding number from Brooklyn Junction for all but the smallest travel time allowances.
+One way to operationalise this fact is to observe that the area below the red curve exceeds the area below blue curve.
+In general, the area below the cumulative reach curve is larger for stops that provide access to more stops in less time.
+I compute this area for each stop as a measure of what I call "reach" centrality.[^reach]
+
+The table below reports betweenness and reach centralities for the ten most betweenness-central stops in the NYC subway network, excluding stops on Staten Island.
+I normalise centralities to have maximum values equal to unity.
+
+```{r}
+# Collate node information
+node_data <- edges %>%
+  gather(key, stop_id, from, to) %>%
+  distinct(stop_id, route_id) %>%
+  count(stop_id, name = 'n_routes') %>%
+  left_join(nodes) %>%
+  mutate(betweenness = betweenness(net)) %>%
+  left_join(count(reach_data, stop_id, wt = area, name = 'reach')) %>%
+  mutate_at(c('betweenness', 'reach'), function(x) x / max(x))
+
+# Generate table
+node_data %>%
+  select(stop_name, stop_borough, betweenness, reach) %>%
+  arrange(-betweenness) %>%
+  mutate_at(c('betweenness', 'reach'), function(x) sprintf('%d (%.3f)', min_rank(-x), x)) %>%
+  head(10) %>%
+  kable(col.names = c('Stop', 'Borough', 'Betweenness rank (value)', 'Reach rank (value)'), align = 'c')
+```
+
+Grand Central is the third most reach-central stop but only the seventh most betweeness-central, contributing to `r 100 * round(1 - filter(node_data, stop_id == 610)$betweenness, 2)`% fewer shortest paths than Lexington Avenue/59th Street station.
+Broadway Junction is less reach-central than Grand Central---consistent with the chart above---but almost as betweeness-central.
+The figure below shows the distribution of betweenness and reach centrality across the `r gorder(net)` stops in the network.
+
+```{r comparison, fig.height = 5}
+# Define separate networks for facetting
+g1 <- net %>%
+  left_join(node_data) %>%
+  mutate(key = 'Betweenness',
+         value = betweenness / max(betweenness))
+g2 <- net %>%
+  left_join(node_data) %>%
+  mutate(key = 'Reach',
+         value = (reach / max(reach)) ^ 5)
+
+# Generate plot
+bind_graphs(g1, g2) %>%
+  ggraph(net_layout) +
+  geom_edge_link0(alpha = 0.1) +
+  geom_node_point(aes(col = value), show.legend = F) +
+  coord_cartesian(clip = 'off') +
+  facet_nodes(~key) +
+  labs(title = 'Comparing betweenness and reach centralities',
+       subtitle = 'Brighter nodes are more central') +
+  scale_y_continuous(expand = c(0, 0)) +
+  scale_colour_viridis_c(option = 'B')
+```
+
+```{r eval = F}
+# Count represented routes among most betweenness-central stops
+travel_times %>%
+  gather(key, stop_id, source, target) %>%
+  distinct(stop_id, route_id) %>%
+  inner_join(top_n(node_data, 10, betweenness)) %>%
+  count(route_id)
+```
+
+Betweenness-central nodes belong to many shortest paths, and so tend to congregate along bottlenecks and highways.
+For example, seven of the ten most betweenness-central stops in the NYC subway network provide access to the Lexington Avenue Express (routes 4, 5 and 5X), which is the fastest---but not only---route between Brooklyn and the Bronx.
+In contrast, reach centrality emanates from mid/lower Manhattan, which (i) is geographically dense with mutually nearby subway stops and (ii) contains the fastest inter-borough connections.
+
+```{r session-info}
+options(width = 80)
+writeLines(capture.output(sessioninfo::session_info()), 'session.log')
+```
+
+[nyctrains]: https://github.com/bldavies/nyctrains
+
+[^reach]: This approach could be improved by adjusting for variation in stops' access to unique amenities so that some stops are more valuable to reach than others. However, this variation is not observable in my data.
