@@ -3,24 +3,73 @@ title: Habitat Choices of First-Generation Pokémon
 tags: [networks, rstats, Pokémon]
 ---
 
+```{r setup, echo = F, message = F, warning = F}
+knitr::opts_chunk$set(message = F, warning = F,
+                      dev = 'svg', fig.ext = 'svg',
+                      fig.width = 8, fig.height = 4)
 
+library(dplyr)
+library(ggplot2)
+library(igraph)
+library(knitr)
+library(readr)
+library(tools)
+
+# Type colours from https://bulbapedia.bulbagarden.net/wiki/Category:colour_templates
+types <- read_csv('types.csv')
+
+theme_set(
+  theme_minimal(base_size = 11) +
+    theme(panel.grid.minor = element_blank(),
+          plot.subtitle = element_text(margin = margin(b = 10), size = 13),
+          plot.title = element_text(face = 'bold', margin = margin(b = 10), size = 16),
+          strip.text = element_text(face = 'bold', hjust = 0, margin = margin(b = 5), size = 12))
+)
+```
 
 In this post, I use R's [igraph](http://igraph.org) package to analyse the cohabitation network among wild Pokémon species.
 The underlying data come from [the GitHub repository](https://github.com/veekun/pokedex) behind [veekun](https://veekun.com).
 
 ## Matching species with their habitats
 
+```{r save-cache, echo = F, eval = F}
+get_data <- function(x, ...) {
+  readr::read_csv(
+    paste0('https://raw.githubusercontent.com/veekun/pokedex/',
+           '5f15698876e0726cd3a4f22e16e0ef9b32c30b73',  # Fix version
+           '/pokedex/data/csv/', x, '.csv'),
+    ...
+  )
+}
 
+encounters <- get_data('encounters') %>%
+  filter(version_id <= 3) %>%  # Restrict to Gen I
+  select(location_area_id, pokemon_id) %>%
+  left_join(get_data('location_areas'), by = c('location_area_id' = 'id')) %>%
+  select(-game_index, -identifier) %>%
+  left_join(get_data('locations'), by = c('location_id' = 'id')) %>%
+  rename(location = identifier) %>%
+  left_join(get_data('pokemon'), by = c('pokemon_id' = 'id')) %>%
+  rename(species = identifier) %>%
+  left_join(filter(get_data('pokemon_types'), slot == 1), by = 'pokemon_id') %>%
+  left_join(get_data('types'), by = c('type_id' = 'id')) %>%
+  rename(type = identifier) %>%
+  select(location, species, type) %>%
+  distinct(location, species, .keep_all = TRUE)
 
+write_csv(encounters, 'encounters.csv')
+```
 
+```{r load-cache, echo = F}
+encounters <- read_csv('encounters.csv')
+```
 
 I infer habitats from random encounter events in the international versions of Pokémon Red, Blue and Yellow.[^random]
 I store these events in a data frame named `encounters`.
 Each encounter has three attributes: the `location`, the `species` encountered and that species' primary `type`.
 I use these data to generate a species-location incidence matrix:
 
-
-```r
+```{r}
 habits <- table(encounters$species, encounters$location)
 ```
 
@@ -28,8 +77,7 @@ The rows and columns of `habits` count where species habitate.
 For example, summing the rows of `habits` yields the number of unique habitats for each species.
 I store these sums as follows:
 
-
-```r
+```{r}
 pokemon <- tibble(species = rownames(habits), ubiquity = rowSums(habits))
 ```
 
@@ -40,20 +88,36 @@ The boxplots below show the distribution of `ubiquity` by species' primary type.
 Water-types have the highest median ubiquity, closely followed by Grass- and Normal-types.
 Species with Dragon, Fairy or Ghost as their primary type each habitate in a single location.
 
-![](ubiquity-distribution-1.svg)
+```{r ubiquity-distribution, echo = F}
+pokemon <- encounters %>%
+  distinct(species, type) %>%
+  left_join(pokemon) %>%
+  left_join(types) %>%
+  arrange(species) %>%
+  mutate_at(c('species', 'type'), toTitleCase)
+
+pokemon %>%
+  ggplot(aes(reorder(type, -ubiquity, median), ubiquity)) +
+  geom_boxplot(aes(fill = colour), show.legend = F) +
+  coord_cartesian(clip = 'off') +
+  labs(x = 'Type',
+       y = 'Ubiquity', 
+       title = 'Ubiquity distribution by primary type') +
+  scale_fill_identity() +
+  scale_x_discrete(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0), limits = c(0, NA))
+```
 
 The column sums of `habits` count the number of unique species that habitate in each location.
 I store these sums as follows:
 
-
-```r
+```{r}
 locations <- tibble(name = colnames(habits), diversity = colSums(habits))
 ```
 
 I compute the mean value of `diversity` across the locations in which each species habitates via
 
-
-```r
+```{r}
 pokemon$mean_diversity <- colSums(t(habits) * locations$diversity) / pokemon$ubiquity
 ```
 
@@ -61,7 +125,20 @@ pokemon$mean_diversity <- colSums(t(habits) * locations$diversity) / pokemon$ubi
 Thus, on average, more ubiquitous species tend to live in less diverse locations.
 However, this relationship is skewed by a large number of species that cohabitate in one or two locations as shown in the chart below.
 
-![](ubiquity-mean-diversity-1.svg)
+```{r ubiquity-mean-diversity, echo = F}
+set.seed(0)
+pokemon %>%
+  ggplot(aes(ubiquity, mean_diversity)) +
+  geom_jitter(aes(col = colour), width = 0.2, height = 0.2) +
+  geom_smooth(method = 'lm', colour = 'black', se = F) +
+  coord_cartesian(clip = 'off') +
+  labs(x = 'Ubiquity',
+       y = 'Mean diversity',
+       title = 'Ubiquity and mean diversity by species') +
+  scale_x_continuous(expand = c(0, 0), limits = c(0, NA)) +
+  scale_y_continuous(expand = c(0, 0), limits = c(0, NA)) +
+  scale_colour_identity()
+```
 
 The chart plots `mean_diversity` against `ubiquity`, along with the least-squares line of best fit.[^jitter]
 The top-left cluster comprises species that exclusively habitate inside Cerulean Cave or the Kanto Safari Zone.
@@ -74,8 +151,7 @@ The more frequently two species cohabitate, the stronger is their implied social
 The number of locations in which two species cohabitate is equal to the cross product of the two corresponding rows of `habits`.
 I store these counts in a symmetric species-species adjacency matrix:
 
-
-```r
+```{r}
 cohabits <- habits %*% t(habits)
 ```
 
@@ -92,8 +168,7 @@ The [Jaccard index](https://en.wikipedia.org/wiki/Jaccard_index) provides a conv
 The index counts the number of locations in which two species cohabitate as a proportion of the locations in which at least one of those species habitates.
 I define a function `jaccard` for computing Jaccard indices from an arbitrary cohabitation matrix `C` as follows.
 
-
-```r
+```{r}
 jaccard <- function (C) {
   U <- matrix(rep(diag(C), nrow(C)), ncol = nrow(C))
   H <- U + t(U) - C
@@ -108,8 +183,7 @@ The more similar two species' habitat choices, the higher is their shared Jaccar
 
 I define the cohabitation network `net` as the weighted graph with adjacency matrix equal to `jaccard(cohabits)`:
 
-
-```r
+```{r}
 library(igraph)
 
 net <- graph.adjacency(jaccard(cohabits), weighted = T, mode = 'undirected')
@@ -135,8 +209,7 @@ I choose the number of such edges to be equal to the order of `net` so as to ach
 
 I define a function `augmented_msf` for identifying the augmented MSF of a graph `G` as follows.
 
-
-```r
+```{r}
 augmented_msf <- function (G) {
   E(G)$id <- seq(gsize(G))
   msf_ids <- E(mst(G, -E(G)$weight))$id
@@ -157,7 +230,20 @@ The augmented MSF of `net` contains 242 edges and is drawn below.
 Each vertex is coloured according to the corresponding species' primary type and scaled according to that species' ubiquity.
 I use [Fruchterman and Reingold's (1991)](http://onlinelibrary.wiley.com/doi/10.1002/spe.4380211102/abstract) force-directed algorithm for determining vertices' layout.
 
-![](augmented-msf-1.svg)
+```{r augmented-msf, echo = F, fig.width = 4}
+E(net)$color <- '#dddddd'
+V(net)$color <- as.character(pokemon$colour)
+V(net)$frame.color <- V(net)$color
+V(net)$label <- NA
+V(net)$size <- 10 * (pokemon$ubiquity / max(pokemon$ubiquity)) ^ 0.33
+
+aug_msf <- augmented_msf(net)
+
+set.seed(0)
+aug_msf_layout <- layout_nicely(aug_msf)
+par(mar = rep(0, 4))
+plot(aug_msf, layout = aug_msf_layout)
+```
 
 The cohabitation network has two components: one large component of 98 different species and many types, and one isolated pair of Ground-types.
 The latter contains Diglett and Dugtrio, which habitate exclusively in Diglett's Cave.
@@ -174,15 +260,15 @@ The structure of `net` reveals information about species' social influence.
 A simple measure of such influence is the [degree centrality](https://en.wikipedia.org/wiki/Centrality#Degree_centrality) of each species, which counts the number of other cohabitating species.
 The table below displays the species with the highest six degree centralities in the cohabitation network.
 
-
-| Species  |  Type  | Degree |
-|:--------:|:------:|:------:|
-| Goldeen  | Water  |   82   |
-| Magikarp | Water  |   82   |
-| Poliwag  | Water  |   82   |
-|  Krabby  | Water  |   69   |
-| Kingler  | Water  |   64   |
-|  Ditto   | Normal |   56   |
+```{r, echo = F}
+pokemon$degree <- degree(net)
+pokemon %>%
+  select(species, type, degree) %>%
+  arrange(-degree) %>%
+  head(6) %>%
+  `colnames<-`(toTitleCase(colnames(.))) %>%
+  kable(align = 'c')
+```
 
 The three most degree-central species are also the three most ubiquitous and cohabitate with 82 of the 99 other species in my sample.
 Eight of the 10 most degree-central species are Water-types.
@@ -194,21 +280,36 @@ The six most betweenness-central species are tabulated below.
 Goldeen, Magikarp and Poliwag are important conduits of information due to their high ubiquity.
 Cubone takes fifth place because it is the only species through which Gastly and Haunter---both found exclusively inside Pokémon Tower---can communicate with species in the Safari Zone.
 
-
-| Species  | Betweenness |
-|:--------:|:-----------:|
-| Goldeen  |   269.15    |
-| Magikarp |   269.15    |
-| Poliwag  |   269.15    |
-|  Ditto   |   202.20    |
-|  Cubone  |   190.00    |
-|  Krabby  |   169.77    |
+```{r, echo = F}
+pokemon$betweenness <- round(betweenness(net, weights = rep(1, gsize(net))), 2)
+pokemon %>%
+  select(species, betweenness) %>%
+  arrange(-betweenness) %>%
+  head(6) %>%
+  `colnames<-`(toTitleCase(colnames(.))) %>%
+  kable(align = 'c')
+```
 
 The chart below compares species' betweenness and degree centralities.
 With the exception of Cubone, more betweenness-central species tend to have more cohabitants.
 Water-types are relatively inefficient at accumulating betweenness centrality when they expand their social network, whereas Electric-types appear to gain a relatively large amount of betweenness centrality per extra cohabitant.
 
-![](betweenness-degree-1.svg)
+```{r betweenness-degree, echo = F}
+label_text <- rep(NA, nrow(pokemon))
+label_text[which(pokemon$species == 'Cubone')] <- 'Cubone'
+set.seed(0)
+pokemon %>%
+  ggplot(aes(degree, betweenness)) +
+  geom_jitter(aes(colour = colour), width = 0.1, height = 2) +
+  geom_text(label = label_text, vjust = -1) +
+  coord_cartesian(clip = 'off') +
+  labs(x = 'Degree',
+       y = 'Betweenness',
+       title = 'Degree and betweenness centrality by species') +
+  scale_colour_identity() +
+  scale_x_continuous(expand = c(0, 0), limits = c(0, NA)) +
+  scale_y_continuous(expand = c(0, 0), limits = c(-2, NA))
+```
 
 Species with densely connected social networks are unlikely to be very betweenness-central because their cohabitants can share information with each other directly.
 The probability that two of a species' cohabitants also cohabitate is given by the [transitivity](https://en.wikipedia.org/wiki/Clustering_coefficient#Local_clustering_coefficient) of the corresponding vertex in `net`.
@@ -220,7 +321,21 @@ The exceptions to this trend are Cubone and Pikachu, which have unusually high a
 Pikachu habitate in two locations (Viridian Forest and the Kanto Power Plant), each of which contain a small number of species that frequently cohabitate and that generally have much higher degree centralities.
 As a result, Pikachu have an unusually low betweenness centrality because their cohabitants are able to communicate with each other directly and with other species indirectly through their wider social networks.
 
-![](betweenness-transitivity-1.svg)
+```{r betweenness-transitivity, echo = F}
+label_text[which(pokemon$species == 'Pikachu')] <- 'Pikachu'
+pokemon$transitivity <- round(transitivity(net, type = 'local'), 2)
+pokemon %>%
+  ggplot(aes(transitivity, betweenness)) +
+  geom_jitter(aes(colour = colour), width = 0.01, height = 3) +
+  geom_text(label = label_text, vjust = -1) +
+  coord_cartesian(clip = 'off') +
+  labs(x = 'Transitivity',
+       y = 'Betweenness',
+       title = 'Transitivity and betweenness centrality by species') +
+  scale_colour_identity() +
+  scale_x_continuous(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0))
+```
 
 ## The co-containment network
 
@@ -228,8 +343,7 @@ I recycle my method of analysing the cohabitation network among species in order
 In the latter network, two locations are adjacent if and only if they contain a common species.
 I generate the co-containment network from a binary location-location adjacency matrix as follows.
 
-
-```r
+```{r}
 cocontains <- t(habits) %*% habits
 cocontains <- pmin(cocontains, 1)  # Remove parallel edges
 location_net <- graph.adjacency(cocontains, mode = 'undirected')
@@ -241,32 +355,41 @@ The locations with the six highest mean ubiquities are tabulated below.
 Viridian City and Pallet Town have the least unique demographies; the few species that habitate in these locations tend to also habitate in many other locations.
 That Viridian City's mean ubiquity and degree centrality are similar suggests that its four habitants usually cohabitate.
 
+```{r echo = F}
+locations <- locations %>%
+  mutate(name = toTitleCase(gsub('-', ' ', name))) %>%
+  mutate(degree = degree(location_net),
+         mean_ubiquity = colSums(habits * pokemon$ubiquity) / locations$diversity, 2,
+         betweenness = betweenness(location_net))
 
-|    Location     | Mean Ubiquity | Degree | Diversity |
-|:---------------:|:-------------:|:------:|:---------:|
-|  Viridian City  |     21.25     |   25   |     4     |
-|   Pallet Town   |     18.40     |   25   |     5     |
-|  Celadon City   |     16.40     |   25   |     5     |
-|  Cerulean City  |     16.17     |   25   |     6     |
-| Cinnabar Island |     16.00     |   25   |     7     |
-|     Route 1     |     16.00     |   24   |     2     |
+locations %>%
+  mutate(name = gsub('Kanto ', '', name)) %>%
+  select(location = name, mean_ubiquity, degree, diversity) %>%
+  arrange(-mean_ubiquity) %>%
+  head(6) %>%
+  `colnames<-`(toTitleCase(gsub('_', ' ', colnames(.)))) %>%
+  kable(align = 'c', digits = 2)
+```
 
 Finally, the table below shows the top six most betweenness-central locations.
 Route 10 appears to be an important junction for information flow between species.
 This is likely due to the diversity of its contained species, and that Routes 10 and 11 boast the highest degree centralities in the co-containment network.
 The Safari Zone, another highly diverse location, is also an important information relay.
 
+```{r echo = F}
+locations %>%
+  mutate(name = gsub('Kanto ', '', name)) %>%
+  select(location = name, betweenness, degree, diversity) %>%
+  arrange(-betweenness) %>%
+  head(6) %>%
+  `colnames<-`(toTitleCase(gsub('_', ' ', colnames(.)))) %>%
+  kable(align = 'c', digits = 2)
+```
 
-|   Location    | Betweenness | Degree | Diversity |
-|:-------------:|:-----------:|:------:|:---------:|
-|   Route 10    |    58.54    |   39   |    18     |
-|  Safari Zone  |    55.89    |   33   |    27     |
-|   Route 11    |    23.03    |   39   |    15     |
-| Cerulean Cave |    20.28    |   31   |    28     |
-|    Route 6    |    18.38    |   38   |    16     |
-| Sea Route 21  |    18.38    |   38   |    13     |
-
-
+```{r session-info, echo = F}
+options(width = 80)
+writeLines(capture.output(sessioninfo::session_info()), 'session.log')
+```
 
 [^random]: Restricting to random encounters excludes starter Pokémon, species obtainable only through evolution and "special" encounters (e.g., the Electrodes inside the Kanto Power Plant and the legendary birds) from the sample.
 
