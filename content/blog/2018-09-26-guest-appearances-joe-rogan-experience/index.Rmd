@@ -3,7 +3,35 @@ title: Guest Appearances on *The Joe Rogan Experience*
 tags: [Google Trends, Joe Rogan, signal detection]
 ---
 
+```{r setup, echo = F, message = F, warning = F}
+knitr::opts_chunk$set(echo = F, message = F, warning = F,
+                      dev = 'svg', fig.ext = 'svg',
+                      fig.width = 8, fig.height = 4.5)
 
+library(dplyr)
+library(ggplot2)
+library(lubridate)
+library(knitr)
+library(readr)
+library(tidyr)
+library(zoo)
+
+import_data <- function(x) {
+  base_url <- 'https://raw.githubusercontent.com/bldavies/jre-guests/master/data/'
+  readr::read_csv(paste0(base_url, x, '.csv'))
+}
+episodes <- import_data('episodes')
+guests <- import_data('guests')
+popularity <- import_data('popularity')
+
+theme_set(
+  theme_minimal(base_size = 11) +
+    theme(panel.grid.minor = element_blank(),
+          plot.subtitle = element_text(margin = margin(b = 10), size = 13),
+          plot.title = element_text(face = 'bold', margin = margin(b = 10), size = 16),
+          strip.text = element_text(face = 'bold', hjust = 0, margin = margin(b = 5), size = 12))
+)
+```
 
 [*The Joe Rogan Experience*](https://www.joerogan.com/#jre-section) (*JRE*) is a podcast hosted by comedian and mixed martial arts (MMA) commentator Joe Rogan.
 In this post, I analyse the relationship between *JRE* guest appearances and popularity using data from [Google Trends](https://trends.google.com/trends).
@@ -28,7 +56,32 @@ I use these data to create [a list of guests](https://github.com/bldavies/jre-gu
 The barchart below plots the number of episodes, unique guests and first appearances by year for 2010 through 2018.
 On average, the number of *JRE* episodes and guests increased each year, although the proportion of guests appearing on the show for the first time appears to be falling.
 
-![](annual-counts-1.svg)
+```{r annual-counts}
+guests %>%
+  left_join(episodes) %>%
+  mutate(episode_year = year(floor_date(episode_date, 'year'))) %>%
+  filter(episode_year >= 2010) %>%
+  group_by(guest_name) %>%
+  mutate(first_appearance = episode_number == min(episode_number)) %>%
+  group_by(episode_year) %>%
+  summarise(num_episodes = n_distinct(episode_number),
+            num_guests = n_distinct(guest_name),
+            num_new_guests = sum(first_appearance)) %>%
+  ungroup() %>%
+  gather(key, value, -episode_year) %>%
+  ggplot(aes(factor(episode_year), value, fill = key)) +
+  geom_col(position = 'dodge') +
+  labs(x = 'Year',
+       y = 'Count',
+       title = 'Annual JRE episode, guest and first appearance counts',
+       fill = NULL) +
+  scale_x_discrete(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) +
+  scale_fill_brewer(labels = c('Episodes', 'Unique guests', 'First appearances'), palette = 'Set1') +
+  theme(legend.justification = c(0, 1),
+        legend.position = c(0, 1),
+        panel.grid.major.x = element_blank())
+```
 
 ## Estimating popularity
 
@@ -44,7 +97,18 @@ The chart below plots Joe's estimated popularity during my sample period.
 Web search interest for the phrase "Joe Rogan" more than doubled between September 2013 and September 2018.
 The spike during the first week of September 2018 marks [*JRE* episode #1169 with Elon Musk](https://www.youtube.com/watch?v=ycPr5-27vSI).
 
-![](joe-rogan-popularity-1.svg)
+```{r joe-rogan-popularity}
+popularity %>%
+  filter(keyword == 'Joe Rogan') %>%
+  ggplot(aes(date, interest)) +
+  geom_line() +
+  labs(x = 'Date',
+       y = 'Search interest',
+       title = 'Web search interest for the phrase \"Joe Rogan\"',
+       subtitle = 'Based on Google Trends data for the USA') +
+  scale_x_date(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0), limits = c(0, NA))
+```
 
 ## Identifying popularity spikes
 
@@ -55,13 +119,77 @@ I allow this mean to change over time by defining a moving average (MA) series, 
 For example, the chart below plots the actual, moving average and demeaned search interest series for Dave Rubin---political commentator and host of [*The Rubin Report*](https://www.rubinreport.com)---who appeared on *The Joe Rogan Experience* in the three weeks identified by the dashed vertical lines.
 Dave's gradual rise in popularity since late 2015 is punctuated by three spikes in search interest that coincide with his *JRE* appearances.
 
-![](dave-rubin-popularity-1.svg)
+```{r dave-rubin-popularity}
+appearances <- episodes %>%
+  left_join(guests) %>%
+  mutate(episode_week = floor_date(episode_date, 'week', week_start = 6)) %>%
+  group_by(guest_name, episode_week, episode_number) %>%
+  summarise(appears = TRUE) %>%
+  ungroup()
+
+name <- 'Dave Rubin'
+popularity %>%
+  filter(keyword == name) %>%
+  mutate(ma = rollmean(interest, 7, fill = NA),
+         dm = interest - ma) %>%
+  gather(key, value, -date, -keyword) %>%
+  mutate(key = ifelse(key == 'ma', 'Moving average', ifelse(key == 'dm', 'Demeaned', 'Actual')),
+         key = factor(key, levels = c('Actual', 'Moving average', 'Demeaned')),
+         facet = key == 'Demeaned') %>%
+  ggplot(aes(date, value)) +
+  geom_line(aes(col = key), show.legend = F) +
+  geom_vline(data = filter(appearances, guest_name == name), aes(xintercept = episode_week), col = 'grey50', lty = 2) +
+  facet_wrap(~key, nrow = 3) +
+  labs(x = 'Date',
+       y = 'Search interest',
+       title = 'Web search interest for the phrase \"Dave Rubin\"',
+       subtitle = 'Dashed lines indicate JRE appearances',
+       col = 'Series') +
+  scale_x_date(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) +
+  scale_colour_brewer(palette = 'Set1')
+```
 
 I construct the demeaned search interest series for each guest who appears on *The Joe Rogan Experience* during my sample period.
 I standardise each of these series to have zero mean and unit variance across the entire sample period in order to make the series comparable.
 The distributions of guests' standardised demeanded search interest in the weeks surrounding their appearances are shown below.
 
-![](densities-1.svg)
+```{r densities}
+descriptions <- c('Two weeks before',
+                  'One week before',
+                  'Week of appearance',
+                  'One week after',
+                  'Two weeks after',
+                  'Three weeks after')
+popularity %>%
+  group_by(keyword) %>%
+  mutate(z_lag_0 = scale(interest - rollmean(interest, 7, fill = NA))) %>%
+  ungroup() %>%
+  mutate(z_lag_2 = lag(z_lag_0, 2),
+         z_lag_1 = lag(z_lag_0),
+         z_lead_1 = lead(z_lag_0),
+         z_lead_2 = lead(z_lag_0, 2),
+         z_lead_3 = lead(z_lag_0, 3)) %>%
+  left_join(appearances, by = c('keyword' = 'guest_name', 'date' = 'episode_week')) %>%
+  filter(appears) %>%
+  gather(key, value, starts_with('z')) %>%
+  separate(key, c('key', 'suffix', 'order')) %>%
+  mutate(order = as.integer(order),
+         order = ifelse(suffix == 'lag', -order, order),
+         description = descriptions[order + 3],
+         description = factor(description, levels = descriptions)) %>%
+  ggplot() +
+  geom_density(aes(value), fill = 'grey80') +
+  geom_vline(aes(xintercept = 0), col = 'grey50') +
+  coord_cartesian(clip = 'off') +
+  facet_wrap(~ description) +
+  labs(x = 'Standardised demeaned search interest',
+       y = 'Probability density',
+       title = 'Web search interest near JRE guest appearances',
+       subtitle = 'Densities show distributions of standardised demeaned search interest') +
+  scale_x_continuous(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0))
+```
 
 In the two weeks prior to appearing on *The Joe Rogan Experience*, guests' popularities are centred about a standard deviation below their MA trend value, reflecting a rise in that value due to an impending upward shock.
 Appearances coincide with a shift in probability density towards positive deviations from local means.
@@ -83,7 +211,80 @@ For example, the chart below plots the actual, filtering and signal series for D
 I compute the filtering means and standard deviations with `lag` equal to 12, and set the filtering threshold at two standard deviations from the filtering mean.
 Positive signals register when the actual series deviates above the grey band.
 
-![](dave-rubin-signal-1.svg)
+```{r dave-rubin-signal}
+# See https://stackoverflow.com/questions/22583391/peak-signal-detection-in-realtime-timeseries-data/22640362#22640362
+realtime_spikes <- function (series, lag, threshold, influence) {
+  signal <- rep(0, length(series))
+  filter <- series[0 : lag]
+  filter_mean <- NULL
+  filter_sd <- NULL
+  filter_mean[lag] <- mean(filter)
+  filter_sd[lag] <- sd(filter)
+  for (obs in (lag + 1) : length(series)) {
+    if (abs(series[obs] - filter_mean[obs - 1]) > threshold * filter_sd[obs - 1]) {
+      if (series[obs] > filter_mean[obs - 1]) {
+        signal[obs] <- 1
+      } else {
+        signal[obs] <- -1
+      }
+      filter[obs] <- influence * series[obs] + (1 - influence) * filter[obs - 1]
+    } else {
+      signal[obs] <- 0
+      filter[obs] <- series[obs]
+    }
+    filter_mean[obs] <- mean(filter[(obs - lag) : obs])
+    filter_sd[obs] <- sd(filter[(obs - lag) : obs])
+  }
+  return (tibble(signal = signal, filter_mean = filter_mean, filter_sd = filter_sd))
+}
+
+keywords <- sort(unique(popularity$keyword))
+lags <- c(3, 6, 9, 12)
+thresholds <- c(1, 2, 3, 4)
+influence <- 0.5
+data_list <- vector('list', length(keywords) * length(lags) * length(thresholds))
+for (i in seq_along(keywords)) {
+  for (j in seq_along(lags)) {
+    for (k in seq_along(thresholds)) {
+      idx <- (i - 1) * length(lags) * length(thresholds) + (j - 1) * length(thresholds) + k
+      keyword_popularity <- filter(popularity, keyword == keywords[i])
+      data_list[[idx]] <- realtime_spikes(keyword_popularity$interest, lags[j], thresholds[k], influence)
+      data_list[[idx]]$date <- keyword_popularity$date
+      data_list[[idx]]$keyword <- keywords[i]
+      data_list[[idx]]$lag <- lags[j]
+      data_list[[idx]]$threshold <- thresholds[k]
+      data_list[[idx]]$influence <- influence
+    }
+  }
+}
+algorithm_data <- do.call(rbind, data_list)
+
+algorithm_data %>%
+  filter(keyword == name,
+         lag == 12,
+         threshold == 2) %>%
+  left_join(popularity) %>%
+  mutate(filter_ub = filter_mean + threshold * filter_sd,
+         filter_lb = filter_mean - threshold * filter_sd) %>%
+  ggplot(aes(date)) +
+  geom_ribbon(aes(ymin = filter_lb, ymax = filter_ub), fill = 'grey50', alpha = 0.25) +
+  geom_line(aes(y = interest, col = 'Actual')) +
+  geom_line(aes(y = filter_mean, col = 'Filtering mean')) +
+  geom_line(aes(y = filter_ub, col = 'Filtering threshold')) +
+  geom_line(aes(y = filter_lb, col = 'Filtering threshold')) +
+  geom_line(aes(y = 10 * signal - 25, col = 'Real-time spike signal')) +
+  geom_vline(data = filter(appearances, guest_name == name), aes(xintercept = episode_week), col = 'grey50', lty = 2) +
+  labs(x = 'Date', 
+       y = 'Search interest',
+       title = 'Web search interest for the phrase \"Dave Rubin\"',
+       subtitle = 'Dashed lines indicate JRE appearances',
+       col = 'Series') +
+  scale_colour_brewer(palette = 'Set1') +
+  scale_x_date(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0), breaks = c(-25, 0, 25, 50, 75, 100), labels = c('', 0, 25, 50, 75, 100)) +
+  theme(legend.justification = c(0, 1),
+        legend.position = c(0, 1))
+```
 
 The real-time algorithm identifies spikes coincident with each of Dave's appearances on *The Joe Rogan Experience*.
 However, it also identifies false positives that reflect other sources of sudden popularity booms.
@@ -91,13 +292,22 @@ However, it also identifies false positives that reflect other sources of sudden
 I compute the empirical probability that the real-time algorithm detects a spike in guests' popularity conditional upon their appearing on *The Joe Rogan Experience* in the same or previous week.[^lagged-signal]
 The table below reports this probability for a range of `lag` and `threshold` values, and with `influence` equal to 0.5.[^influence-choice]
 
-
-| Pr(Spike &#124; Appears) | `lag = 3` | `lag = 6` | `lag = 9` | `lag = 12` |
-|:------------------------:|:---------:|:---------:|:---------:|:----------:|
-|   **`threshold = 1`**    |   0.940   |   0.923   |   0.905   |   0.892    |
-|   **`threshold = 2`**    |   0.896   |   0.866   |   0.845   |   0.824    |
-|   **`threshold = 3`**    |   0.837   |   0.808   |   0.771   |   0.748    |
-|   **`threshold = 4`**    |   0.791   |   0.753   |   0.725   |   0.696    |
+```{r}
+algorithm_data %>%
+  left_join(appearances, by = c('keyword' = 'guest_name', 'date' = 'episode_week')) %>%
+  group_by(keyword) %>%
+  mutate(detected = (signal == 1) | (lead(signal) == 1)) %>%
+  ungroup() %>%
+  filter(appears) %>%
+  group_by(lag, threshold) %>%
+  summarise(rate = sum(appears & detected) / sum(appears)) %>%
+  ungroup() %>%
+  spread(lag, rate) %>%
+  mutate_if(is.numeric, round, 3) %>%
+  mutate(threshold = paste0('**`threshold = ', threshold, '`**')) %>%
+  kable(col.names = c('Pr(Spike | Appears)', '`lag = 3`', '`lag = 6`', '`lag = 9`', '`lag = 12`'),
+        digits = 3, align = 'c')
+```
 
 Increasing `lag` or `threshold` lowers the detection rate, indicating that the real-time algorithm is more likely to identify guest appearances when it is more adaptive and less picky.
 The negative relationship between detection rate and `lag` (with `threshold` held constant) suggests that, on average, guests' popularities are more volatile over longer horizons: the further back you look in search history, the more likely you are to remember shocks and so the larger new shocks must be to seem uncommon.
@@ -113,7 +323,10 @@ The false positives identified by the real-time algorithm are reminders that my 
 It would be useful to compare guests' popularity dynamics near *JRE* appearances with those near appearances on other fora.
 This comparison would help me separate the effect of increased online presense in general from the effect of appearing on *The Joe Rogan Experience* in particular, and may thereby provide stronger hints at causality.
 
-
+```{r session-info}
+options(width = 80)
+writeLines(capture.output(sessioninfo::session_info()), 'session.log')
+```
 
 [^redban]: I exclude Brian Redban's appearances prior to episode #674, when he returned as a guest for the first time after producing and co-hosting the show until late 2013.
 
