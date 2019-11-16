@@ -19,7 +19,7 @@ I exclude stops along the Staten Island Railway, which is disconnected from the 
 The plot below maps the resulting network, with nodes positioned by latitude/longitude and with edges coloured by route.
 (Some routes overlap.)
 
-![](map-1..svg)
+![](map-1.svg)
 
 Estimating Grand Central's centrality requires choosing a measure.
 One candidate is [betweenness centrality](https://en.wikipedia.org/wiki/Betweenness_centrality).
@@ -34,7 +34,7 @@ Closeness centrality measures the extent to which stops provide fast access to o
 Another way to measure such access is to count the number of stops that can be reached within a specified time.
 For example, the chart below shows the number of stops that can be reached from Grand Central and Broadway Junction within an hour.
 
-![](reach-1..svg)
+![](reach-1.svg)
 
 The number of stops reachable from Grand Central dominates the corresponding number from Brooklyn Junction for all but the smallest travel time allowances.
 One way to operationalise this fact is to observe that the area below the red curve exceeds the area below blue curve.
@@ -62,7 +62,7 @@ Grand Central is the third most reach-central stop but only the seventh most bet
 Broadway Junction is less reach-central than Grand Central---consistent with the chart above---but almost as betweeness-central.
 The figure below shows the distribution of betweenness and reach centrality across the 424 stops in the network.
 
-![](comparison-1..svg)
+![](comparison-1.svg)
 
 
 

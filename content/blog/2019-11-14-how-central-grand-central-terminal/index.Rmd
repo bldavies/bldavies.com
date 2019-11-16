@@ -5,7 +5,7 @@ tags: [networks, nyctrains, rstats, transport]
 
 ```{r setup, echo = F, message = F, warning = F}
 knitr::opts_chunk$set(echo = F, message = F, warning = F,
-                      dev = 'svg', fig.ext = '.svg', fig.width = 8, fig.height = 4.5)
+                      dev = 'svg', fig.ext = 'svg', fig.width = 8, fig.height = 4.5)
 
 # Load packages
 library(dplyr)
