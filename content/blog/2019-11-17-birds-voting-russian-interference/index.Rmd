@@ -1,0 +1,190 @@
+---
+title: Birds, Voting, and Russian Interference
+tags: [Bird of the Year, voting]
+---
+
+```{r setup, echo = F, message = F, warning = F}
+knitr::opts_chunk$set(echo = F, message = F, warning = F,
+                     dev = 'svg', fig.ext = 'svg',
+                     fig.width = 8, fig.height = 4.5)
+
+# Load packages
+library(dplyr)
+library(ggplot2)
+library(knitr)
+library(readr)
+library(scales)
+library(tidyr)
+
+# Set ggplot2 theme
+theme_set(
+  theme_minimal(base_size = 11) +
+    theme(panel.grid.minor = element_blank(),
+          plot.subtitle = element_text(margin = margin(b = 10), size = 13),
+          plot.title = element_text(face = 'bold', margin = margin(b = 10), size = 16),
+          strip.text = element_text(face = 'bold', hjust = 0, margin = margin(b = 5), size = 12))
+)
+
+# Import data
+data <- read_csv('BOTY-votes-2019.csv', col_types = cols(country = 'c'))
+```
+
+Since 2005, [Forest and Bird](https://www.forestandbird.org.nz) has run annual elections for New Zealand's [Bird of the Year](https://www.birdoftheyear.org.nz).
+This week Radio New Zealand [announced](https://www.rnz.co.nz/news/national/402986/bird-of-the-year-2019-hoiho-takes-the-winning-title) the [yellow-eyed penguin](https://en.wikipedia.org/wiki/Yellow-eyed_penguin) as 2019's winner.
+A follow-up [tweet](https://twitter.com/Forest_and_Bird/status/1193720097283567616) by Forest and Bird [raised suspicions](https://www.rnz.co.nz/news/national/403085/bird-of-the-year-russian-interest-in-contest-piques-suspicions-online) about possible Russian interference into the vote's outcome.
+
+Forest and Bird's tweet includes a world map with countries coloured by voter turnout.
+The bar chart below presents the same information in a less exciting format.[^data]
+
+```{r countries}
+# Generate plot
+countries <- c(
+  'New Zealand',
+  'United Kingdom',
+  'Australia',
+  'United States',
+  'Russian Federation',
+  'Germany',
+  'Canada',
+  'France',
+  'Netherlands',
+  'Other'
+)
+plot_data <- data %>%
+  count(country) %>%
+  mutate(country = ifelse(dense_rank(-n) <= 10, country, 'Other')) %>%
+  count(country, wt = n) %>%
+  filter(!is.na(country)) %>%
+  mutate(country = factor(country, levels = rev(countries)))
+plot_data %>%
+  ggplot(aes(country, n / 1e3)) +
+  geom_col(alpha = 0.33) +
+  geom_text(data = filter(plot_data, country == 'New Zealand'), aes(label = country), hjust = 1, nudge_y = -0.1, size = 3) +
+  geom_text(data = filter(plot_data, country != 'New Zealand'), aes(label = country), hjust = 0, nudge_y = 0.1, size = 3) +
+  coord_flip() +
+  labs(x = NULL,
+       y = 'Thousands of votes',
+       title = 'Votes for Bird of the Year 2019 by country',
+       subtitle = 'New Zealand contributed more votes than all other countries combined',
+       caption = 'Source: Forest and Bird') +
+  scale_x_discrete(expand = c(0, 0), labels = NULL) +
+  scale_y_continuous(expand = c(0, 0)) +
+  theme(axis.ticks.y = element_blank(),
+        panel.grid.major.y = element_blank())
+  
+```
+
+Russian votes account for `r comma(sum(data$country == 'Russian Federation', na.rm = T))` of the `r comma(sum(!is.na(data$country)))` votes with known country of origin.
+New Zealand contributed `r comma(sum(data$country == 'New Zealand', na.rm = T))` such votes.
+Fully `r comma(sum(is.na(data$country)))` votes had unknown origin and were excluded from the set of votes used to determine the winning bird.
+
+This year's election used an [instant-runoff](https://en.wikipedia.org/wiki/Instant-runoff_voting) system.
+Voters reported up to five of their favorite birds, ranked in order of preference.
+Beginning with voters' first preferences, birds with the least votes were eliminated sequentially and their votes reallocated to voters' next favorites.
+This process continued until one bird remained.
+
+The table below reports the last five birds eliminated by the instant-runoff process among the votes cast from anywhere, from known countries, from New Zealand, from Russia, and from known countries excluding Russia.
+The bracketed percentages represent the share of voters from each country who preferred the top two candidates in the final round.
+For example, 61.6% of New Zealanders with preferences over the yellow-eyed penguin and the kākāpō preferred the former.
+
+```{r cache, eval = F}
+# Put votes in tidy format
+votes <- data %>%
+  mutate(voter = row_number()) %>%
+  gather(rank, candidate, vote_1:vote_5) %>%
+  mutate(rank = as.integer(gsub('vote_', '', rank))) %>%
+  filter(!is.na(candidate)) %>%
+  group_by(voter) %>%
+  mutate(rank = dense_rank(rank)) %>%
+  ungroup() %>%
+  arrange(voter, rank)
+
+# Define function for computing results of instant runoff vote
+get_results <- function(votes) {
+  
+  # Initialise results
+  n_candidates <- n_distinct(votes$candidate)
+  res <- tibble(
+    candidate = rep('', n_candidates),
+    losing_votes = rep(0, n_candidates),
+    possible_votes = rep(0, n_candidates)
+  )
+  
+  # Iteratively allocate last place candidates to next preferred
+  remaining_votes <- votes
+  for (i in seq_len(nrow(res) - 1)) {
+    counts <- remaining_votes %>%
+      filter(rank == 1) %>%
+      count(candidate)
+    res$candidate[i] <- slice(counts, which.min(n))$candidate
+    res$losing_votes[i] <- min(counts$n)
+    res$possible_votes[i] <- sum(counts$n)
+    remaining_votes <- remaining_votes %>%
+      filter(candidate != res$candidate[i]) %>%
+      group_by(voter) %>%
+      mutate(rank = dense_rank(rank)) %>%
+      ungroup()
+  }
+  
+  # Identify winner
+  res$candidate[n_candidates] <- remaining_votes$candidate[1]
+  res$losing_votes[n_candidates] <- nrow(remaining_votes)
+  res$possible_votes[n_candidates] <- nrow(remaining_votes)
+  
+  # Output results
+  res
+}
+
+# Compute results
+results_tot <- get_results(votes)
+results_known <- get_results(filter(votes, !is.na(country)))
+results_nzl <- get_results(filter(votes, country == 'New Zealand'))
+results_rus <- get_results(filter(votes, country == 'Russian Federation'))
+results_norus <- get_results(filter(votes, country != 'Russian Federation' & !is.na(country)))
+
+# Collate data
+table_data <- bind_rows(
+  mutate(results_tot, source = 'All countries'),
+  mutate(results_known, source = 'Known countries'),
+  mutate(results_nzl, source = 'New Zealand'),
+  mutate(results_rus, source = 'Russia'),
+  mutate(results_norus, source = 'Known countries ex. Russia')
+)
+
+# Save cache
+write_csv(table_data, 'cache.csv')
+```
+
+```{r table}
+# Load cache
+table_data <- read_csv('cache.csv')
+
+# Generate table
+table_data %>%
+  group_by(source) %>%
+  mutate(rank = dense_rank(-losing_votes)) %>%
+  arrange(rank) %>%
+  # Compute preferences in final round
+  mutate(share = case_when(rank == 2 ~ losing_votes / possible_votes,
+                           rank == 1 ~ 1 - (lead(losing_votes) / lead(possible_votes)),
+                           T ~ 0)) %>%
+  ungroup() %>%
+  filter(rank <= 5) %>%
+  # Apply formatting
+  mutate(candidate = paste0(candidate, ifelse(rank <= 2, paste0(' (', sprintf('%.1f', 100 * share), '%)'), ''))) %>%
+  select(Place = rank, source, candidate) %>%
+  spread(source, candidate) %>%
+  select(c(1, 2, 3, 5, 6, 4)) %>%
+  kable(align = 'c')
+```
+
+Excluding votes from unknown countries did not affect which bird won.
+New Zealand voters got the outcome for which they voted, whereas Russian voters would have crowned the kākāpō.
+Removing Russian votes wouldn't have changed the election outcome---to the extent that Russians did interfere with the vote, their interference was not successful.
+
+```{r session-info}
+options(width = 80)
+writeLines(capture.output(sessioninfo::session_info()), 'session.log')
+```
+
+[^data]: The data used in this post are copyright Forest and Bird, and are released under a [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) license. They are available [here](https://www.dragonfly.co.nz/news/2019-11-12-boty.html).
