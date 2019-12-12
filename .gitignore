@@ -2,5 +2,6 @@ _cv
 .Rproj.user
 content/blog/[a-z]*/
 _*.md
+*.Rproj
 Makefile
 serve
