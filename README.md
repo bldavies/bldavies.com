@@ -14,6 +14,6 @@ I convert such posts to Markdown using `R/build.R`.
 
 ## License
 
-Except where stated otherwise, all website content is licensed under a [Creative Commons Attribution-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-sa/4.0/).
+Except where stated otherwise, all website content is licensed under a [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) license.
 
 [site-url]: https://bldavies.com/

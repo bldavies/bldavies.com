@@ -11,5 +11,5 @@ I joined Motu in 2018 after completing a BSc(Hons) in economics and mathematics 
 [I won the Sir Frank Holmes Prize](https://motu.nz/about-us/news/motu-news-december-2016/#frank) for being New Zealand's top undergraduate economics student.
 
 This website is built using [blogdown](https://github.com/rstudio/blogdown) and [Hugo](https://gohugo.io), and deployed via [Netlify](https://www.netlify.com).
-Except where stated otherwise, all website content is licensed under a [Creative Commons Attribution-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-sa/4.0/).
+Except where stated otherwise, all website content is licensed under a [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) license.
 Views expressed are solely my own, and not those of any current, past, or future employer.
