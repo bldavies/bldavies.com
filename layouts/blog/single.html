@@ -6,8 +6,10 @@
     <p>
       <time>
         Posted on {{ .Date.Format "January 02, 2006" }}
-        &mdash;
-        <a href="{{ .Site.Params.githubContentURL }}{{ .File.Dir }}">View source files</a>
+        {{ if .Params.from_Rmd }}
+          &mdash;
+          <a href="{{ .Site.Params.githubContentURL }}{{ .File.Dir }}">View source files</a>
+        {{ end }}
       </time>
     </p>
   </div>
