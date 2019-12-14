@@ -2,6 +2,7 @@
 title: Information Gerrymandering
 tags: [rstats, simulation, voting]
 math: true
+from_Rmd: yes
 ---
 
 
@@ -96,7 +97,7 @@ The "influence gap" `$G$` is greater than zero precisely when committee members 
 The scatter plot below shows that `$G$` correlates positively with the probability that the committee accepts the policy.
 Intuitively, positive influence gaps characterise influence networks with disproportionately many neighbouring majorities in favour of acceptance, which, consequently, makes voting to accept the policy more likely.
 
-![](correlation-1.svg)
+![](figures/correlation-1.svg)
 
 The relationship between influence gaps and vote outcomes creates an incentive to [gerrymander](https://en.wikipedia.org/wiki/Gerrymandering) the influence network to make preferred outcomes more likely.
 For example, a subset of committee members wanting to accept the policy could cooperate to gain the trust of specific members so as to construct a positive influence gap.

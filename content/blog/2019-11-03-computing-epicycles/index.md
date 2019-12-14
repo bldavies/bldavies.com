@@ -2,6 +2,7 @@
 title: Computing Epicycles
 tags: [animation, Fourier series]
 math: true
+from_Rmd: yes
 ---
 
 
@@ -11,7 +12,7 @@ In the video and its [companion](https://www.youtube.com/watch?v=-qgreAUpPwM), G
 
 Consider, for example, the boundary of GitHub's logo:
 
-![](plot-1.svg)
+![](figures/plot-1.svg)
 
 Let `$\gamma:[0,1]\to\mathbb{R}^2$` be the closed curve in `$\mathbb{R}^2$` defining the logo's boundary.
 Suppose there is an integer `$n$` such that
@@ -39,6 +40,6 @@ Thus
 which can be calculated using Riemann sums given sample points along the component curves `$x$` and `$y$`.
 Doing this calculation for each `$k$`, and computing the corresponding moduli `$r_{-n},\ldots,r_n$` and arguments `$\theta_{-n},\ldots,\theta_n$`, provides enough information to generate the animation below.
 
-![](animation-1.gif)
+![](figures/animation-1.gif)
 
 

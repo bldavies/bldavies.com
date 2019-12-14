@@ -1,6 +1,7 @@
 ---
 title: Guest Appearances on *The Joe Rogan Experience*
 tags: [Google Trends, Joe Rogan, signal detection]
+from_Rmd: yes
 ---
 
 
@@ -28,7 +29,7 @@ I use these data to create [a list of guests](https://github.com/bldavies/jre-gu
 The barchart below plots the number of episodes, unique guests and first appearances by year for 2010 through 2018.
 On average, the number of *JRE* episodes and guests increased each year, although the proportion of guests appearing on the show for the first time appears to be falling.
 
-![](annual-counts-1.svg)
+![](figures/annual-counts-1.svg)
 
 ## Estimating popularity
 
@@ -44,7 +45,7 @@ The chart below plots Joe's estimated popularity during my sample period.
 Web search interest for the phrase "Joe Rogan" more than doubled between September 2013 and September 2018.
 The spike during the first week of September 2018 marks [*JRE* episode #1169 with Elon Musk](https://www.youtube.com/watch?v=ycPr5-27vSI).
 
-![](joe-rogan-popularity-1.svg)
+![](figures/joe-rogan-popularity-1.svg)
 
 ## Identifying popularity spikes
 
@@ -55,13 +56,13 @@ I allow this mean to change over time by defining a moving average (MA) series, 
 For example, the chart below plots the actual, moving average and demeaned search interest series for Dave Rubin---political commentator and host of [*The Rubin Report*](https://www.rubinreport.com)---who appeared on *The Joe Rogan Experience* in the three weeks identified by the dashed vertical lines.
 Dave's gradual rise in popularity since late 2015 is punctuated by three spikes in search interest that coincide with his *JRE* appearances.
 
-![](dave-rubin-popularity-1.svg)
+![](figures/dave-rubin-popularity-1.svg)
 
 I construct the demeaned search interest series for each guest who appears on *The Joe Rogan Experience* during my sample period.
 I standardise each of these series to have zero mean and unit variance across the entire sample period in order to make the series comparable.
 The distributions of guests' standardised demeanded search interest in the weeks surrounding their appearances are shown below.
 
-![](densities-1.svg)
+![](figures/densities-1.svg)
 
 In the two weeks prior to appearing on *The Joe Rogan Experience*, guests' popularities are centred about a standard deviation below their MA trend value, reflecting a rise in that value due to an impending upward shock.
 Appearances coincide with a shift in probability density towards positive deviations from local means.
@@ -83,7 +84,7 @@ For example, the chart below plots the actual, filtering and signal series for D
 I compute the filtering means and standard deviations with `lag` equal to 12, and set the filtering threshold at two standard deviations from the filtering mean.
 Positive signals register when the actual series deviates above the grey band.
 
-![](dave-rubin-signal-1.svg)
+![](figures/dave-rubin-signal-1.svg)
 
 The real-time algorithm identifies spikes coincident with each of Dave's appearances on *The Joe Rogan Experience*.
 However, it also identifies false positives that reflect other sources of sudden popularity booms.

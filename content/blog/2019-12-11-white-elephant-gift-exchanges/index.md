@@ -1,6 +1,7 @@
 ---
 title: White Elephant Gift Exchanges
 tags: [market design, simulation]
+from_Rmd: yes
 ---
 
 
@@ -32,7 +33,7 @@ I summarise my simulation results in the plot below.
 
 [^gale-shapley]: Under this allocation, every gift goes to the player who subjectively values that gift the most, provided there are no other gifts to which that player ascribes a higher subjective value.
 
-![](plot-1.svg)
+![](figures/plot-1.svg)
 
 Across all strategies, players whose turns arrive later in the game tend to be better off.
 Such players have more choices of gifts to steal and fewer opportunities to become victims of theft.

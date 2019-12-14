@@ -1,6 +1,7 @@
 ---
 title: Habitat Choices of First-Generation Pokémon
 tags: [networks, rstats, Pokémon]
+from_Rmd: yes
 ---
 
 
@@ -40,7 +41,7 @@ The boxplots below show the distribution of `ubiquity` by species' primary type.
 Water-types have the highest median ubiquity, closely followed by Grass- and Normal-types.
 Species with Dragon, Fairy or Ghost as their primary type each habitate in a single location.
 
-![](ubiquity-distribution-1.svg)
+![](figures/ubiquity-distribution-1.svg)
 
 The column sums of `habits` count the number of unique species that habitate in each location.
 I store these sums as follows:
@@ -61,7 +62,7 @@ pokemon$mean_diversity <- colSums(t(habits) * locations$diversity) / pokemon$ubi
 Thus, on average, more ubiquitous species tend to live in less diverse locations.
 However, this relationship is skewed by a large number of species that cohabitate in one or two locations as shown in the chart below.
 
-![](ubiquity-mean-diversity-1.svg)
+![](figures/ubiquity-mean-diversity-1.svg)
 
 The chart plots `mean_diversity` against `ubiquity`, along with the least-squares line of best fit.[^jitter]
 The top-left cluster comprises species that exclusively habitate inside Cerulean Cave or the Kanto Safari Zone.
@@ -157,7 +158,7 @@ The augmented MSF of `net` contains 242 edges and is drawn below.
 Each vertex is coloured according to the corresponding species' primary type and scaled according to that species' ubiquity.
 I use [Fruchterman and Reingold's (1991)](http://onlinelibrary.wiley.com/doi/10.1002/spe.4380211102/abstract) force-directed algorithm for determining vertices' layout.
 
-![](augmented-msf-1.svg)
+![](figures/augmented-msf-1.svg)
 
 The cohabitation network has two components: one large component of 98 different species and many types, and one isolated pair of Ground-types.
 The latter contains Diglett and Dugtrio, which habitate exclusively in Diglett's Cave.
@@ -208,7 +209,7 @@ The chart below compares species' betweenness and degree centralities.
 With the exception of Cubone, more betweenness-central species tend to have more cohabitants.
 Water-types are relatively inefficient at accumulating betweenness centrality when they expand their social network, whereas Electric-types appear to gain a relatively large amount of betweenness centrality per extra cohabitant.
 
-![](betweenness-degree-1.svg)
+![](figures/betweenness-degree-1.svg)
 
 Species with densely connected social networks are unlikely to be very betweenness-central because their cohabitants can share information with each other directly.
 The probability that two of a species' cohabitants also cohabitate is given by the [transitivity](https://en.wikipedia.org/wiki/Clustering_coefficient#Local_clustering_coefficient) of the corresponding vertex in `net`.
@@ -220,7 +221,7 @@ The exceptions to this trend are Cubone and Pikachu, which have unusually high a
 Pikachu habitate in two locations (Viridian Forest and the Kanto Power Plant), each of which contain a small number of species that frequently cohabitate and that generally have much higher degree centralities.
 As a result, Pikachu have an unusually low betweenness centrality because their cohabitants are able to communicate with each other directly and with other species indirectly through their wider social networks.
 
-![](betweenness-transitivity-1.svg)
+![](figures/betweenness-transitivity-1.svg)
 
 ## The co-containment network
 

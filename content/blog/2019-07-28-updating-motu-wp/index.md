@@ -1,6 +1,7 @@
 ---
 title: Updating motu-wp
 tags: [announcement, Motu, web scraping]
+from_Rmd: yes
 ---
 
 
@@ -18,6 +19,6 @@ The script queries only papers released since the last run, so adding new papers
 Third, I added working paper titles to the information collected.
 This allows me to, for example, use [tf-idf scores](/blog/reading-ministerial-diaries/#computing-tf-idf-scores) to characterise research areas:
 
-![](tf-idf-1.svg)
+![](figures/tf-idf-1.svg)
 
 

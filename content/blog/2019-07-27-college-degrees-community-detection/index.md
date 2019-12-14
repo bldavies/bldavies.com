@@ -1,6 +1,7 @@
 ---
 title: "College Degrees in the US: Community Detection"
 tags: [community detection, networks, PUMS, R]
+from_Rmd: yes
 ---
 
 
@@ -47,7 +48,7 @@ I identify the "representives" of each community as the fields with the largest 
 I transform these ratios by taking their natural logarithm in order to rein in the extreme values caused by near-zero divisors.
 The following bar chart presents the representatives of each community detected in the Jaccard similarity network.
 
-![](jaccard-representatives-1.svg)
+![](figures/jaccard-representatives-1.svg)
 
 Communities 2, 3, 4, 5, 7 and 8 appear to capture business, engineering, media, education, agriculture and biology-related fields.
 Communities 1 and 6 are less clearly classifiable.

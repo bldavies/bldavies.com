@@ -1,6 +1,7 @@
 ---
 title: Accessing the Strava API with R
 tags: [Strava, API, fitness, running, cycling, R]
+from_Rmd: yes
 ---
 
 
@@ -108,13 +109,13 @@ For example, the bar chart below plots my total distance run and cycled during e
 I ran less during New Zealand's winter months: June--August.
 With more years of data, I could quantify my sensitivity to cold temperatures by identifying the seasonal component of my monthly distance series.
 
-![](monthly-distances-1.svg)
+![](figures/monthly-distances-1.svg)
 
 The temporal data provided by the API indicate the times of day at which athletes are most active.
 For example, the density plots below show the distribution of my running activity for each weekday during 2018.
 I ran mostly during lunch breaks or in the evenings on work days, and around midday on weekends.
 
-![](active-time-1.svg)
+![](figures/active-time-1.svg)
 
 The Strava API also provides spatial data on running and cycling routes.
 Each activity is associated with an [encoded polyline](https://developers.google.com/maps/documentation/utilities/polylinealgorithm), which stores the geographic coordinates of points along each route.
@@ -122,7 +123,7 @@ Plotting these polylines reveals a map of where athletes travel during their run
 For example, the image below maps my Wellington running routes from 2018.
 These routes include coastal areas, such as Petone Beach in the northeast, and inland areas, such as the Zealandia fenceline in the southwest.
 
-![](wellington-routes-1.svg)
+![](figures/wellington-routes-1.svg)
 
 ## Acknowledgements
 

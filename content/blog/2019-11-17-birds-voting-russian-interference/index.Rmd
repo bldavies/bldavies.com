@@ -26,7 +26,7 @@ theme_set(
 )
 
 # Import data
-data <- read_csv('BOTY-votes-2019.csv', col_types = cols(country = 'c'))
+data <- read_csv('data/BOTY-votes-2019.csv', col_types = cols(country = 'c'))
 ```
 
 Since 2005, [Forest and Bird](https://www.forestandbird.org.nz) has run annual elections for New Zealand's [Bird of the Year](https://www.birdoftheyear.org.nz).
@@ -152,12 +152,12 @@ table_data <- bind_rows(
 )
 
 # Save cache
-write_csv(table_data, 'cache.csv')
+write_csv(table_data, 'data/cache.csv')
 ```
 
 ```{r table}
 # Load cache
-table_data <- read_csv('cache.csv')
+table_data <- read_csv('data/cache.csv')
 
 # Generate table
 table_data %>%

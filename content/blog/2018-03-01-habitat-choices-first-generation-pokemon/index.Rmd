@@ -16,7 +16,7 @@ library(readr)
 library(tools)
 
 # Type colours from https://bulbapedia.bulbagarden.net/wiki/Category:colour_templates
-types <- read_csv('types.csv')
+types <- read_csv('data/types.csv')
 
 theme_set(
   theme_minimal(base_size = 11) +
@@ -57,11 +57,11 @@ encounters <- get_data('encounters') %>%
   select(location, species, type) %>%
   distinct(location, species, .keep_all = TRUE)
 
-write_csv(encounters, 'encounters.csv')
+write_csv(encounters, 'data/encounters.csv')
 ```
 
 ```{r load-cache, echo = F}
-encounters <- read_csv('encounters.csv')
+encounters <- read_csv('data/encounters.csv')
 ```
 
 I infer habitats from random encounter events in the international versions of Pokémon Red, Blue and Yellow.[^random]

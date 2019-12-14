@@ -2,6 +2,7 @@
 title: Reading the Ministerial Diaries
 tags: [pdftools, tidytext, R]
 math: true
+from_Rmd: yes
 ---
 
 
@@ -141,18 +142,18 @@ I select entries scheduled during the 2018 calendar year:
 
 ```
 ## # A tibble: 1,347 x 6
-##    date   scheduled_time meeting         location    with       portfolio  
-##    <chr>  <chr>          <chr>           <chr>       <chr>      <chr>      
-##  1 15/01… 10:00 - 11:00  Meeting with F… Beehive     Treasury … Associate …
-##  2 15/01… 14:00 - 14:30  Meeting with M… Beehive     MFAT offi… Trade and …
-##  3 15/01… 15:00 - 15:30  Meeting with M… Beehive     MBIE offi… Economic D…
-##  4 16/01… 09:30 - 10:15  Meeting with E… Selwyn      Environme… Environment
-##  5 16/01… 10:40 - 11:40  Meeting with N… Springston  Ngai Tahu… Environment
-##  6 16/01… 12:00 - 12:30  Meeting with f… Canterbury  Farm owne… Environment
-##  7 16/01… 12:40 - 13:40  Working Lunch … Canterbury  Te Waihor… Environment
-##  8 16/01… 13:50 - 14:45  Meeting with f… Leeston     Farm owne… Environment
-##  9 16/01… 16:30 - 17:30  Meeting with S… Middleton,… Syft Tech… Economic D…
-## 10 17/01… 09:30 - 10:00  Meeting with C… Beehive     Cabinet O… All        
+##    date    scheduled_time meeting          location    with         portfolio   
+##    <chr>   <chr>          <chr>            <chr>       <chr>        <chr>       
+##  1 15/01/… 10:00 - 11:00  Meeting with Fi… Beehive     Treasury of… Associate F…
+##  2 15/01/… 14:00 - 14:30  Meeting with MF… Beehive     MFAT offici… Trade and E…
+##  3 15/01/… 15:00 - 15:30  Meeting with MB… Beehive     MBIE offici… Economic De…
+##  4 16/01/… 09:30 - 10:15  Meeting with En… Selwyn      Environment… Environment 
+##  5 16/01/… 10:40 - 11:40  Meeting with Ng… Springston  Ngai Tahu r… Environment 
+##  6 16/01/… 12:00 - 12:30  Meeting with fa… Canterbury  Farm owners… Environment 
+##  7 16/01/… 12:40 - 13:40  Working Lunch w… Canterbury  Te Waihora … Environment 
+##  8 16/01/… 13:50 - 14:45  Meeting with fa… Leeston     Farm owners… Environment 
+##  9 16/01/… 16:30 - 17:30  Meeting with Sy… Middleton,… Syft Techon… Economic De…
+## 10 17/01/… 09:30 - 10:00  Meeting with Ca… Beehive     Cabinet Off… All         
 ## # … with 1,337 more rows
 ```
 
@@ -265,7 +266,7 @@ The `idf` column identifies both language-specific stop words (e.g., "a") and co
 The chart below presents the highest tf-idf words for each portfolio.
 These words reveal organisations (e.g., the Parliamentary Counsel Office) and individuals (e.g., [Cecilia Malmström](https://ec.europa.eu/commission/commissioners/2014-2019/malmstrom_en)) that are missing from the diary-wide word frequencies computed above.
 
-![](highest-tf-idf-1.svg)
+![](figures/highest-tf-idf-1.svg)
 
 The chart also reveals which interactions correspond to which portfolios.
 For example, Minister Parker's frequent interactions with MBIE officials appear to be most associated with the Economic Development portfolio, while his interactions with Minister Sage appear to involve both the Environment and Associate Finance portfolios.

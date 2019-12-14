@@ -1,6 +1,7 @@
 ---
 title: Birds, Voting, and Russian Interference
 tags: [Bird of the Year, voting]
+from_Rmd: yes
 ---
 
 
@@ -12,7 +13,7 @@ A follow-up [tweet](https://twitter.com/Forest_and_Bird/status/11937200972835676
 Forest and Bird's tweet includes a world map with countries coloured by voter turnout.
 The bar chart below presents the same information in a less exciting format.[^data]
 
-![](countries-1.svg)
+![](figures/countries-1.svg)
 
 Russian votes account for 193 of the 15,044 votes with known country of origin.
 New Zealand contributed 12,651 such votes.

@@ -1,6 +1,7 @@
 ---
 title: Coauthorship Networks at Motu
 tags: [igraph, networks, R, Motu]
+from_Rmd: yes
 ---
 
 
@@ -74,7 +75,7 @@ bip <- graph.incidence(incidence)
 The authorship network `bip` contains 74 authors who collectively wrote 232 working papers over the 2003--2018 sample period.
 Those papers are distributed across Motu's research areas as shown in the chart below.
 
-![](area-counts-1.svg)
+![](figures/area-counts-1.svg)
 
 The variation in working paper counts reflects the variation in areas' tenure within Motu's research portfolio.
 Environment and Resources, contributing 67 working papers, has been around since the series began; Human Rights, appearing only once in the series, is a relatively new research area for Motu.
@@ -83,7 +84,7 @@ The authorship network `bip` is drawn below using [Fruchterman and Reingold's (1
 Squares denote working papers and are coloured by research area.
 Each circle denotes an author and is scaled according to the number of working papers (co)written by that author.
 
-![](author-network-1.svg)
+![](figures/author-network-1.svg)
 
 A striking feature of `bip` is the presence of three high-degree vertices, or *hubs*, each representing an author of at least 48 working papers.
 These hubs are shaded in the map of `bip` shown above.
@@ -105,7 +106,7 @@ According to this measure, maximally similar authors always write together while
 Again, I use the Fruchterman-Reingold algorithm for distributing vertices in the plane.
 The resulting map of `net` is shown below.
 
-![](coauthor-network-1.svg)
+![](figures/coauthor-network-1.svg)
 
 The coauthorship network is sparse, containly only 168 (about 6%) of the 2,701 possible edges between its 74 vertices.
 However, the largest connected component (LCC) of `net` contains all but six authors, two of whom write exclusively with each other and the remaining four having zero coauthors.
