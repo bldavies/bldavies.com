@@ -13,6 +13,7 @@ params:
   author: Benjamin Davies
   email: ben.davies@motu.org.nz
   github: https://github.com/bldavies
+  githubContentURL: "https://github.com/bldavies/bldavies.com/tree/master/content/"
   highlightjsVersion: "9.12.0"
   highlightjsCDN: "//cdn.bootcss.com"
   highlightjsLang: ["r", "tex", "yaml"]
