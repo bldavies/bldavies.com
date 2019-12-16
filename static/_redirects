@@ -1,6 +1,15 @@
-/blog/jre-guests/   /blog/guest-appearances-joe-rogan-experience/
-/blog/motu-wp/      /blog/coauthorship-networks-motu/
-/blog/pokenet/      /blog/habitat-choices-first-generation-pokemon/
-/cv/                /cv.pdf
+# Domain
 http://bldavies.netlify.com/*   https://bldavies.com/:splat  301!
 https://bldavies.netlify.com/*  https://bldavies.com/:splat  301!
+
+# Blog components
+/blog/:slug/data/               /blog/:slug/
+/blog/:slug/figures/            /blog/:slug/
+
+# Blog slugs
+/blog/jre-guests/               /blog/guest-appearances-joe-rogan-experience/
+/blog/motu-wp/                  /blog/coauthorship-networks-motu/
+/blog/pokenet/                  /blog/habitat-choices-first-generation-pokemon/
+
+# CV
+/cv/                            /cv.pdf
