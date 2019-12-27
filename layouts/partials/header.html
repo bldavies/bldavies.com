@@ -18,14 +18,16 @@
 
 <body>
 <header>
-  <div class="container">
-    <a href="/">{{ .Site.Title }}</a>
-    <nav>
-      <a href="/about/">About</a>
-      <a href="/blog/">Blog</a>
-      <a href="/research/">Research</a>
-      <a href="/cv.pdf">CV</a>
-    </nav>
+  <div class="container-outer">
+    <div id="header">
+      <a href="/" id="site-title">{{ .Site.Title }}</a>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/about/">About</a>
+        <a href="/blog/">Blog</a>
+        <a href="/research/">Research</a>
+      </nav>
+    </div>
   </div>
 </header>
 

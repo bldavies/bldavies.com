@@ -1,21 +1,28 @@
 {{ partial "header.html" . }}
 
-<div class="banner">
-  <div class="container">
+<div class="container-outer">
+  <div class="container-inner">
     <h1>{{ .Title | markdownify }}</h1>
-    <p>{{ if .Params.pdf_url }}<a class="research-link" href="{{ .Params.pdf_url }}">PDF</a>{{ end }}{{ if .Params.data_url }}<a class="research-link" href="{{ .Params.data_url }}">Data</a>{{ end }}</p>
+    <p>{{ .Date.Format "January 2006" }}</p>
+    <p>
+      {{ if .Params.pdf_url }}
+        <a class="media-link" href="{{ .Params.pdf_url }}">Download PDF</a>
+      {{ end }}
+      {{ if .Params.github_url }}
+        <a class="media-link" href="{{ .Params.github_url }}">View on GitHub</a>
+      {{ end }}
+    </p>
   </div>
-</div>
-
-<div class="container">
-  {{ if .Params.abstract }}
-    <h2>Abstract</h2>
-    <p>{{ .Params.abstract | markdownify }}</p>
-  {{ end }}
-  {{ if .Params.citation }}
-    <h2>Citation</h2>
-    <p>{{ .Params.citation | markdownify }}</p>
-  {{ end }}
+  <div class="container-inner">
+    {{ if .Params.abstract }}
+      <h2>Abstract</h2>
+      <p>{{ .Params.abstract | markdownify }}</p>
+    {{ end }}
+    {{ if .Params.citation }}
+      <h2>Citation</h2>
+      <p>{{ .Params.citation | markdownify }}</p>
+    {{ end }}
+  </div>
 </div>
 
 {{ partial "footer.html" . }}
