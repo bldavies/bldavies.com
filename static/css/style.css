@@ -176,9 +176,25 @@ table th {
   margin-left: 1rem;
 }
 
+#header nav a:first-of-type {
+  margin-left: 0;
+}
+
 #header nav a:hover {
   border-bottom: 0.1rem solid #1269d3;
+  margin-bottom: 0.9rem;
   transition: 0;
+}
+
+@media (max-width: 480px) {
+
+  #header nav {
+    float: none;
+  }
+
+  #header nav a {
+    margin-top: 0;
+  }
 }
 
 #site-title {
