@@ -10,6 +10,7 @@ https://bldavies.netlify.com/*  https://bldavies.com/:splat  301!
 /blog/jre-guests/               /blog/guest-appearances-joe-rogan-experience/
 /blog/motu-wp/                  /blog/coauthorship-networks-motu/
 /blog/pokenet/                  /blog/habitat-choices-first-generation-pokemon/
+/blog/updating-motu-wp/         /blog/updating-motuwp/
 
 # CV
 /cv/                            /cv.pdf

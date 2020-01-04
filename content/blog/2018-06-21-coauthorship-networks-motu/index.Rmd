@@ -18,34 +18,34 @@ Changes in author or institution names make it difficult to uniquely identify re
 Moreover, most bibliographic databases charge an access fee that discourages casual exploration.
 Fortunately, [Motu's working paper directory](https://motu.nz/resources/working-papers/) is presented in a consistent format that makes it amenable to web scraping free of charge.
 
-The R script [`data.R`](https://github.com/bldavies/motu-wp/blob/master/code/data.R) scrapes the directory for a list of working paper IDs and URLs.
+The R script [`data.R`](https://github.com/bldavies/motuwp/tree/8f4b1c02e04f8e5e45b4325195bb4f03ac0ee707/code/data.R) scrapes the directory for a list of working paper IDs and URLs.
 Each URL points to a landing page for the corresponding paper, which I scrape for a list of authors.
 I include only those authors with outgoing hyperlinks because
 
 1. the hyperlinked URL provides a unique and persistent author ID, and
 2. it is much easier to perform a regular expression search for `<a href="(.*?)">` than to distinguish different uses of commas case-by-case.
 
-The resulting file [`authors.csv`](https://github.com/bldavies/motu-wp/blob/master/data/authors.csv) contains each unique author-paper pair.
+The resulting file [`authors.csv`](https://github.com/bldavies/motuwp/tree/8f4b1c02e04f8e5e45b4325195bb4f03ac0ee707/data/authors.csv) contains each unique author-paper pair.
 It excludes the authors of five papers for which either (i) there is no landing page linked from the main directory or (ii) the landing page has no authors with outgoing hyperlinks.
 
-I read in the data as follows:
-
-```{r}
-library(dplyr)
+```{r, echo = FALSE}
 library(readr)
 
-data_url <- 'https://raw.githubusercontent.com/bldavies/motu-wp/master/data/'
+data_url <- 'https://raw.githubusercontent.com/bldavies/motuwp/8f4b1c02e04f8e5e45b4325195bb4f03ac0ee707/data/'
 get_data <- function(x) read_csv(paste0(data_url, x))
 areas    <- get_data('areas.csv')
 authors  <- get_data('authors.csv')
 papers   <- get_data('papers.csv')
 ```
 
-[`areas.csv`](https://github.com/bldavies/motu-wp/blob/master/data/areas.csv) contains the name, ID and ambient colour for each of [Motu's six primary research areas](https://motu.nz/our-work/), and is created manually.
-[`papers.csv`](https://github.com/bldavies/motu-wp/blob/master/data/papers.csv) links each paper to its research area.
-I merge `areas`, `authors` and `papers` into a single tibble `data`:
+I read in `authors.csv` and two other tables:
+[`areas.csv`](https://github.com/bldavies/motuwp/tree/8f4b1c02e04f8e5e45b4325195bb4f03ac0ee707/data/areas.csv), which contains the name, ID and ambient colour for each of [Motu's six primary research areas](https://motu.nz/our-work/); and
+[`papers.csv`](https://github.com/bldavies/motuwp/tree/8f4b1c02e04f8e5e45b4325195bb4f03ac0ee707/data/papers.csv), which links each paper to its research area.
+I merge these data into a single tibble `data`:
 
 ```{r}
+library(dplyr)
+
 data <- authors %>%
   left_join(papers) %>%
   left_join(areas)
@@ -350,7 +350,7 @@ Applying the Humphries-Gurney test to a larger network, or implementing a more r
 
 *Note: I updated this post on July 28, 2019 after revising the [source data][repo]. My results changed slightly due to retroactive author (re)assignments.*
 
-[repo]: https://github.com/bldavies/motu-wp
+[repo]: https://github.com/bldavies/motuwp/
 
 ```{r session-info, echo = FALSE}
 writeLines(capture.output(sessioninfo::session_info()), 'session.log')
