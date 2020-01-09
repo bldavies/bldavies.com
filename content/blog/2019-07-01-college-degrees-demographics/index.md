@@ -4,22 +4,15 @@ tags: [education, demographics, PUMS, R]
 from_Rmd: yes
 ---
 
-
-
 Each year, the US Census Bureau [publishes](https://www.census.gov/programs-surveys/acs/data/pums.html) a set of Public Use Microdata Sample (PUMS) files containing responses to the American Community Survey (ACS).
 In this post, I use the 2016 ACS PUMS data to explore the variation in educational attainment and degree field choices between demographic groups.
 The source data are available on [GitHub][repo-url].
-
-
-
-
 
 ## Educational attainment
 
 The table below reports educational attainment rates for each sex, pooled across all ages and degree fields.
 Overall, a randomly selected female is more likely to have a college degree than a randomly selected male.
 However, fewer females pursue doctoral degrees than males; male graduates are about 1.4 times more likely to have a doctorate than female graduates.
-
 
 |Degree level                    | % of females| % of males|
 |:-------------------------------|------------:|----------:|
@@ -79,5 +72,4 @@ Such connections may reflect fields using similar techniques (e.g., economics an
 I plan to explore these connections in future posts.
 
 [repo-url]: https://github.com/bldavies/college-degrees/
-
 

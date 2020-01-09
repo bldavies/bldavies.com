@@ -4,8 +4,6 @@ tags: [market design, simulation]
 from_Rmd: yes
 ---
 
-
-
 Motu's staff Christmas party is this Friday.
 We're planning a [white elephant gift exchange](https://en.wikipedia.org/wiki/White_elephant_gift_exchange): everyone contributes a wrapped gift to a common pool and sequentially chooses to either (i) unwrap a gift or (ii) steal a previously unwrapped gift.
 "Victims" of theft make the same choice, but previously stolen gifts cannot be re-stolen until a new gift is unwrapped.
@@ -53,7 +51,6 @@ The table reports 95% confidence intervals across 1000 simulated games.[^riskles
 
 [^riskless]: I assume that, in the last round, all players---even pacifists---always steal the most subjectively valuable gift possible because there is no risk of that gift being re-stolen.
 
-
 | Players given second turn | Efficiency (%) | Equity (%) |
 |:-------------------------:|:--------------:|:----------:|
 |             0             |   86.6 ± 0.2   | 80.3 ± 0.2 |
@@ -66,5 +63,4 @@ The table reports 95% confidence intervals across 1000 simulated games.[^riskles
 Giving the first player a second turn makes the final allocation more efficient and more equitable.
 That player gets a chance to improve upon their initial endowment, and subsequent victims get a chance to reconsider their choices with more information about the distribution of gifts' subjective values.
 However, on average, giving further players a second turn appears to push efficiency and equity back down.
-
 

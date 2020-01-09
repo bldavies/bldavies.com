@@ -4,8 +4,6 @@ tags: [announcement, Motu, web scraping]
 from_Rmd: yes
 ---
 
-
-
 Today I updated the [motuwp](https://github.com/bldavies/motuwp) GitHub repository, which stores data on Motu working papers and their authors.
 I made three main changes:
 
@@ -20,5 +18,4 @@ Third, I added working paper titles to the information collected.
 This allows me to, for example, use [tf-idf scores](/blog/reading-ministerial-diaries/#computing-tf-idf-scores) to characterise research areas:
 
 ![](figures/tf-idf-1.svg)
-
 

@@ -5,8 +5,6 @@ math: true
 from_Rmd: yes
 ---
 
-
-
 Last week *Nature* published "[Information Gerrymandering and Undemocratic Decisions](https://doi.org/10.1038/s41586-019-1507-6)," an article analysing the effect of peer influences on the outcome of collective decisions.
 
 Suppose, for example, that a 24-member committee must collectively decide whether to adopt a new policy.
@@ -17,7 +15,6 @@ This update process allows committee members to influence each others' positions
 
 Assuming trust is pairwise mutual, the "influence network" among committee members can be modelled as a 6-regular graph on 24 vertices, with edges connecting influencers.
 The function below uses this regular graph model to simulate the outcome of many votes:
-
 
 ```r
 simulate_votes <- function(n_votes, committee_size, n_influences, n_days) {
@@ -52,7 +49,6 @@ The last few lines of `simulate_votes` generate this ensemble and output the sim
 
 Let's simulate the committee's vote 1000 times, including one week of daily position updates, and tabulate the simulated decision frequencies:
 
-
 ```r
 # Run simulations
 committee_size <- 24
@@ -74,8 +70,6 @@ tibble(accepts = map(votes$results, ~tail(.$accepts, 1))) %>%
   count(Decision, name = 'Frequency') %>%
   knitr::kable(align = 'c')
 ```
-
-
 
 | Decision | Frequency |
 |:--------:|:---------:|
@@ -110,5 +104,4 @@ The *Nature* article extends my model in three ways:
 3. it introduces stubborn committee members ("zealots") who never change their position.
 
 However, none of these extensions change the model's prediction: gerrymandering influence networks can lead to undemocratic decision-making by biasing the outcome of otherwise-split votes.
-
 

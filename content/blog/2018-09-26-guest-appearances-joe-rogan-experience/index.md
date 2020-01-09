@@ -4,8 +4,6 @@ tags: [Google Trends, Joe Rogan, signal detection]
 from_Rmd: yes
 ---
 
-
-
 [*The Joe Rogan Experience*](https://www.joerogan.com/#jre-section) (*JRE*) is a podcast hosted by comedian and mixed martial arts (MMA) commentator Joe Rogan.
 In this post, I analyse the relationship between *JRE* guest appearances and popularity using data from [Google Trends](https://trends.google.com/trends).
 I find that guests typically experience a spike in popularity immediately after appearing on the podcast.
@@ -92,7 +90,6 @@ However, it also identifies false positives that reflect other sources of sudden
 I compute the empirical probability that the real-time algorithm detects a spike in guests' popularity conditional upon their appearing on *The Joe Rogan Experience* in the same or previous week.[^lagged-signal]
 The table below reports this probability for a range of `lag` and `threshold` values, and with `influence` equal to 0.5.[^influence-choice]
 
-
 | Pr(Spike &#124; Appears) | `lag = 3` | `lag = 6` | `lag = 9` | `lag = 12` |
 |:------------------------:|:---------:|:---------:|:---------:|:----------:|
 |   **`threshold = 1`**    |   0.940   |   0.923   |   0.905   |   0.892    |
@@ -113,8 +110,6 @@ The false positives identified by the real-time algorithm are reminders that my 
 
 It would be useful to compare guests' popularity dynamics near *JRE* appearances with those near appearances on other fora.
 This comparison would help me separate the effect of increased online presense in general from the effect of appearing on *The Joe Rogan Experience* in particular, and may thereby provide stronger hints at causality.
-
-
 
 [^redban]: I exclude Brian Redban's appearances prior to episode #674, when he returned as a guest for the first time after producing and co-hosting the show until late 2013.
 

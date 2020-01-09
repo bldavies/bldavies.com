@@ -5,8 +5,6 @@ math: true
 from_Rmd: yes
 ---
 
-
-
 Earlier this year Grant Sanderson, creator of the YouTube channel [3blue1brown](https://www.3blue1brown.com), posted a [video](https://www.youtube.com/watch?v=r6sGWTCMz2k) explaining how [Fourier series](http://mathworld.wolfram.com/FourierSeries.html) approximate periodic functions using sums of sines and cosines.
 In the video and its [companion](https://www.youtube.com/watch?v=-qgreAUpPwM), Grant animates sets of vectors that rotate on circular orbits and, when summed together, reproduce a range of images defined by closed curves.
 
@@ -41,5 +39,4 @@ which can be calculated using Riemann sums given sample points along the compone
 Doing this calculation for each `$k$`, and computing the corresponding moduli `$r_{-n},\ldots,r_n$` and arguments `$\theta_{-n},\ldots,\theta_n$`, provides enough information to generate the animation below.
 
 ![](figures/animation-1.gif)
-
 

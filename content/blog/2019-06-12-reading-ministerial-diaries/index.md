@@ -5,8 +5,6 @@ math: true
 from_Rmd: yes
 ---
 
-
-
 In December 2018, the New Zealand Government [announced](https://www.beehive.govt.nz/release/government-proactively-release-ministerial-diaries) that its ministers "will for the first time release details of their internal and external meetings."
 The Government has since published these "ministerial diaries" as [a series of PDFs](https://www.beehive.govt.nz/search?f%5B0%5D=content_type_facet%3Aministerial_diary&f%5B1%5D=government_facet%3A6203&f%5B2%5D=ministers%3A6205).
 In this post, I analyse the ministerial diary of [David Parker](https://www.beehive.govt.nz/minister/hon-david-parker), a ["pivotal cabinet minister"](https://www.odt.co.nz/news/election-2017/parker-emerges-pivotal-cabinet-minister) who wears a range of politically and economically significant hats:
@@ -23,7 +21,6 @@ These roles, coupled with his scheduled activities for the 2018 calendar year be
 
 I read the diary into R using the `pdf_data` function from [`pdftools`](https://cran.r-project.org/package=pdftools):
 
-
 ```r
 library(pdftools)
 
@@ -31,13 +28,8 @@ path <- "https://www.beehive.govt.nz/sites/default/files/2019-05/October%202017%
 pages <- pdf_data(path)
 ```
 
-
-
-
-
 `pdf_data` scans each page for distinct words, encloses these words in [bounding boxes](https://en.wikipedia.org/wiki/Minimum_bounding_box), and stores the coordinates and content of each box as a list of tibbles.
 For example, the diary's first page contains the following data:
-
 
 ```r
 library(dplyr)
@@ -65,7 +57,6 @@ pages[[1]]
 The `x` and `y` columns provide the horizontal and vertical displacement, in pixels, of each bounding box from the top-left corner of the page.
 The left-most boxes sit 72 pixels from the left page boundary, allowing me to identify table rows by the cumulative number of boxes for which `x` equals 72.
 
-
 ```r
 pages[[1]] %>%
   arrange(y, x) %>%
@@ -92,9 +83,6 @@ pages[[1]] %>%
 
 The `x` values for which `row` equals 14 provide the left alignment points for the text in each of the diary's six columns.
 These points remain unchanged across all 84 pages, allowing me to identify rows and columns throughout the diary within a single pipe:
-
-
-
 
 ```r
 library(tidyr)
@@ -135,7 +123,6 @@ I define the `clean_data` function in [the appendix](#appendix) below.
 The resulting tibble `diary` contains 1,553 rows, each of which describes a unique entry scheduled between October 2017 and December 2018.
 I select entries scheduled during the 2018 calendar year:
 
-
 ```r
 (data <- filter(diary, grepl("2018", date)))
 ```
@@ -166,7 +153,6 @@ I assume that the remaining entries provide a representative sample of Minister 
 I analyse the frequency of words used in the `with` column of `data`.
 These frequencies provide insight into Minister Parker's interactions with different organisations.
 I use the `unnest_tokens` function from [`tidytext`](https://cran.r-project.org/package=tidytext) to identify unique words and the `count` function from `dplyr` to count word frequencies.
-
 
 ```r
 library(tidytext)
@@ -204,7 +190,6 @@ Counting word frequencies across all portfolios masks portfolio-specific interac
 I infer such interactions from the [*term frequency-inverse document frequency*](https://www.tidytextmining.com/tfidf.html) (tf-idf) scores of word-portfolio pairs.
 I identify these pairs as follows.
 
-
 ```r
 word_portfolio_pairs <- data %>%
   # Disambiguate portfolio names
@@ -236,7 +221,6 @@ The tf-idf score
 
 thus measures the prevalence of word `$w$` in document `$d$`, normalised by that word's prevalence in other documents.
 I interpret the set of entries associated with each portfolio as a document and use the `bind_tf_idf` function from `tidytext` to compute word-portfolio tf-idf scores:
-
 
 ```r
 word_portfolio_pairs %>%
@@ -281,7 +265,6 @@ For example, Minister Parker's frequent interactions with MBIE officials appear 
 
 ### Source code for `clean_data()`
 
-
 ```r
 clean_data <- function (df) {
   df %>%
@@ -311,5 +294,4 @@ clean_data <- function (df) {
            text = ifelse(column == "portfolio" & text == "Minister Little", "Attorney-General", text))
 }
 ```
-
 

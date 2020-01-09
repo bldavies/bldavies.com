@@ -4,10 +4,6 @@ tags: [community detection, networks, PUMS, R]
 from_Rmd: yes
 ---
 
-
-
-
-
 In my last [post][prev-post], I compared measures of  similarity among college degree fields.
 My goal in this post is to partition the set of fields such that each field has greater within-part similarities than between-part similarities.
 One approach is to [hierarchically cluster](https://en.wikipedia.org/wiki/Hierarchical_clustering) fields based on their similarities, producing a dendrogram that can be cut at different heights to obtain different partitions.
@@ -29,7 +25,6 @@ The term "community" refers to a set of nodes and stems from the use of network 
 
 I apply Clauset et al.'s algorithm to the networks defined using the co-occurrence, Dice, Jaccard, Ochiai and overlap measures discussed in [my previous post][prev-post], as well as the unweighted network in which fields are adjacent if at least one graduate studied them both.
 The table below presents the number and size of communities detected in each network, and the corresponding maximised modularity values.
-
 
 |    Network     | Communities | Fields | Community sizes (millions of graduates) | Modularity |
 |:--------------:|:-----------:|:------:|:---------------------------------------:|:----------:|
@@ -58,7 +53,6 @@ Community 3 contains nearly 30% of degree fields but only about 20% of graduates
 Community 5 is the most female-dominated and has the highest mean age.
 Educational attainment is lowest in communities 2 and 4, and highest in community 8.
 
-
 | Community | Fields | Total graduates (millions) | Mean graduate age | % of graduates female | % of graduates with post-graduate degree |
 |:---------:|:------:|:--------------------------:|:-----------------:|:---------------------:|:----------------------------------------:|
 |     1     |   28   |            19.8            |       48.4        |         64.6          |                   39.7                   |
@@ -72,5 +66,4 @@ Educational attainment is lowest in communities 2 and 4, and highest in communit
 |  Overall  |  173   |            71.8            |       47.9        |         52.7          |                   36.7                   |
 
 [prev-post]: /blog/college-degrees-similarity-measures/
-
 

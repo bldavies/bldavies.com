@@ -3,7 +3,7 @@
 # This script defines the build_one function used in R/build.R.
 #
 # Ben Davies
-# December 2019
+# January 2020
 
 local({
   a <- commandArgs(TRUE)
@@ -23,6 +23,8 @@ local({
     x <- blogdown:::append_yaml(
       xfun::read_utf8(a[2]), list(from_Rmd = TRUE)
     )
+    x <- gsub("(\\\n){2,}", "\n\n", paste(x, collapse = "\n"))  # Excess \n's 
+    x <- gsub("(\\\n)+$", "\n", x)  # EoF
     xfun::write_utf8(x, a[2])
   }
 })

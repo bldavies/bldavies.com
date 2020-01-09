@@ -4,8 +4,6 @@ tags: [Strava, API, fitness, running, cycling, R]
 from_Rmd: yes
 ---
 
-
-
 [Strava](https://www.strava.com/) is an online platform for storing and sharing fitness data.
 Strava [provides an API](https://developers.strava.com) for accessing such data at the activity (e.g., run or cycle) level.
 In this post, I explain how to extract data from the Strava API using R, and I analyse my running and cycling data from 2018.
@@ -28,7 +26,6 @@ and import into R using the `read_yaml` function from the [`yaml`](https://cran.
 Next, I create an OAuth application for interacting with the API and an endpoint through which to send authentication requests.
 I use the `oauth_app` and `oauth_endpoint` functions from [`httr`](https://cran.r-project.org/package=httr):
 
-
 ```r
 library(httr)
 
@@ -44,7 +41,6 @@ Finally, I create an OAuth access token to send the authentication request to my
 This token encapsulates the application and endpoint defined above.
 Running
 
-
 ```r
 token <- oauth2.0_token(endpoint, app, as_header = FALSE, cache = FALSE)
 ```
@@ -59,7 +55,6 @@ Doing so redirects me to the callback domain ("localhost") and prints a confirma
 After authenticating with Strava, I use a sequence of HTTP requests to extract activity data from the API.
 The API returns multiple pages of data, each containing up to 200 activities.
 I use a while loop to iterate over pages, using the `fromJSON` function from [`jsonlite`](https://cran.r-project.org/package=jsonlite) to parse the extracted data:
-
 
 ```r
 library(jsonlite)
@@ -84,20 +79,14 @@ while (!done) {
 
 Finally, I use the `rbind_pages` function from `jsonlite` to collate the activity data into a single data frame:
 
-
 ```r
 data <- rbind_pages(data_list)
 ```
-
-
-
-
 
 ## Analysing the data
 
 The Strava API provides a wealth of data to analyse.
 Running
-
 
 ```r
 names(data)
@@ -131,5 +120,4 @@ This post is informed by several online resources.
 [Mark Aberdour's blog post](http://www.open-thoughts.com/2017/01/the-quantified-cyclist-analysing-strava-data-using-r/) helped me understand the process for authenticating with Strava.
 Reading [the `rStrava` package's source code](https://github.com/fawda123/rStrava) helped me understand how to extract data from the Strava API.
 I got the idea for plotting active running time distributions from [this GitHub repository](https://github.com/marcusvolz/strava).
-
 

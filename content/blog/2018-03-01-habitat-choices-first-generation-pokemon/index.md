@@ -4,22 +4,15 @@ tags: [networks, rstats, Pokémon]
 from_Rmd: yes
 ---
 
-
-
 In this post, I use R's [igraph](http://igraph.org) package to analyse the cohabitation network among wild Pokémon species.
 The underlying data come from [the GitHub repository](https://github.com/veekun/pokedex) behind [veekun](https://veekun.com).
 
 ## Matching species with their habitats
 
-
-
-
-
 I infer habitats from random encounter events in the international versions of Pokémon Red, Blue and Yellow.[^random]
 I store these events in a data frame named `encounters`.
 Each encounter has three attributes: the `location`, the `species` encountered and that species' primary `type`.
 I use these data to generate a species-location incidence matrix:
-
 
 ```r
 habits <- table(encounters$species, encounters$location)
@@ -28,7 +21,6 @@ habits <- table(encounters$species, encounters$location)
 The rows and columns of `habits` count where species habitate.
 For example, summing the rows of `habits` yields the number of unique habitats for each species.
 I store these sums as follows:
-
 
 ```r
 pokemon <- tibble(species = rownames(habits), ubiquity = rowSums(habits))
@@ -46,13 +38,11 @@ Species with Dragon, Fairy or Ghost as their primary type each habitate in a sin
 The column sums of `habits` count the number of unique species that habitate in each location.
 I store these sums as follows:
 
-
 ```r
 locations <- tibble(name = colnames(habits), diversity = colSums(habits))
 ```
 
 I compute the mean value of `diversity` across the locations in which each species habitates via
-
 
 ```r
 pokemon$mean_diversity <- colSums(t(habits) * locations$diversity) / pokemon$ubiquity
@@ -75,7 +65,6 @@ The more frequently two species cohabitate, the stronger is their implied social
 The number of locations in which two species cohabitate is equal to the cross product of the two corresponding rows of `habits`.
 I store these counts in a symmetric species-species adjacency matrix:
 
-
 ```r
 cohabits <- habits %*% t(habits)
 ```
@@ -93,7 +82,6 @@ The [Jaccard index](https://en.wikipedia.org/wiki/Jaccard_index) provides a conv
 The index counts the number of locations in which two species cohabitate as a proportion of the locations in which at least one of those species habitates.
 I define a function `jaccard` for computing Jaccard indices from an arbitrary cohabitation matrix `C` as follows.
 
-
 ```r
 jaccard <- function (C) {
   U <- matrix(rep(diag(C), nrow(C)), ncol = nrow(C))
@@ -108,7 +96,6 @@ The Jaccard index `J[i, j]` obtains its maximum value of unity when species `i` 
 The more similar two species' habitat choices, the higher is their shared Jaccard index.
 
 I define the cohabitation network `net` as the weighted graph with adjacency matrix equal to `jaccard(cohabits)`:
-
 
 ```r
 library(igraph)
@@ -135,7 +122,6 @@ Accordingly, I augment the MSF by taking its union with the subgraph induced by 
 I choose the number of such edges to be equal to the order of `net` so as to achieve a mean vertex degree of about four.
 
 I define a function `augmented_msf` for identifying the augmented MSF of a graph `G` as follows.
-
 
 ```r
 augmented_msf <- function (G) {
@@ -175,7 +161,6 @@ The structure of `net` reveals information about species' social influence.
 A simple measure of such influence is the [degree centrality](https://en.wikipedia.org/wiki/Centrality#Degree_centrality) of each species, which counts the number of other cohabitating species.
 The table below displays the species with the highest six degree centralities in the cohabitation network.
 
-
 | Species  |  Type  | Degree |
 |:--------:|:------:|:------:|
 | Goldeen  | Water  |   82   |
@@ -194,7 +179,6 @@ Intuitively, more betweenness-central species tend to have more control over the
 The six most betweenness-central species are tabulated below.
 Goldeen, Magikarp and Poliwag are important conduits of information due to their high ubiquity.
 Cubone takes fifth place because it is the only species through which Gastly and Haunter---both found exclusively inside Pokémon Tower---can communicate with species in the Safari Zone.
-
 
 | Species  | Betweenness |
 |:--------:|:-----------:|
@@ -229,7 +213,6 @@ I recycle my method of analysing the cohabitation network among species in order
 In the latter network, two locations are adjacent if and only if they contain a common species.
 I generate the co-containment network from a binary location-location adjacency matrix as follows.
 
-
 ```r
 cocontains <- t(habits) %*% habits
 cocontains <- pmin(cocontains, 1)  # Remove parallel edges
@@ -241,7 +224,6 @@ The graph `location_net` contains 542 (about 60%) of the 903 possible edges betw
 The locations with the six highest mean ubiquities are tabulated below.
 Viridian City and Pallet Town have the least unique demographies; the few species that habitate in these locations tend to also habitate in many other locations.
 That Viridian City's mean ubiquity and degree centrality are similar suggests that its four habitants usually cohabitate.
-
 
 |    Location     | Mean Ubiquity | Degree | Diversity |
 |:---------------:|:-------------:|:------:|:---------:|
@@ -257,7 +239,6 @@ Route 10 appears to be an important junction for information flow between specie
 This is likely due to the diversity of its contained species, and that Routes 10 and 11 boast the highest degree centralities in the co-containment network.
 The Safari Zone, another highly diverse location, is also an important information relay.
 
-
 |   Location    | Betweenness | Degree | Diversity |
 |:-------------:|:-----------:|:------:|:---------:|
 |   Route 10    |    58.54    |   39   |    18     |
@@ -266,8 +247,6 @@ The Safari Zone, another highly diverse location, is also an important informati
 | Cerulean Cave |    20.28    |   31   |    28     |
 |    Route 6    |    18.38    |   38   |    16     |
 | Sea Route 21  |    18.38    |   38   |    13     |
-
-
 
 [^random]: Restricting to random encounters excludes starter Pokémon, species obtainable only through evolution and "special" encounters (e.g., the Electrodes inside the Kanto Power Plant and the legendary birds) from the sample.
 

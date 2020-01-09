@@ -4,8 +4,6 @@ tags: [networks, nyctrains, rstats, transport]
 from_Rmd: yes
 ---
 
-
-
 I spent most of October travelling in the United States.
 I visited a range of large cities with correspondingly large subway systems.
 New York City's is the most extensive, containing [more stops than any other subway system in the world](https://www.citymetric.com/transport/what-largest-metro-system-world-1361).
@@ -45,7 +43,6 @@ I compute this area for each stop as a measure of what I call "reach" centrality
 The table below reports betweenness and reach centralities for the ten most betweenness-central stops in the NYC subway network, excluding stops on Staten Island.
 I normalise centralities to have maximum values equal to unity.
 
-
 |           Stop           |  Borough  | Betweenness rank (value) | Reach rank (value) |
 |:------------------------:|:---------:|:------------------------:|:------------------:|
 |   Lexington Av / 59 St   | Manhattan |        1 (1.000)         |     23 (0.973)     |
@@ -65,13 +62,9 @@ The figure below shows the distribution of betweenness and reach centrality acro
 
 ![](figures/comparison-1.svg)
 
-
-
 Betweenness-central nodes belong to many shortest paths, and so tend to congregate along bottlenecks and highways.
 For example, seven of the ten most betweenness-central stops in the NYC subway network provide access to the Lexington Avenue Express (routes 4, 5 and 5X), which is the fastest---but not only---route between Brooklyn and the Bronx.
 In contrast, reach centrality emanates from mid/lower Manhattan, which (i) is geographically dense with mutually nearby subway stops and (ii) contains the fastest inter-borough connections.
-
-
 
 [nyctrains]: https://github.com/bldavies/nyctrains
 

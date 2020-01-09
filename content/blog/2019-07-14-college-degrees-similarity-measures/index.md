@@ -5,8 +5,6 @@ math: true
 from_Rmd: yes
 ---
 
-
-
 In my last post, I used the [2016 ACS PUMS](https://census.gov/programs-surveys/acs/data/pums.html) data to analyse how educational attainment and degree field choices vary between demographic groups.
 I commented that the rates at which graduates pair fields together "provide insight into the intellectual connections between fields."
 This post compares different ways of estimating the strength of such connections.
@@ -14,7 +12,6 @@ This post compares different ways of estimating the strength of such connections
 ## Field pair co-occurrences
 
 The [repository](https://github.com/bldavies/college-degrees) for this post contains the files `observations.csv` and `fields.csv`, which I import as follows.
-
 
 ```r
 library(readr)
@@ -26,7 +23,6 @@ fields       <- read_csv(paste0(data_url, 'fields.csv'))
 
 `observations` aggregates the sample weights in the PUMS data by age, sex, and degree level and fields.
 I use these weights to construct a field pair co-occurrence matrix `C`:
-
 
 ```r
 library(dplyr)
@@ -50,7 +46,6 @@ C <- observations %>%
 The diagonal elements of `C` estimate the total number of graduates with degrees in each field, while the off-diagonal elements estimate the number of graduates that chose each degree field pair.
 For example, the elements of the leading submatrix
 
-
 ```r
 C[1:5, 1:5]
 ```
@@ -65,7 +60,6 @@ C[1:5, 1:5]
 ```
 
 provide estimates for the degree fields listed in the first five rows of `fields`:
-
 
 ```r
 head(fields, 5)
@@ -89,7 +83,6 @@ Agricultural Economics attracts about as many graduates as Food Science, but no 
 
 The diagonal elements of `C` estimate the "size," in units of graduates, of each degree field.
 The distribution of field sizes is positively skewed, with the largest field having more than 30 times the size of the smallest 50% of fields:
-
 
 ```r
 summary(diag(C))
@@ -117,13 +110,11 @@ Indeed, one can show that `$$ \mathrm{Jaccard}(i,j) \le \mathrm{Dice}(i,j) \le \
 
 I compute matrices of Dice, Jaccard, Ochiai and overlap similarities by defining
 
-
 ```r
 S <- matrix(rep(diag(C), nrow(C)), nrow = nrow(C))
 ```
 
 and exploiting element-wise matrix operations:
-
 
 ```r
 dice_mat    <- 2 * C / (S + t(S))
@@ -146,7 +137,6 @@ Rearranging the definition of `$\tau(r_1,r_2)$` gives
 `$$ \Pr(\text{Pair is concordant}) = \frac{\tau(r_1, r_2) + 1}{2}. $$`
 Thus, computing Kendall's tau for the rankings produced by each similarity measure, and mapping the results linearly to the unit interval, allows me to estimate the rates of agreement between different measures.
 I compute these rates as follows, excluding zero and unit similarities, and report the results as a matrix.
-
 
 ```r
 similarities <- tibble(
@@ -178,7 +168,6 @@ All four measures produce rankings that reach less than 80% agreement with the r
 
 The following table presents the 10 most similar field pairs using the Dice and Jaccard measures, and those pairs' ranks using the Ochiai, overlap and co-occurrence measures.
 
-
 |Field 1                                     |Field 2                                | Dice/Jacc. rank| Ochiai rank| Overlap rank| Co-occ. rank|
 |:-------------------------------------------|:--------------------------------------|---------------:|-----------:|------------:|------------:|
 |Plant Science And Agronomy                  |Soil Science                           |               1|           1|            1|          127|
@@ -200,7 +189,6 @@ Accounting and Finance, the most common field pair, ranks in the top 10 most sim
 
 Another way to compare similarity measures is to compare properties of the networks they define.
 Each similarity matrix defines a network in which nodes represent degree fields and in which edges have weight equal to the similarity between incident nodes.
-
 
 ```r
 library(igraph)
@@ -227,7 +215,6 @@ I base my analysis on [PageRank](https://en.wikipedia.org/wiki/PageRank) central
 
 I store degree fields' PageRank centralities as a tibble
 
-
 ```r
 pageranks <- tibble(
   Dice      = page_rank(dice_net)$vector,
@@ -239,7 +226,6 @@ pageranks <- tibble(
 ```
 
 and compute the corresponding matrix of Kendall's tau coefficients, each mapped linearly to the unit interval:
-
 
 ```r
 pageranks %>%
@@ -262,7 +248,6 @@ The rankings of fields from most to least PageRank-central under the Dice and Ja
 The table below presents the 10 most PageRank-central fields using the Dice measure, and the corresponding ranks using the Jaccard, Ochiai, overlap and co-occurrence measures.
 The column "Size rank" orders each field from largest to smallest.
 
-
 |Field                                                         | Dice rank| Jaccard rank| Ochiai rank| Overlap rank| Co-occ. rank| Size rank|
 |:-------------------------------------------------------------|---------:|------------:|-----------:|------------:|------------:|---------:|
 |French German Latin And Other Common Foreign Language Studies |         1|            1|           1|            9|           15|        35|
@@ -280,8 +265,5 @@ Languages, Mathematics, and Political Science And Government are the most PageRa
 The Ochiai and overlap measures rank Mass Media and Molecular Biology relatively low on PageRank centrality, possibly due to those fields' relatively small size.
 The PageRank centralities produced using co-occurrence counts appear to correlate positively with field size, consistent with my worry that such counts may bias the measurement of intellectual connectedness in favour of larger fields.
 
-
-
 [^notes]: Ryan Tibshirani [provides excellent notes](http://www.stat.cmu.edu/~ryantibs/datamining/lectures/03-pr.pdf) on how PageRank handles disconnected components and "dangling" nodes.
-
 

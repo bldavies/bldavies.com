@@ -4,8 +4,6 @@ tags: [igraph, networks, R, Motu]
 from_Rmd: yes
 ---
 
-
-
 Earlier this year I joined [Motu](https://motu.nz), an economic and public policy research institute based in Wellington, New Zealand.
 In this post, I analyse the coauthorship network among Motu researchers based on working paper publications.
 The data used in my analysis are available [here][repo].
@@ -27,13 +25,10 @@ I include only those authors with outgoing hyperlinks because
 The resulting file [`authors.csv`](https://github.com/bldavies/motuwp/tree/8f4b1c02e04f8e5e45b4325195bb4f03ac0ee707/data/authors.csv) contains each unique author-paper pair.
 It excludes the authors of five papers for which either (i) there is no landing page linked from the main directory or (ii) the landing page has no authors with outgoing hyperlinks.
 
-
-
 I read in `authors.csv` and two other tables:
 [`areas.csv`](https://github.com/bldavies/motuwp/tree/8f4b1c02e04f8e5e45b4325195bb4f03ac0ee707/data/areas.csv), which contains the name, ID and ambient colour for each of [Motu's six primary research areas](https://motu.nz/our-work/); and
 [`papers.csv`](https://github.com/bldavies/motuwp/tree/8f4b1c02e04f8e5e45b4325195bb4f03ac0ee707/data/papers.csv), which links each paper to its research area.
 I merge these data into a single tibble `data`:
-
 
 ```r
 library(dplyr)
@@ -43,19 +38,16 @@ data <- authors %>%
   left_join(areas)
 ```
 
-
 ## The authorship network
 
 I next construct an authorship network by pairing papers with their authors using the information contained in `data`.
 I achieve this by defining an author-paper incidence matrix
-
 
 ```r
 incidence <- table(data$author, data$paper)
 ```
 
 and using that matrix to create a bipartite network `bip`:
-
 
 ```r
 library(igraph)
@@ -87,7 +79,6 @@ Urban and Regional authors tend to also write papers on Wellbeing and Macroecono
 Projecting `bip` onto the set of authors yields a coauthorship network in which two authors are adjacent if they have written a paper together.
 I define such a projection via
 
-
 ```r
 net <- bipartite.projection(bip)[[1]]
 ```
@@ -105,16 +96,11 @@ Such connectivity is facilitated by the three shaded hubs identified above.
 
 ### Hints of small-worldness
 
-
-
-
-
 The sparsity of `net` implies that most pairs of authors aren't coauthors.
 Indeed, the probability that two randomly selected authors are coauthors is given by `net`'s edge density: about 0.06.
 However, it is not unusual for two randomly selected authors to share a common coauthor; within the LCC of `net`, the probability of such an event is about 0.46.
 I calculate this probability by examining the distribution of (unweighted) [geodesic distances](https://en.wikipedia.org/wiki/Distance_(graph_theory)) between the vertices in `net` and determining the proportion of vertex pairs that are distance two apart.
 The following function performs that calculation for an arbitrary connected graph `G`.
-
 
 ```r
 common_neighbour_rate <- function (G) {
@@ -157,7 +143,6 @@ Likewise, random edge assignment disregards community formation, causing Erdös-
 The function below computes the clustering coefficient (known to `igraph` users as `transitivity`) and characteristic path length for a sample of Erdös-Rényi random graphs that are equivalent to an arbitrary graph `G`.
 The sample means of these attributes provide baselines against which to measure the corresponding values observed from `G`.
 
-
 ```r
 small_world_baselines <- function (G, sample_size = 1000, seed = 0) {
   set.seed(seed)
@@ -173,8 +158,6 @@ small_world_baselines <- function (G, sample_size = 1000, seed = 0) {
 }
 ```
 
-
-
 The coauthorship network `net` has clustering coefficient 0.24 and mean distance 2.49, with baseline comparators of 0.06 and 2.96.
 Thus, `net` is about four times as clustered as is expected for a network with its density and has slightly shorter geodesic distances than would be obtained by allocating edges randomly.
 These facts positively indicate small-worldness, and reflect widespread collaboration between authors within and between research areas.
@@ -188,7 +171,6 @@ The coauthorship network `net` obtains a small-world coefficient of 4.67, thereb
 Finally, I analyse the coauthorship network within Motu's five largest research areas.
 I filter the working papers from `data` that correspond to each area and recompute several statistics mentioned earlier using the subsample data.
 The first set of statistics is shown in the table below.
-
 
 |Area                         | Papers| Authors| Edge density| LCC order| LCC diameter|
 |:----------------------------|------:|-------:|------------:|---------:|------------:|
@@ -204,7 +186,6 @@ The largest connected component of the Wellbeing and Macroeconomics coauthorship
 
 I also test each area's coauthorship network for small-worldness using the Humphries-Gurney procedure.
 The results are tabulated below.
-
 
 |Area                         | Clustering coefficient (baseline)| Mean distance (baseline)| Small-world coefficient|
 |:----------------------------|---------------------------------:|------------------------:|-----------------------:|
@@ -228,5 +209,4 @@ Applying the Humphries-Gurney test to a larger network, or implementing a more r
 *Note: I updated this post on July 28, 2019 after revising the [source data][repo]. My results changed slightly due to retroactive author (re)assignments.*
 
 [repo]: https://github.com/bldavies/motuwp/
-
 
