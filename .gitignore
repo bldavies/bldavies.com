@@ -1,7 +1,8 @@
-_cv
+_*
 .Rproj.user
-content/blog/[a-z]*/
-_*.md
 *.Rproj
+content/blog/[a-z]*/
 Makefile
 serve
+
+!_index.md

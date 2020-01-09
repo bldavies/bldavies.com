@@ -1,6 +1,8 @@
 ---
-title: About me
+title: About
 ---
+
+# About me
 
 I'm a research analyst at [Motu](https://motu.nz), a non-profit economic  research institute in Wellington, New Zealand.
 I work with [Dave Maré](https://motu.nz/about-us/people/dave-mare/) and [Adam Jaffe](https://motu.nz/about-us/people/adam-jaffe/) on a range of projects that combine economics with network science.
@@ -13,6 +15,8 @@ See [my CV](/cv.pdf) for more information.
 ## About this website
 
 This website is built using [blogdown](https://github.com/rstudio/blogdown) and [Hugo](https://gohugo.io), and deployed via [Netlify](https://www.netlify.com).
+I generate most blog posts using [R Markdown](https://rmarkdown.rstudio.com).
+The source files for such posts, and for the other content on this website, are [available on GitHub](https://github.com/bldavies/bldavies.com).
 
 Except where stated otherwise, all website content is licensed under a [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) license.
 Views expressed are solely my own, and not those of any current, past, or future employer.
