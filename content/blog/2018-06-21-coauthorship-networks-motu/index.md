@@ -1,6 +1,6 @@
 ---
 title: Coauthorship Networks at Motu
-tags: [igraph, networks, R, Motu]
+tags: [networks, web scraping]
 from_Rmd: yes
 ---
 

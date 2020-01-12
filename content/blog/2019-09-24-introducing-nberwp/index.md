@@ -1,6 +1,6 @@
 ---
 title: Introducing nberwp
-tags: [NBER, research, rstats, text mining]
+tags: [text mining]
 from_Rmd: yes
 ---
 

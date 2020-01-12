@@ -1,6 +1,6 @@
 ---
 title: Information Gerrymandering
-tags: [rstats, simulation, voting]
+tags: [networks, simulation, voting]
 math: true
 ---
 

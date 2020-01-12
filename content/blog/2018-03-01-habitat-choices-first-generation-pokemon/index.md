@@ -1,6 +1,6 @@
 ---
 title: Habitat Choices of First-Generation Pokémon
-tags: [networks, rstats, Pokémon]
+tags: [networks]
 from_Rmd: yes
 ---
 

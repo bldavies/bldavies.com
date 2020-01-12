@@ -1,6 +1,5 @@
 ---
 title: Goals for 2019
-tags: [announcement, goals]
 ---
 
 Christmas holidays provide valuable time to reflect and to set goals for the year ahead.

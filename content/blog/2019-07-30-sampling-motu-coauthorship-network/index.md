@@ -1,6 +1,6 @@
 ---
 title: Sampling the Motu Coauthorship Network
-tags: [Motu, networks, R, sampling]
+tags: [networks]
 from_Rmd: yes
 ---
 

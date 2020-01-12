@@ -1,6 +1,6 @@
 ---
 title: Introducing nberwp
-tags: [NBER, research, rstats, text mining]
+tags: [text mining]
 ---
 
 ```{r setup, echo = F, message = F}

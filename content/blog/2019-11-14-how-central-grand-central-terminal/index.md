@@ -1,6 +1,6 @@
 ---
 title: How Central is Grand Central Terminal?
-tags: [networks, nyctrains, rstats, transport]
+tags: [networks, transport]
 from_Rmd: yes
 ---
 

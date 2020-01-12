@@ -1,6 +1,6 @@
 ---
 title: Computing Epicycles
-tags: [animation, Fourier series]
+tags: [animation, math]
 math: true
 ---
 

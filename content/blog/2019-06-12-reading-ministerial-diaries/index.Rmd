@@ -1,6 +1,6 @@
 ---
 title: Reading the Ministerial Diaries
-tags: [pdftools, tidytext, R]
+tags: [text mining]
 math: true
 ---
 

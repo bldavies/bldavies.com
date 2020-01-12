@@ -1,6 +1,6 @@
 ---
 title: Birds, Voting, and Russian Interference
-tags: [Bird of the Year, voting]
+tags: [voting]
 from_Rmd: yes
 ---
 

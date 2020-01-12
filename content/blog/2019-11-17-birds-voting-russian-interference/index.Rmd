@@ -1,6 +1,6 @@
 ---
 title: Birds, Voting, and Russian Interference
-tags: [Bird of the Year, voting]
+tags: [voting]
 ---
 
 ```{r setup, echo = F, message = F, warning = F}

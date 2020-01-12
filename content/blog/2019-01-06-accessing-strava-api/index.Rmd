@@ -1,6 +1,6 @@
 ---
 title: Accessing the Strava API with R
-tags: [Strava, API, fitness, running, cycling, R]
+tags: [Strava API]
 ---
 
 ```{r setup, include = FALSE}

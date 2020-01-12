@@ -1,6 +1,6 @@
 ---
 title: 'College Degrees in the US: Similarity Measures'
-tags: [similarity, networks, PUMS, R]
+tags: [networks]
 math: true
 from_Rmd: yes
 ---

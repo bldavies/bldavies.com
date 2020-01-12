@@ -1,6 +1,6 @@
 ---
 title: Guest Appearances on *The Joe Rogan Experience*
-tags: [Google Trends, Joe Rogan, signal detection]
+tags: [time series, web scraping]
 from_Rmd: yes
 ---
 

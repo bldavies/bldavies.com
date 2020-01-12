@@ -1,6 +1,6 @@
 ---
 title: "College Degrees in the US: Community Detection"
-tags: [community detection, networks, PUMS, R]
+tags: [networks]
 from_Rmd: yes
 ---
 
