@@ -335,3 +335,16 @@ table th {
   text-transform: uppercase;
 }
 
+.tag-link {
+  background-color: #f1f8ff;
+  border-radius: 0.25rem;
+  display: inline-block;
+  font-size: 80%;
+  margin: 0.2rem 0.1rem;
+  padding: 0.25rem 0.5rem;
+}
+
+.tag-link:hover {
+  background-color: #deeefe;
+  text-decoration: none;
+}

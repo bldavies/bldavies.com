@@ -1,19 +1,76 @@
 {{ partial "header.html" . }}
 
+<script language="javascript">
+  function toggle() {
+    var ys = document.getElementById("year-span");
+    var yd = document.getElementById("year-div");
+    var ts = document.getElementById("tag-span");
+    var td = document.getElementById("tag-div");
+    var text = document.getElementById("toggle");
+    if (ys.style.display == "inline") {
+      ys.style.display = "none";
+      yd.style.display = "none";
+      ts.style.display = "inline";
+      td.style.display = "block";
+      text.innerHTML = "tag";
+    }
+    else {
+      ys.style.display = "inline";
+      yd.style.display = "block";
+      ts.style.display = "none";
+      td.style.display = "none";
+      text.innerHTML = "year";
+    }
+  }
+</script>
+
 <div class="container-outer">
   <div class="container-inner">
     <h1>{{ .Title | markdownify }}</h1>
-    <ul class="blog-index">
-      {{ range .Data.Pages.GroupByDate "2006" }}
-        <h2>{{ .Key }}</h2>
-        {{ range .Pages }}
-          <li>
-            <a href="{{ .Permalink }}">{{ .Title | markdownify }}</a>
-            <span class="blog-index-date">{{ .Date.Format "Jan 02" }}</span>
-          </li>
+    Posts by <a href="javascript:toggle()" id="toggle">year</a>:
+
+    {{ $years := .Data.Pages.GroupByDate "2006" }}
+
+    <span id="year-span" style="display: inline">
+        {{ range $years }}
+          <a class="tag-link" href="#{{ .Key }}">{{ .Key }} ({{ len .Pages }})</a>
         {{ end }}
+      </span>
+
+    <div id="year-div" style="display: block">
+      {{ $groups := .Data.Pages.GroupByDate "2006" }}
+      <ul class="blog-index">
+        {{ range $years }}
+          <h2>{{ .Key }}</h2>
+          {{ range .Pages }}
+            <li>
+              <a href="{{ .Permalink }}">{{ .Title | markdownify }}</a>
+              <span class="blog-index-date">{{ .Date.Format "Jan 02" }}</span>
+            </li>
+          {{ end }}
+        {{ end }}
+      </ul>
+    </div>
+
+    <span id="tag-span" style="display: none">
+      {{ range $name, $taxonomy := .Site.Taxonomies.tags }} 
+        <a class="tag-link" href="#{{ $name }}">{{ $name }} ({{ len $taxonomy }})</a>
       {{ end }}
-    </ul>
+    </span>
+
+    <div id="tag-div" style="display: none">
+      <ul class="blog-index">
+        {{ range $name, $taxonomy := .Site.Taxonomies.tags }}
+          <h2>#{{ $name }}</h2>
+          {{ range $taxonomy }}
+            <li>
+              <a href="{{ .Permalink }}">{{ .Title | markdownify }}</a>
+              <span class="blog-index-date">{{ .Date.Format "Jan 02, 2006" }}</span>
+            </li>
+          {{ end }}
+        {{ end }}
+      </ul>
+    </div>
   </div>
 </div>
 
