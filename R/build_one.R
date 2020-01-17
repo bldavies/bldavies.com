@@ -25,6 +25,7 @@ local({
     )
     x <- gsub("(\\\n){2,}", "\n\n", paste(x, collapse = "\n"))  # Excess \n's 
     x <- gsub("(\\\n)+$", "\n", x)  # EoF
+    x <- xfun::protect_math(x)
     xfun::write_utf8(x, a[2])
   }
 })

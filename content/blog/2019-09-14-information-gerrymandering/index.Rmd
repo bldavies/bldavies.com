@@ -88,17 +88,17 @@ tibble(accepts = map(votes$results, ~tail(.$accepts, 1))) %>%
 ```
 
 Variation in decisions comes from variation in the influence network's structure.
-To see how, let `$\Delta_i$` denote the proportion of committee member `$i$`'s influencers with the same initial position on the policy as member `$i$`, and define
-`$$ a_i = \begin{cases} \Delta_i & \text{if}\ \Delta_i\ge 1/2\\ -(1 - \Delta_i) & \text{otherwise}. \end{cases} $$`
-The variable `$a_i$` captures the "influence assortment" of committee member `$i$`.
+To see how, let $\Delta_i$ denote the proportion of committee member $i$'s influencers with the same initial position on the policy as member $i$, and define
+$$a_i = \begin{cases} \Delta_i & \text{if}\ \Delta_i\ge 1/2\\ -(1 - \Delta_i) & \text{otherwise}. \end{cases}$$
+The variable $a_i$ captures the "influence assortment" of committee member $i$.
 Positive influence assortment means that they mainly agree with their influencers; negative influence assortment means that they mainly disagree.
 
-Now let `$\mathcal{A}$` and `$\mathcal{R}$` be the sets of committee members whose initial positions are to accept and reject the policy, and consider the difference
-`$$ G = \frac{1}{\lvert\mathcal{A}\rvert}\sum_{i\in\mathcal{A}} a_i - \frac{1}{\lvert\mathcal{R}\rvert}\sum_{j\in\mathcal{R}} a_j $$`
+Now let $\mathcal{A}$ and $\mathcal{R}$ be the sets of committee members whose initial positions are to accept and reject the policy, and consider the difference
+$$G = \frac{1}{\lvert\mathcal{A}\rvert}\sum_{i\in\mathcal{A}} a_i - \frac{1}{\lvert\mathcal{R}\rvert}\sum_{j\in\mathcal{R}} a_j$$
 in mean influence assortments between these sets.
-The "influence gap" `$G$` is greater than zero precisely when committee members in `$\mathcal{A}$` are, on average, more positively influence assorted than committee members in `$\mathcal{R}$`.
+The "influence gap" $G$ is greater than zero precisely when committee members in $\mathcal{A}$ are, on average, more positively influence assorted than committee members in $\mathcal{R}$.
 
-The scatter plot below shows that `$G$` correlates positively with the probability that the committee accepts the policy.
+The scatter plot below shows that $G$ correlates positively with the probability that the committee accepts the policy.
 Intuitively, positive influence gaps characterise influence networks with disproportionately many neighbouring majorities in favour of acceptance, which, consequently, makes voting to accept the policy more likely.
 
 ```{r correlation, echo = FALSE}

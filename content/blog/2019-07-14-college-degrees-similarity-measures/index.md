@@ -94,19 +94,21 @@ summary(diag(C))
 ```
 
 Using the elements of `C` to measure the strength of connections between fields may lead to biased inferences by, for example, making large fields with proportionally few graduates in common appear to have stronger connections than small fields with proportionally many graduates in common.
-One way to avoid such bias is to normalise each element `$c_{ij}$` of `C` by the corresponding field sizes `$s_i=c_{ii}$` and `$s_j=c_{jj}$`, thereby producing a scale-invariant "similarity" measure between pairs of degree fields.
+One way to avoid such bias is to normalise each element `\(c_{ij}\)` of `C` by the corresponding field sizes `\(s_i=c_{ii}\)` and `\(s_j=c_{jj}\)`, thereby producing a scale-invariant "similarity" measure between pairs of degree fields.
 
-Dividing `$c_{ij}$` by the arithmetic mean `$(s_i+s_j)/2$` yields the [Dice coefficient](https://en.wikipedia.org/wiki/Sørensen–Dice_coefficient)
-`$$ \mathrm{Dice}(i,j) = \frac{2c_{ij}}{s_i+s_j}, $$`
-while dividing `$c_{ij}$` by the geometric mean `$\sqrt{s_is_j}$` yields the [Ochiai coefficient](https://en.wikipedia.org/wiki/Cosine_similarity#Otsuka-Ochiai_coefficient)
-`$$ \mathrm{Ochiai}(i,j) = \frac{c_{ij}}{\sqrt{s_i\,s_j}}. $$`
+Dividing `\(c_{ij}\)` by the arithmetic mean `\((s_i+s_j)/2\)` yields the [Dice coefficient](https://en.wikipedia.org/wiki/Sørensen–Dice_coefficient)
+`$$\mathrm{Dice}(i,j) = \frac{2c_{ij}}{s_i+s_j},$$`
+while dividing `\(c_{ij}\)` by the geometric mean `\(\sqrt{s_is_j}\)` yields the [Ochiai coefficient](https://en.wikipedia.org/wiki/Cosine_similarity#Otsuka-Ochiai_coefficient)
+`$$\mathrm{Ochiai}(i,j) = \frac{c_{ij}}{\sqrt{s_i\,s_j}}.$$`
 The Dice coefficient can be used to define the [Jaccard index](https://en.wikipedia.org/wiki/Jaccard_index)
-`$$ \begin{align} \mathrm{Jaccard}(i,j) &= \frac{c_{ij}}{s_i + s_j - c_{ij}} \\ &= \frac{\mathrm{Dice}(i,j)}{2 - \mathrm{Dice}(i,j)}, \end{align} $$`
+`$$\begin{align} \mathrm{Jaccard}(i,j) &= \frac{c_{ij}}{s_i + s_j - c_{ij}} \\ &= \frac{\mathrm{Dice}(i,j)}{2 - \mathrm{Dice}(i,j)}, \end{align}$$`
 which is conceptually related to the [overlap coefficient](https://en.wikipedia.org/wiki/Overlap_coefficient)
-`$$ \mathrm{Overlap}(i,j) = \frac{c_{ij}}{\min(s_i, s_j)} $$`
+`$$\mathrm{Overlap}(i,j) = \frac{c_{ij}}{\min(s_i, s_j)}$$`
 in that both capture the relative size of set intersections.
-These four similarity measures take values on the closed unit interval `$[0,1]$`, with more "similar" fields achieving values closer to unity.
-Indeed, one can show that `$$ \mathrm{Jaccard}(i,j) \le \mathrm{Dice}(i,j) \le \mathrm{Ochiai}(i,j) \le \mathrm{Overlap}(i,j) \le 1, $$` with the two inner inequalities holding with equality if and only if `$s_i=s_j$`, and with all four inequalities holding with equality if and only if `$s_i=s_j=c_{ij}$`. Thus, two fields have unit similarity precisely when the sets of graduates with degrees in each field coincide.
+These four similarity measures take values on the closed unit interval `\([0,1]\)`, with more "similar" fields achieving values closer to unity.
+Indeed, one can show that
+`$$\mathrm{Jaccard}(i,j) \le \mathrm{Dice}(i,j) \le \mathrm{Ochiai}(i,j) \le \mathrm{Overlap}(i,j) \le 1,$$`
+with the two inner inequalities holding with equality if and only if `\(s_i=s_j\)`, and with all four inequalities holding with equality if and only if `\(s_i=s_j=c_{ij}\)`. Thus, two fields have unit similarity precisely when the sets of graduates with degrees in each field coincide.
 
 I compute matrices of Dice, Jaccard, Ochiai and overlap similarities by defining
 
@@ -128,13 +130,13 @@ overlap_mat <- C / pmin(S, t(S))
 One way to compare similarity measures is to compare how they rank fields from most to least similar.
 I do so using [Kendall's tau coefficient](https://en.wikipedia.org/wiki/Kendall_rank_correlation_coefficient), which captures the extent to which two rankings agree on the relative positions of ranked entities.
 Kendall's tau is defined as 
-`$$ \tau(r_1,r_2) = \frac{2\times\text{Number of concordant pairs}}{\text{Number of pairs}} - 1, $$`
-where `$r_1$` and `$r_2$` are ranking functions, and where a pair `$(x,y)$` of entities is "concordant" if `$(r_1(x)-r_1(y))$` and `$(r_2(x)-r_2(y))$` share the same sign.
-If every pair is corcordant then `$\tau(r_1,r_2)=1$` and if none are concordant then `$\tau(r_1,r_2)=-1$`.
-The more `$r_1$` and `$r_2$` agree on the relative positions of ranked entities, the greater is the number of concordant pairs and hence the larger is `$\tau(r_1,r_2)$`.
+`$$\tau(r_1,r_2) = \frac{2\times\text{Number of concordant pairs}}{\text{Number of pairs}} - 1,$$`
+where `\(r_1\)` and `\(r_2\)` are ranking functions, and where a pair `\((x,y)\)` of entities is "concordant" if `\((r_1(x)-r_1(y))\)` and `\((r_2(x)-r_2(y))\)` share the same sign.
+If every pair is corcordant then `\(\tau(r_1,r_2)=1\)` and if none are concordant then `\(\tau(r_1,r_2)=-1\)`.
+The more `\(r_1\)` and `\(r_2\)` agree on the relative positions of ranked entities, the greater is the number of concordant pairs and hence the larger is `\(\tau(r_1,r_2)\)`.
 
-Rearranging the definition of `$\tau(r_1,r_2)$` gives
-`$$ \Pr(\text{Pair is concordant}) = \frac{\tau(r_1, r_2) + 1}{2}. $$`
+Rearranging the definition of `\(\tau(r_1,r_2)\)` gives
+`$$\Pr(\text{Pair is concordant}) = \frac{\tau(r_1, r_2) + 1}{2}.$$`
 Thus, computing Kendall's tau for the rankings produced by each similarity measure, and mapping the results linearly to the unit interval, allows me to estimate the rates of agreement between different measures.
 I compute these rates as follows, excluding zero and unit similarities, and report the results as a matrix.
 

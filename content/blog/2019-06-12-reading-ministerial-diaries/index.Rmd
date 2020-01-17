@@ -185,18 +185,18 @@ word_portfolio_pairs <- data %>%
 tf-idf scores measure the "importance" of words in each document in a corpus.
 The *term frequency*
 
-`$$ \mathrm{tf}(w, d)=\frac{\text{Number of occurrences of word}\ w\ \text{in document}\ d}{\text{Number of words in document}\ d} $$`
+$$\mathrm{tf}(w, d)=\frac{\text{Number of occurrences of word}\ w\ \text{in document}\ d}{\text{Number of words in document}\ d}$$
 
-measures the rate at which word `$w$` occurs in a document `$d$`, while the *inverse document frequency*
+measures the rate at which word $w$ occurs in a document $d$, while the *inverse document frequency*
 
-`$$ \mathrm{idf}(w) = -\ln\left(\frac{\text{Number of documents containing word}\ w}{\text{Number of documents}}\right) $$`
+$$\mathrm{idf}(w) = -\ln\left(\frac{\text{Number of documents containing word}\ w}{\text{Number of documents}}\right)$$
 
 provides a normalisation factor that penalises ubiquitous words.
 The tf-idf score
 
-`$$ \text{tf-idf}(w,d) = \mathrm{tf}(w, d) \cdot \mathrm{idf}(w) $$`
+$$\text{tf-idf}(w,d) = \mathrm{tf}(w, d) \cdot \mathrm{idf}(w)$$
 
-thus measures the prevalence of word `$w$` in document `$d$`, normalised by that word's prevalence in other documents.
+thus measures the prevalence of word $w$ in document $d$, normalised by that word's prevalence in other documents.
 I interpret the set of entries associated with each portfolio as a document and use the `bind_tf_idf` function from `tidytext` to compute word-portfolio tf-idf scores:
 
 ```{r tf-idf-scores}
