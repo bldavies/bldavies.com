@@ -1,26 +1,17 @@
 {{ partial "header.html" . }}
 
 <script language="javascript">
-  function toggle() {
-    var ys = document.getElementById("year-span");
-    var yd = document.getElementById("year-div");
-    var ts = document.getElementById("tag-span");
-    var td = document.getElementById("tag-div");
-    var text = document.getElementById("toggle");
-    if (ys.style.display == "inline") {
-      ys.style.display = "none";
-      yd.style.display = "none";
-      ts.style.display = "inline";
-      td.style.display = "block";
-      text.innerHTML = "tag";
-    }
-    else {
-      ys.style.display = "inline";
-      yd.style.display = "block";
-      ts.style.display = "none";
-      td.style.display = "none";
-      text.innerHTML = "year";
-    }
+  function by_year() {
+    document.getElementById("year-span").style.display = "inline";
+    document.getElementById("year-div").style.display = "block";
+    document.getElementById("tag-span").style.display = "none";
+    document.getElementById("tag-div").style.display = "none";
+  }
+  function by_tag() {
+    document.getElementById("year-span").style.display = "none";
+    document.getElementById("year-div").style.display = "none";
+    document.getElementById("tag-span").style.display = "inline";
+    document.getElementById("tag-div").style.display = "block";
   }
 </script>
 
@@ -28,7 +19,7 @@
 {{ .Content }}
 <p>
   {{ $years := .Data.Pages.GroupByDate "2006" }}
-  Posts by <a href="javascript:toggle()" id="toggle">year</a>:
+  Sort by <a href="javascript:by_year()">year</a> / <a href="javascript:by_tag()">tag</a>:
   <span id="year-span" style="display: inline">
     {{ range $years }}
     <a class="tag-link" href="#{{ .Key }}">{{ .Key }} ({{ len .Pages }})</a>
