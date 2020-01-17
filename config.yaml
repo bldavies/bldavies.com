@@ -6,9 +6,9 @@ footnotereturnlinkcontents: "↩"
 frontmatter:
   date: [":filename", ":default"]
 googleAnalytics: UA-123726505-4
-ignoreFiles: ["\\.log", "\\.RData$", "\\.rds$", "\\.Rmd$"]
+ignoreFiles: ["\\.log$", "\\.RData$", "\\.rds$", "\\.Rmd$"]
 outputs:
-  home: ["HTML", "JSON", "RSS"]
+  home: ["HTML"]
 params:
   author: Benjamin Davies
   email: ben.davies@motu.org.nz
