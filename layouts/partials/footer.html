@@ -9,17 +9,11 @@
     <script src="{{ "js/math-code.js" | relURL }}"></script>
     <script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
   {{ end }}
-  <div class="container-outer">
-    <div id="footer">
-      <div id="footer-copyright">
-        &copy; 2018&ndash;{{ dateFormat "2006" now }} {{ .Site.Params.Author }}
-      </div>
-      <div id="footer-links">
-        <a href="mailto:{{ .Site.Params.Email }}">Email</a>
-        <a href="{{ .Site.Params.Github }}">GitHub</a>
-        <a href="{{ .Site.Params.Linkedin }}">LinkedIn</a>
-      </div>
-    </div>
+  <div class="container footer">
+    <p>
+      &copy; 2018&ndash;{{ dateFormat "2006" now }}
+      <a href="mailto:{{ .Site.Params.Email }}">{{ .Site.Params.Author }}</a>
+    </p>
   </div>
 </footer>
 </body>

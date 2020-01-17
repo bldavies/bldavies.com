@@ -1,10 +1,6 @@
 {{ partial "header.html" . }}
 
-<div class="container-outer">
-  <div class="container-inner">
-    <h1>{{ .Title | markdownify }}</h1>
-    {{ .Content }}
-  </div>
-</div>
+<h1>{{ .Title | markdownify }}</h1>
+{{ .Content }}
 
 {{ partial "footer.html" . }}

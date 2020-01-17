@@ -24,54 +24,49 @@
   }
 </script>
 
-<div class="container-outer">
-  <div class="container-inner">
-    <h1>{{ .Title | markdownify }}</h1>
-    Posts by <a href="javascript:toggle()" id="toggle">year</a>:
+<h1>{{ .Title | markdownify }}</h1>
+{{ .Content }}
+<p>
+  {{ $years := .Data.Pages.GroupByDate "2006" }}
+  Posts by <a href="javascript:toggle()" id="toggle">year</a>:
+  <span id="year-span" style="display: inline">
+    {{ range $years }}
+    <a class="tag-link" href="#{{ .Key }}">{{ .Key }} ({{ len .Pages }})</a>
+    {{ end }}
+  </span>
+  <span id="tag-span" style="display: none">
+    {{ range $name, $taxonomy := .Site.Taxonomies.tags }} 
+    <a class="tag-link" href="#{{ $name }}">{{ $name }} ({{ len $taxonomy }})</a>
+    {{ end }}
+  </span>
+</p>
 
-    {{ $years := .Data.Pages.GroupByDate "2006" }}
+<div id="year-div" style="display: block">
+  {{ range $years }}
+  <h2>{{ .Key }}</h2>
+  <ul class="page-index">
+  {{ range .Pages }}
+    <li>
+      <a href="{{ .Permalink }}">{{ .Title | markdownify }}</a>
+      <span class="page-index-date">({{ .Date.Format "Jan 02" }})</span>
+    </li>
+  {{ end }}
+  </ul>
+  {{ end }}
+</div>
 
-    <span id="year-span" style="display: inline">
-        {{ range $years }}
-          <a class="tag-link" href="#{{ .Key }}">{{ .Key }} ({{ len .Pages }})</a>
-        {{ end }}
-      </span>
-
-    <div id="year-div" style="display: block">
-      {{ $groups := .Data.Pages.GroupByDate "2006" }}
-      <ul class="blog-index">
-        {{ range $years }}
-          <h2>{{ .Key }}</h2>
-          {{ range .Pages }}
-            <li>
-              <a href="{{ .Permalink }}">{{ .Title | markdownify }}</a>
-              <span class="blog-index-date">{{ .Date.Format "Jan 02" }}</span>
-            </li>
-          {{ end }}
-        {{ end }}
-      </ul>
-    </div>
-
-    <span id="tag-span" style="display: none">
-      {{ range $name, $taxonomy := .Site.Taxonomies.tags }} 
-        <a class="tag-link" href="#{{ $name }}">{{ $name }} ({{ len $taxonomy }})</a>
-      {{ end }}
-    </span>
-
-    <div id="tag-div" style="display: none">
-      <ul class="blog-index">
-        {{ range $name, $taxonomy := .Site.Taxonomies.tags }}
-          <h2>#{{ $name }}</h2>
-          {{ range $taxonomy }}
-            <li>
-              <a href="{{ .Permalink }}">{{ .Title | markdownify }}</a>
-              <span class="blog-index-date">{{ .Date.Format "Jan 02, 2006" }}</span>
-            </li>
-          {{ end }}
-        {{ end }}
-      </ul>
-    </div>
-  </div>
+<div id="tag-div" style="display: none">
+  {{ range $name, $taxonomy := .Site.Taxonomies.tags }}
+  <h2>#{{ $name }}</h2>
+  <ul class="page-index">
+  {{ range $taxonomy }}
+    <li>
+      <a href="{{ .Permalink }}">{{ .Title | markdownify }}</a>
+      <span class="page-index-date">({{ .Date.Format "2006-01-02" }})</span>
+    </li>
+  {{ end }}
+  </ul>
+  {{ end }}
 </div>
 
 {{ partial "footer.html" . }}
