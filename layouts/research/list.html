@@ -19,4 +19,14 @@
 {{ end }}
 </ul>
 
+<h2>Other</h2>
+<ul class="page-index">
+{{ range where .Pages ".Params.publication_type" "Other" }}
+  <li>
+    <a href="{{ .Permalink }}">{{ .Title | markdownify }}</a>
+    {{ if .Params.coauthors }}(with {{ .Params.coauthors }}){{ end }}
+  </li>
+{{ end }}
+</ul>
+
 {{ partial "footer.html" . }}
