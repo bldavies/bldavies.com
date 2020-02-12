@@ -16,5 +16,9 @@
     </p>
   </div>
 </footer>
+{{ if in (.Site.BaseURL | string) "bldavies.com" }}
+<script data-goatcounter="https://bldavies.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+{{ end }}
 </body>
 </html>
