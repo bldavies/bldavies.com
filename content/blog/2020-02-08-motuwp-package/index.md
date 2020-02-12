@@ -23,12 +23,13 @@ These pairs can be used to construct a co-authorship network as follows:
 library(igraph)
 library(motuwp)
 
-# Create bipartite author-paper network
+# Method 1: Project bipartite author-paper network onto author set
 bip <- graph_from_data_frame(authors, directed = F)
-
-# Project onto set of authors
 V(bip)$type <- V(bip)$name %in% authors$author
-net <- bipartite_projection(bip, which = 'true')
+net <- bipartite_projection(bip, which = 'true', multiplicity = F)
+
+# Method 2: use convenience function that returns same network
+net <- coauthorship_network()
 ```
 
 The co-authorship network `net` contains 185 nodes and 729 edges.
