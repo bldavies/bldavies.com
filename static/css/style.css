@@ -147,7 +147,7 @@ table th {
 }
 
 .main {
-  min-height: calc(100vh - 6.375rem - 3.2rem - 0.2rem);
+  min-height: calc(100vh - 3.5rem - 3.2rem - 0.2rem);
 }
 
 
@@ -160,15 +160,13 @@ table th {
 .header a {
   border: none;
   display: inline-block;
-  margin: 1rem;
+  margin: 1rem 0.5rem;
   margin-left: 0;
 }
 
 .header a:first-of-type {
   font-weight: 600;
-  font-size: 1.25rem;
-  margin-bottom: 0;
-  width: 100%;
+  margin-right: 1rem;
 }
 
 .footer {
