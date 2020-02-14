@@ -1,6 +1,6 @@
 ---
 title: Guest Appearances on *The Joe Rogan Experience*
-tags: [time series, web scraping]
+tags: [podcasts, web scraping]
 from_Rmd: yes
 ---
 

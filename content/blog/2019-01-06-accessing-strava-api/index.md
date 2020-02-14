@@ -1,6 +1,6 @@
 ---
 title: Accessing the Strava API with R
-tags: [Strava API]
+tags: [fitness, Strava]
 from_Rmd: yes
 ---
 

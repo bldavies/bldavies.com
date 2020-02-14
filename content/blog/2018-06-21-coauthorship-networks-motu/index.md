@@ -1,6 +1,6 @@
 ---
 title: Coauthorship Networks at Motu
-tags: [networks, web scraping]
+tags: [collaboration, networks, web scraping]
 from_Rmd: yes
 ---
 

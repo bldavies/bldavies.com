@@ -1,6 +1,6 @@
 ---
 title: NBER (co-)authorships
-tags: [collaboration, networks, research]
+tags: [collaboration, networks, packages]
 from_Rmd: yes
 ---
 

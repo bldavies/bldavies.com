@@ -1,6 +1,6 @@
 ---
 title: motuwp is now an R package
-tags: [collaboration, networks, research]
+tags: [collaboration, networks, packages]
 from_Rmd: yes
 ---
 

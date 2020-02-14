@@ -1,6 +1,6 @@
 ---
 title: 'College Degrees in the US: Similarity Measures'
-tags: [networks]
+tags: [education, networks]
 math: true
 from_Rmd: yes
 ---

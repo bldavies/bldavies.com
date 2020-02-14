@@ -1,6 +1,6 @@
 ---
 title: Introducing nberwp
-tags: [text mining]
+tags: [packages, text mining]
 from_Rmd: yes
 ---
 
