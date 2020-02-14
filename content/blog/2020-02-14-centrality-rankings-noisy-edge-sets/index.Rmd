@@ -1,0 +1,161 @@
+---
+title: Centrality rankings with noisy edge sets
+tags: [networks, simulation]
+---
+
+```{r setup, echo = F, message = F, warning = F}
+
+library(dplyr)
+library(ggplot2)
+library(igraph)
+library(knitr)
+library(motuwp)
+library(purrr)
+library(tidyr)
+
+opts_chunk$set(echo = F, message = F, warning = F)
+
+theme_set(
+  theme_minimal() +
+    theme(panel.grid.minor = element_blank(),
+          plot.subtitle = element_text(margin = margin(b = 10)),
+          plot.title = element_text(face = 'bold', margin = margin(b = 10)),
+          strip.text = element_text(face = 'bold', hjust = 0, margin = margin(b = 5), size = 11, vjust = 0))
+)
+
+net <- coauthorship_network()
+base_data <- crossing(p = 0.01 * (1:10), run = 1:30)
+n_runs <- max(base_data$run)
+```
+
+Suppose I want to rank the centralities of nodes in a network.
+The network's node set is correct, but its edge set is "noisy" in that it includes some false edges and excludes some true edges.
+How sensitive to this noise are the rankings of nodes from most to least central?
+
+One way to answer this question empirically is to perturb an observable "true" network by adding and deleting edges randomly.
+This can be achieved by generating an [Erdös-Rényi (ER) random network](https://en.wikipedia.org/wiki/Erd%C5%91s%E2%80%93R%C3%A9nyi_model) with the same node set as the true network, and defining a "noisy" network with edge set equal to the symmetric difference of the true and ER networks' edge sets.
+This method "swaps" the states (from "present" to "not present", or vice versa) of the true network's edges at random.
+Varying the edge creation probablity in the ER network varies the amount of noise in the noisy network's edge set.
+
+I demonstrate this "random edge swapping" method by applying it to the [Motu working paper co-authorship network](/blog/coauthorship-networks-motu/).
+First, I generate `r n_runs` ER networks and `r n_runs` corresponding noisy networks for a range of edge swap probabilities.
+I then compute nodes' betweenness, degree and PageRank centralities in the co-authorship networks with and without noise, and calculate the [Spearman rank correlation](https://en.wikipedia.org/wiki/Spearman%27s_rank_correlation_coefficient) between the true and noisy centralities using each of the three measures.
+Finally, I compute the sample means and 95% confidence intervals for the measure-specific rank correlations across the simulation runs associated with each edge swap probability.
+I present these means and confidence intervals in the left panel of the plot below.
+The right panel presents similar information, but with a [degree-preserving randomisation](https://en.wikipedia.org/wiki/Degree-preserving_randomization) of the co-authorship network within each simulation run before introducing noise.
+This randomisation allows me to control for the effect of the co-authorship network's structure on my rank correlation estimates.
+
+
+```{r save-cache, eval = F}
+node_attributes <- function(net) {
+  tibble(
+    name = V(net)$name,
+    Degree = degree(net),
+    Betweenness = betweenness(net),
+    PageRank = page_rank(net)$vector
+  ) %>%
+    mutate_if(is.double, function(x) 100 * x / sum(x)) %>%
+    gather(attribute, value, -name)
+}
+
+noisy_node_attributes <- function(net, p) {
+  noise <- sample_gnp(gorder(net), p)
+  V(noise)$name <- V(net)$name
+  noisy_net <- net %u% noise
+  noisy_net <- delete_edges(noisy_net, which(E(noisy_net) %in% E(net %s% noise)))
+  node_attributes(noisy_net)
+}
+
+random_noisy_node_attributes <- function(net, p) {
+  random_net <- sample_degseq(degree(net))
+  V(random_net)$name <- V(net)$name
+  node_attributes(random_net) %>%
+    rename(true_value = value) %>%
+    left_join(noisy_node_attributes(random_net, p), by = c('name', 'attribute'))
+}
+
+set.seed(0)
+real_data <- base_data %>%
+  mutate(data = map(p, ~noisy_node_attributes(net, .))) %>%
+  unnest(cols = 'data') %>%
+  left_join(rename(node_attributes(net), true_value = value))
+random_data <- base_data %>%
+  mutate(data = map(p, ~random_noisy_node_attributes(net, .)))  %>%
+  unnest(cols = 'data')
+data <- bind_rows(
+  mutate(real_data, source = 'real'),
+  mutate(random_data, source = 'random')
+)
+
+saveRDS(data, 'data/data.rds')
+```
+
+```{r load-cache}
+data <- readRDS('data/data.rds')
+```
+
+```{r correlations, fig.width = 6, fig.height = 4.5, dpi = 100, dev = 'svg', fig.ext = 'svg'}
+sources <- c(
+  'Motu co-authorship network',
+  'Degree-preserving randomisations\nof Motu co-authorship network'
+)
+data %>%
+  group_by(p, run, attribute, source) %>%
+  summarise(cor = cor(value, true_value, method = 'spearman')) %>%
+  group_by(p, attribute, source) %>%
+  summarise(mean = mean(cor),
+            ci_radius = qt(1 - 0.05 / 2, n() - 1) * sd(cor) / sqrt(n())) %>%
+  ungroup() %>%
+  mutate(source = ifelse(source == 'real', sources[1], sources[2]),
+         source = factor(source, levels = sources)) %>%
+  ggplot(aes(100 * p, mean)) +
+  geom_ribbon(aes(ymin = mean - ci_radius, ymax = mean + ci_radius, fill = attribute), alpha = 0.2) +
+  geom_line(aes(col = attribute)) +
+  coord_cartesian(clip = 'off') +
+  labs(x = 'Edge swap probability (%)',
+       y = 'Spearman correlation',
+       title = 'Spearman rank correlation between nodes\' centralities\nwith and without noisy edge sets',
+       subtitle = paste('Means and 95% CIs across', n_runs, 'simulations with each edge swap probability'),
+       col = NULL,
+       fill = NULL) +
+  facet_wrap(~source) +
+  guides(col = guide_legend(label.position = 'left'),
+         fill = guide_legend(label.position = 'left')) +
+  scale_x_continuous(expand = c(0, 0), breaks = 1:10) +
+  scale_y_continuous(expand = c(0, 0)) +
+  theme(legend.justification = c(1, 0),
+        legend.position = c(1, 0),
+        panel.spacing = unit(1, 'lines'))
+```
+
+Increasing the edge swap probability decreases the consistency between the true and noisy centrality rankings for each of the three centrality measures I analyse.
+Intuitively, the more noise there is in the edge set, the less similar are the true and noisy co-authorship networks, and so the less correlated are the centrality rankings of the nodes in these networks.
+
+Degree centrality rankings are the least sensitive to edge noise.
+Adding or deleting edges moves the incident nodes up or down the degree rank order, but leaves the relative ranks among non-incident nodes intact.
+Degree-preserving randomisation, by definition, does not affect nodes' degree centrality rankings and so does not change the sensitivity of those rankings to noise.
+
+PageRank centrality rankings are more sensitive to edge noise.
+Since nodes' PageRank centralities depend on the PageRank centralities of their neighbours, the effect of adding or deleting edges spills over to some non-incident nodes and, consequently, disrupts the PageRank rank order more than the degree rank order.
+Controlling for network structure increases the influence that degree has on PageRank centrality and, consequently, decreases the sensitivity of PageRank centrality rankings to errant edges.
+
+```{r}
+real_betweenness <- data %>%
+  filter(source == 'real' & attribute == 'Betweenness') %>%
+  distinct(name, true_value) %>%
+  {.$true_value}
+random_betweenness <- data %>%
+  filter(source == 'random' & attribute == 'Betweenness') %>%
+  {.$true_value}
+```
+
+Betweenness centrality rankings are the most sensitive to edge noise.
+Adding or deleting edges can create or destroy short(est) paths between nodes, leading to radical changes in betweenness centrality for nodes on these paths.
+Controlling for network structure suppresses these changes by reducing the initial inequality in betweenness centralities.
+About `r round(100 * mean(real_betweenness == 0))`% of nodes in the true co-authorship network have betweenness centralities equal to zero, whereas `r round(100 * mean(random_betweenness == 0))`% of nodes in the randomised networks have betweenness centralities equal to zero.
+Consequently, nodes in the randomised networks typically have "less betweenness to gain or lose" than nodes in the true network, diminishing the effect of errant edges on betweenness centrality rankings.
+
+```{r session-info}
+options(width = 80)
+writeLines(capture.output(sessioninfo::session_info()), 'session.log')
+```
