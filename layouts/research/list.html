@@ -9,22 +9,22 @@
   <a href="{{ .Site.Params.orcid }}">ORCID</a> profiles.
 </p>
 
-<h2>Working Papers</h2>
+<h2>Working papers</h2>
 <ul class="page-index">
-{{ range where .Pages ".Params.publication_type" "Working Paper" }}
+{{ range where .Site.Data.publications "type" "working" }}
   <li>
-    <a href="{{ .Permalink }}">{{ .Title | markdownify }}</a>
-    {{ if .Params.coauthors }}(with {{ .Params.coauthors }}){{ end }}
+    {{ if .pdf }}<a href="{{ .pdf }}">{{ .title }}</a>{{ else }}{{ .title }}{{ end }}
+    {{ if .coauthors }} (with {{ .coauthors }}){{ end }}
   </li>
 {{ end }}
 </ul>
 
 <h2>Other</h2>
 <ul class="page-index">
-{{ range where .Pages ".Params.publication_type" "Other" }}
+{{ range where .Site.Data.publications "type" "other" }}
   <li>
-    <a href="{{ .Permalink }}">{{ .Title | markdownify }}</a>
-    {{ if .Params.coauthors }}(with {{ .Params.coauthors }}){{ end }}
+    {{ if .pdf }}<a href="{{ .pdf }}">{{ .title }}</a>{{ else }}{{ .title }}{{ end }}
+    {{ if .coauthors }} (with {{ .coauthors }}){{ end }}
   </li>
 {{ end }}
 </ul>
