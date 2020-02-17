@@ -1,0 +1,74 @@
+---
+title: Degree-preserving randomisation
+tags: [networks, simulation]
+---
+
+```{r setup, echo = F, message = F, warning = F}
+library(dplyr)
+library(igraph)
+library(knitr)
+library(motuwp)
+library(purrr)
+library(tidyr)
+
+opts_chunk$set(echo = F)
+
+net <- coauthorship_network()
+
+properties <- function(net) {
+  tibble(
+    `Mean distance` = mean_distance(net),
+    `Median degree` = median(degree(net)),
+    `Clustering coefficient` = transitivity(net)
+  ) %>%
+    gather(property, value)
+}
+
+n_runs <- 50
+```
+
+[My previous post](/blog/centrality-rankings-noisy-edge-sets/) used [degree-preserving randomisation](https://en.wikipedia.org/wiki/Degree-preserving_randomization) (DPR) to control for network structure when estimating the effect of edge noise on nodes' centrality rankings.
+The idea was that nodes may be connected in ways that amplify or suppress the effects of noise, and randomising nodes' connections helps to balance these effects by averaging over the network's possible structures.
+
+DPR can also be used to test whether a network's structure is significantly different than would be expected for a random network with the same degree distribution.
+For example, comparing a network's clustering coefficient to the mean clustering coefficient among a sample of degree-preserving random networks reveals whether the original network is significantly more or less clustered than it would be, on average, if nodes' connections were random.
+In contrast to [Erdös-Rényi](https://en.wikipedia.org/wiki/Erd%C5%91s%E2%80%93R%C3%A9nyi_model) randomisation (ERR)---that is, generating a random network with the same number of nodes and edges---DPR separates variation in degree distributions from variation in other properties observed across sampled random networks.
+
+Consider, as an example, the [Motu working paper co-authorship network](/blog/coauthorship-networks-motu/).
+The table below presents the network's median node degree, global [clustering coefficient](https://en.wikipedia.org/wiki/Clustering_coefficient), and [mean geodesic distance](https://en.wikipedia.org/wiki/Average_path_length).
+The table also presents the sample means and standard deviations of these properties across `r n_runs` degree-preserving and Erdös-Rényi randomisations of the co-authorship network.
+
+```{r}
+set.seed(0)
+tibble(
+  `DPR sample mean (sd)` = map(1:n_runs, ~properties(sample_degseq(degree(net)))),
+  `ERR sample mean (sd)` = map(1:n_runs, ~properties(sample_gnm(gorder(net), gsize(net))))
+) %>%
+  gather(key, data) %>%
+  unnest('data') %>%
+  group_by(key, property) %>%
+  summarise(value = sprintf('%.2f (%.2f)', mean(value), sd(value))) %>%
+  ungroup() %>%
+  select(key, property, value) %>%
+  bind_rows(
+    properties(net) %>%
+      mutate(key = 'Actual value',
+             value = sprintf('%.2f', value))
+  ) %>%
+  rename(Property = property) %>%
+  spread(key, value) %>%
+  slice(c(3, 1, 2)) %>%
+  kable(align = 'lccc')
+```
+
+By definition, DPR preserves the degree distribution and, consequently, always delivers the same median degree as the co-authorship network.
+In contrast, ERR removes the inequality in node degrees (arising, for example, from [preferential attachment](https://en.wikipedia.org/wiki/Preferential_attachment)) and, consequently, delivers median degrees centred on the co-authorship network's mean degree.
+
+The co-authorship network is about 13 times more clustered than would be expected for an Erdös-Rényi random network with same number of nodes and edges.
+Controlling for the degree distribution drops this factor to just over three.
+In contrast, the mean distance between nodes in the co-authorship network is closer to what we would expect in a comparable Erdös-Rényi random network than in a degree-preserving random network.
+
+```{r session-info}
+options(width = 80)
+writeLines(capture.output(sessioninfo::session_info()), 'session.log')
+```
