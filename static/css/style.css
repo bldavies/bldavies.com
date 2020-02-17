@@ -93,11 +93,12 @@ pre {
   line-height: 1.45;
   max-width: 100vw;
   overflow: auto;
-  padding: 0.5rem;
+  padding: 1rem;
 }
 
 pre code {
   background-color: transparent;
+  font-size: 90%;
   padding: 0;
 }
 
@@ -217,4 +218,27 @@ table th {
   border: none;
   background-color: #ddd;
   text-decoration: none;
+}
+
+
+/* Syntax highlighting */
+
+.bp,
+.kc,
+.m {
+  color: #7650c1;
+}
+
+.c1,
+.o {
+  opacity: 0.5;
+}
+
+.kn,
+.kr {
+  color: crimson;
+}
+
+.s {
+  color: green;
 }

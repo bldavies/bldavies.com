@@ -5,8 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="author" content="{{ .Site.Params.author }}">
   <link rel="stylesheet" href="{{ "css/style.css" | relURL }}">
-  {{ partial "head_highlightjs" . }}
-  <link rel="stylesheet" href="{{ "css/hljs-overrides.css" | relURL }}">
   {{ if eq .RelPermalink "/" }}
     <title>{{ .Site.Title }}</title>
   {{ else }}

@@ -13,13 +13,11 @@ params:
   author: Benjamin Davies
   email: ben.davies@motu.org.nz
   githubContentURL: "https://github.com/bldavies/bldavies.com/tree/master/content/"
-  highlightjsVersion: "9.12.0"
-  highlightjsCDN: "//cdn.bootcss.com"
-  highlightjsLang: ["r", "tex", "yaml"]
-  highlightjsTheme: "github-gist"
   repec: https://ideas.repec.org/f/pda777
   scholar: https://scholar.google.co.nz/citations?user=iet9PyAAAAAJ
   orcid: https://orcid.org/0000-0002-1749-4567
 permalinks:
   blog: "/blog/:slug/"
+pygmentsCodeFences: true
+pygmentsUseClasses: true
 title: Ben Davies
