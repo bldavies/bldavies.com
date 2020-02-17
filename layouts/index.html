@@ -4,6 +4,10 @@
 
 {{ .Content }}
 
+<p>
+  Read more <a href="/about/">about me</a> or <a href="/research/">my research</a>, or <a href="mailto:{{ .Site.Params.Email }}">get in touch</a>.
+</p>
+
 <h2>Latest blog posts</h2>
 <ul class="page-index">
 {{ range $index, $element := first 5 (where .Site.RegularPages "Section" "blog") }}
