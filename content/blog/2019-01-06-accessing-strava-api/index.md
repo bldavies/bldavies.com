@@ -1,6 +1,6 @@
 ---
 title: Accessing the Strava API with R
-tags: [fitness, Strava]
+tags: [running, Strava]
 from_Rmd: yes
 ---
 
@@ -39,11 +39,14 @@ endpoint <- oauth_endpoint(
 
 Finally, I create an OAuth access token to send the authentication request to my Strava account.
 This token encapsulates the application and endpoint defined above.
-Running
+Running[^scope]
 
 ```r
-token <- oauth2.0_token(endpoint, app, as_header = FALSE, cache = FALSE)
+token <- oauth2.0_token(endpoint, app, as_header = FALSE,
+                        scope = "activity:read_all")
 ```
+
+[^scope]: Strava's [OAuth update](https://developers.strava.com/docs/oauth-updates/) in October 2019 made `scope` specification a requirement.
 
 opens a browser window at a web page for accepting the authentication request.
 Doing so redirects me to the callback domain ("localhost") and prints a confirmation message:
