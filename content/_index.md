@@ -12,5 +12,3 @@ Some of my favorite blog posts include:
 * [White  Elephant Gift Exchanges](/blog/white-elephant-gift-exchanges/)
 * [How Central is Grand Central Terminal?](/blog/how-central-grand-central-terminal/)
 * [Information Gerrymandering](/blog/information-gerrymandering/)
-
-See my [CV](/cv.pdf) or [LinkedIn profile](https://www.linkedin.com/in/bl-davies/) for more information, or <a href="mailto:{{< param email >}}">get in touch</a>.
