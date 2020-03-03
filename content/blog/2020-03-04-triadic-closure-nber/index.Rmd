@@ -1,0 +1,83 @@
+---
+title: Triadic closure at the NBER
+tags: [collaboration, networks]
+---
+
+[Fafchamps et al. (2010)](https://academic.oup.com/jeea/article-abstract/8/1/203/2295936) describe a model of team formation in which people learn about potential collaborators via existing collaborators.
+These "referrals" provide information about potential collaborators' match qualities, allowing people to [screen](https://en.wikipedia.org/wiki/Screening_(economics)) each other and sort into more productive teams.
+Fafchamps et al. argue, and demonstrate empirically, that this referral mechanism leads to more teams being formed among people who are closer in the collaboration network.
+
+```{r setup, echo = F, message = F, warning = F}
+library(dplyr)
+library(igraph)
+library(purrr)
+library(nberwp)
+library(scales)
+library(tidyr)
+
+bip <- graph_from_data_frame(authors, directed = F)
+V(bip)$type <- V(bip)$name %in% authors$author
+net <- bipartite_projection(bip, which = 'true', multiplicity = F)
+
+set.seed(0)
+```
+
+Fafchamps et al.'s referral model implies that triads in collaboration networks should tend to [close](https://en.wikipedia.org/wiki/Triadic_closure) over time; that is, people should tend to collaborate with others with whom they share common collaborators.
+One way to measure such closure is via the (global) [clustering coefficient](https://en.wikipedia.org/wiki/Clustering_coefficient), which measures the rate at which pairs of nodes with a common neighbour are also adjacent.
+For example, in the [NBER working paper co-authorship network](/blog/nber-co-authorships/), about `r 100 * round(transitivity(net), 2)`% of the pairs of authors who share common co-authors are co-authors themselves.
+In contrast, we would expect this to happen `r round(mean(100 * map_dbl(1:30, ~transitivity(sample_degseq(degree(net))))), 2)`% of the time in a [random network with the same degree distribution](/blog/degree-preserving-randomisation/), and `r round(mean(100 * map_dbl(1:30, ~transitivity(sample_gnm(gorder(net), gsize(net))))), 2)`% of the time in a random network with the same number of nodes and edges.
+Thus, the NBER co-authorship network is much more clustered than would be expected if authors chose co-authors randomly.
+
+```{r save-cache, echo = F, eval = F}
+coauthorships <- authors %>%
+  left_join(authors, by = 'paper') %>%
+  filter(author.x != author.y)
+
+pairs <- coauthorships %>%
+  left_join(coauthorships, by = c('author.y')) %>%
+  filter(author.x.x != author.x.y) %>%
+  mutate(paper_d2 = pmax(paper.x, paper.y)) %>%
+  group_by(author.x = author.x.x, author.y = author.x.y) %>%
+  summarise(paper_d2 = min(paper_d2)) %>%
+  ungroup() %>%
+  full_join(
+    coauthorships %>%
+      group_by(author.x, author.y) %>%
+      summarise(paper_d1 = min(paper)) %>%
+      ungroup()
+  ) %>%
+  filter(author.x < author.y)
+
+saveRDS(pairs, file = 'data/pairs.rds')
+```
+
+```{r load-cache, echo = F}
+pairs <- readRDS('data/pairs.rds')
+pairs_adj <- pairs %>%
+  filter(!is.na(paper_d2) & (is.na(paper_d1) | paper_d1 > paper_d2))
+```
+
+Another way to measure triadic closure is by computing the rate at which pairs of nodes with common neighbours *become* adjacent.
+This method makes sense whenever the network's density grows over time.
+Such growth occurs in the NBER co-authorship network through co-authorships of new working papers.
+The network contains `r comma(sum(!is.na(pairs$paper_d1)))` pairs of eventual co-authors, `r comma(nrow(drop_na(pairs_adj)))` of whom share common co-authors at an earlier stage of the network's evolution.
+However, `r comma(nrow(filter(pairs_adj, is.na(paper_d1))))` of the `r comma(nrow(filter(pairs_adj)))` pairs of authors with common co-authors never become co-authors themselves.
+Thus, only `r round(100 * nrow(drop_na(pairs_adj)) / nrow(filter(pairs_adj)), 2)`% of the unclosed triads in the NBER co-authorship network ever become closed.
+
+How can we reconcile the NBER co-authorship network's high clustering coefficient with its low triad closure rate?[^unobserved]
+One explanation could be that referrals primarily attract collaborators on current projects rather than potential future projects.
+Suppose I'm writing a paper with Alice, who suggests that Bob may have some valuable insights on our research, and that Bob and I might work well together.
+It turns out that Bob does have valuable insights and that we do work well together, and Alice and I decide to make him a co-author on our paper.[^compensation]
+We publish our research as an NBER working paper, and Alice, Bob and I appear as a closed triad in the NBER co-authorship network (but never as an unclosed triad).
+
+[^unobserved]: Researchers in the NBER co-authorship network may collaborate in ways not captured by the network. For example, working papers published in the NBER series must have at least one NBER-affiliated author, so papers written exclusively by non-affiliates are not observed in my data. If co-author referrals primarily lead non-affiliates to collaborate, and if such collaboration does not culminate in NBER working paper publications, then we would expect to observe a low triad closure rate. However, we would also expect a low (perhaps lower than `r round(transitivity(net), 2)`) clustering coefficient because the triads containing non-affiliates would remain mostly open.
+
+[^compensation]: [Barnett et al. (1988)](https://doi.org/10.2307/1926798) and [Hamermesh (2013)](https://doi.org/10.1257/jel.51.1.162) suggest that co-authorship is increasingly used as compensation for colleagues' research assistance.
+
+If intra-project closure is common then we would expect a high clustering coefficient and low triad closure rate in the NBER co-authorship network.
+The open triads in the network would be the triads for which successful referrals did not occur during co-authorship, and the factors that prevented such referrals may persist after the paper is published.
+
+```{r session-info, echo = F}
+options(width = 80)
+writeLines(capture.output(sessioninfo::session_info()), 'session.log')
+```
