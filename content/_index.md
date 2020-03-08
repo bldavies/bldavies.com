@@ -12,3 +12,5 @@ Some of my favorite blog posts include:
 * [White  Elephant Gift Exchanges](/blog/white-elephant-gift-exchanges/)
 * [How Central is Grand Central Terminal?](/blog/how-central-grand-central-terminal/)
 * [Information Gerrymandering](/blog/information-gerrymandering/)
+
+I'm also a keen runner and log most of my runs on [Strava](https://www.strava.com).
