@@ -1,6 +1,6 @@
 ---
 title: Updating motuwp
-tags: [web-scraping]
+tags: [web scraping]
 from_Rmd: yes
 ---
 

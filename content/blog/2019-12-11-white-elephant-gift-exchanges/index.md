@@ -1,6 +1,6 @@
 ---
 title: White Elephant Gift Exchanges
-tags: [market design, simulation]
+tags: [matching, simulation]
 from_Rmd: yes
 ---
 

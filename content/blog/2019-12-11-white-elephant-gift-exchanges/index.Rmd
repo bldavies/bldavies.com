@@ -1,6 +1,6 @@
 ---
 title: White Elephant Gift Exchanges
-tags: [market design, simulation]
+tags: [matching, simulation]
 ---
 
 ```{r setup, echo = F, message = F, warning = F}

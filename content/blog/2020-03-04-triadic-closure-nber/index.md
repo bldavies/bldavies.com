@@ -1,6 +1,6 @@
 ---
 title: Triadic closure at the NBER
-tags: [collaboration, networks]
+tags: [collaboration, matching, networks]
 from_Rmd: yes
 ---
 
