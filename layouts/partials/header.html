@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="{{ "css/style.css" | relURL }}">
   {{ if eq .RelPermalink "/" }}
     <title>{{ .Site.Title }}</title>
+    <meta name="description" content="{{ .Site.Params.description }}">
   {{ else }}
     <title>{{ replace .Title "*" "" }} - {{ .Site.Title }}</title>
   {{ end }}
