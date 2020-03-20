@@ -5,7 +5,6 @@ disableKinds: ["taxonomy", "taxonomyTerm", "sitemap"]
 footnotereturnlinkcontents: "↩"
 frontmatter:
   date: [":filename", ":default"]
-googleAnalytics: UA-123726505-4
 ignoreFiles: ["\\.log$", "\\.RData$", "\\.rds$", "\\.Rmd$"]
 outputs:
   home: ["HTML"]
