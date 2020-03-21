@@ -1,0 +1,45 @@
+---
+title: Matching runners
+tags: [matching, running]
+math: yes
+---
+
+Running in pairs (and, more generally, in groups) can be more rewarding than running alone.
+Running buddies can motivate each other, share the mental load of maintaining pace, and provide competition and accountability.
+
+The main problem with running buddies is that they can be hard to find.
+Not everyone is a runner, and runners vary in their abilities and training goals.
+Moreover, these abilities and goals are mostly unobservable by other runners searching for a buddy.
+This unobservable variation creates "matching frictions" that prevent runners from sorting into "optimal" pairs.
+
+If prospective running buddies could observe each others' abilities and training goals then they could form preferences over whom they want to be paired with.[^example]
+Runners could rank potential buddies from most to least prefered, and submit these rankings to a central match-maker (e.g., a team coach) whose task would be to partition the (assumedly even-sized) set of $2n$ runners into $n$ pairs.
+The socially optimal partition $\mathcal{P}^*$ would minimise the sum
+$$S(\mathcal{P})=\sum_{\{i,j\}\in\mathcal{P}}(x_{ij}+x_{ji}),$$
+where $x_{ij}$ is the rank that runner $i$ assigns to potential buddy $j$.
+Minimising $S(\mathcal{P})$ would ensure that, on average, runners are paired with their most preferred buddies.
+
+[^example]: For example, if I wanted to improve my pace then I might prefer to run with someone slightly faster than me so that I can try to match their speed without them racing ahead of me.
+
+Let $X=(x_{ij})$ be the matrix of preference rankings and let $Y=X+X^T$.
+One way to find $\mathcal{P^*}$ would be to choose $2n$ entries of $Y$ such that
+(a) the sum of the chosen entries is minimised, and
+(b) each row and column of $Y$ contains exactly one chosen entry.[^upper-triangle]
+This choice problem is equivalent to the (balanced) [assignment problem](https://en.wikipedia.org/wiki/Assignment_problem), and can be solved using the [Hungarian algorithm](https://en.wikipedia.org/wiki/Hungarian_algorithm) or via linear programming.
+
+[^upper-triangle]: Equivalently, one could choose $n$ entries in the upper-right triangle of $Y$ that satisfy criteria (a) and (b). This works because $Y$ is symmetric. If $y_{ij}$ is chosen when minimising sums over $Y$ then $y_{ji}$ is chosen when minimising sums over $Y^T$. But $Y=Y^T$, so the sets of chosen entries when minimising over $Y$ and $Y^T$ must be equal. Thus, $y_{ij}$ and $y_{ji}$ must belong to both sets, and so the lower-left triangle can be ignored.
+
+The socially optimal partition $\mathcal{P^*}$ of the set of runners into pairs may be "unstable:" there may exist two runners who would rather run with each other than with their assigned buddies.[^conjecture]
+For example, suppose there is a set $\{a, b, c, d\}$ of four runners with preference rankings captured by the matrix
+$$X=\begin{bmatrix} & 1 & 2 & 3 \\ 2 & & 1 & 3 \\ 1 & 2 & & 3 \\ 1 & 2 & 3 & \end{bmatrix}.$$
+The corresponding matrix $Y=X+X^T$ of bidirectional sums is
+$$Y=\begin{bmatrix} & 3 & 3 & \underline{4} \\ 3 & & \underline{3} & 5 \\ 3 & \underline{3} & & 6 \\ \underline{4} & 5 & 6 & \end{bmatrix},$$
+where the underlined entries correspond to the socially optimal partition $\mathcal{P}^*=\{\{a,d\},\{b,c\}\}$ with $S(\mathcal{P}^*)=14$.
+This partition is unstable because runner $a$ would prefer to run with $c$ than $d$, and runner $c$ is indifferent between runners $a$ and $b$.
+Runners $a$ and $c$ would ignore the match-maker and become buddies, resulting in a socially inferior partition $\mathcal{P}_*=\{\{a,c\},\{b,d\}\}$ with $S(\mathcal{P}_*)=16$.
+
+[^conjecture]: On the other hand, I conjecture that every stable partition is socially optimal.
+
+If the socially optimal partition of runners into pairs is unstable then the match-maker would need to prevent, or at least discourage, so-called "blocking pairs" from deviating from the optimum.
+For example, the match-maker could restrict runners' access to training areas (e.g., running tracks and trails) so that no blocking pairs have concurrent access.
+However, such restrictions may be detrimental to runners' training and camaraderie, and, consequently, reduce social welfare.
