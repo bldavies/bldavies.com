@@ -14,9 +14,6 @@ params:
   description: "Ben Davies is a research analyst at Motu, an economic research institute in Wellington, New Zealand."
   email: ben.davies@motu.org.nz
   githubContentURL: "https://github.com/bldavies/bldavies.com/tree/master/content/"
-  repec: https://ideas.repec.org/f/pda777
-  scholar: https://scholar.google.co.nz/citations?user=iet9PyAAAAAJ
-  orcid: https://orcid.org/0000-0002-1749-4567
 permalinks:
   blog: "/blog/:slug/"
 pygmentsCodeFences: true
