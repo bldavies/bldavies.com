@@ -6,7 +6,8 @@ At Motu I work with [Adam Jaffe](https://motu.nz/about-us/people/adam-jaffe/) an
 I joined Motu after completing a BSc(Hons) in economics and mathematics at the University of Canterbury.
 [I won the Sir Frank Holmes Prize](https://motu.nz/about-us/news/motu-news-december-2016/#frank) for being New Zealand's top undergraduate economics student.
 
-I enjoy writing as a self-learning mechanism, and maintain a [blog](/blog/) on personal, technical and research interests.
+I enjoy writing as a way to organise and clarify my thoughts.
+I publish some of my writing on my [blog](/blog/).
 Some of my favorite blog posts include:
 
 * [White  Elephant Gift Exchanges](/blog/white-elephant-gift-exchanges/)
