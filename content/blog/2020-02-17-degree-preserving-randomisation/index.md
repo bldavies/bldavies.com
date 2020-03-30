@@ -1,7 +1,7 @@
 ---
 title: Degree-preserving randomisation
 tags: [networks, simulation]
-from_Rmd: yes
+linkSource: yes
 ---
 
 [My previous post](/blog/centrality-rankings-noisy-edge-sets/) used [degree-preserving randomisation](https://en.wikipedia.org/wiki/Degree-preserving_randomization) (DPR) to control for network structure when estimating the effect of edge noise on nodes' centrality rankings.

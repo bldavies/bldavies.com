@@ -1,7 +1,7 @@
 ---
 title: Triadic closure at the NBER
 tags: [collaboration, matching, networks]
-from_Rmd: yes
+linkSource: yes
 ---
 
 [Fafchamps et al. (2010)](https://academic.oup.com/jeea/article-abstract/8/1/203/2295936) describe a model of team formation in which people learn about potential collaborators via existing collaborators.

@@ -1,7 +1,7 @@
 ---
 title: 'College Degrees in the US: Demographics'
 tags: [education]
-from_Rmd: yes
+linkSource: yes
 ---
 
 Each year, the US Census Bureau [publishes](https://www.census.gov/programs-surveys/acs/data/pums.html) a set of Public Use Microdata Sample (PUMS) files containing responses to the American Community Survey (ACS).

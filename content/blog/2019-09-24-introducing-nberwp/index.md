@@ -1,7 +1,7 @@
 ---
 title: Introducing nberwp
 tags: [packages, text mining]
-from_Rmd: yes
+linkSource: yes
 ---
 
 Today I published [nberwp][nberwp], an R package providing data on [NBER](https://www.nber.org) working papers published between 1973 and 2018.

@@ -1,7 +1,7 @@
 ---
 title: Comparing my running patterns during 2018 and 2019
 tags: [packages, running, Strava]
-from_Rmd: yes
+linkSource: yes
 ---
 
 This week I created an R package [stravadata](https://github.com/bldavies/stravadata/) that provides convenient access to my [Strava](https://www.strava.com/) activity data.

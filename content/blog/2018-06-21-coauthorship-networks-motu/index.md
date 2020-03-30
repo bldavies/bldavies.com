@@ -1,7 +1,7 @@
 ---
 title: Coauthorship Networks at Motu
 tags: [collaboration, networks, web scraping]
-from_Rmd: yes
+linkSource: yes
 ---
 
 Earlier this year I joined [Motu](https://motu.nz), an economic and public policy research institute based in Wellington, New Zealand.

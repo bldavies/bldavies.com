@@ -1,7 +1,7 @@
 ---
 title: Accessing the Strava API with R
 tags: [running, Strava]
-from_Rmd: yes
+linkSource: yes
 ---
 
 [Strava](https://www.strava.com/) is an online platform for storing and sharing fitness data.

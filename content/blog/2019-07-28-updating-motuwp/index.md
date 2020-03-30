@@ -1,7 +1,7 @@
 ---
 title: Updating motuwp
 tags: [web scraping]
-from_Rmd: yes
+linkSource: yes
 ---
 
 Today I updated the [motuwp](https://github.com/bldavies/motuwp) GitHub repository, which stores data on Motu working papers and their authors.

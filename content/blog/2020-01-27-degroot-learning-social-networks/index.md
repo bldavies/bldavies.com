@@ -2,7 +2,7 @@
 title: DeGroot learning in social networks
 tags: [math, networks, social learning]
 math: true
-from_Rmd: yes
+linkSource: yes
 ---
 
 The first book on my reading list for 2020 was [Matthew Jackson](https://web.stanford.edu/~jacksonm/)'s *The Human Network*.

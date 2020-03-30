@@ -1,7 +1,7 @@
 ---
 title: "College Degrees in the US: Community Detection"
 tags: [education, networks]
-from_Rmd: yes
+linkSource: yes
 ---
 
 In my last [post][prev-post], I compared measures of  similarity among college degree fields.

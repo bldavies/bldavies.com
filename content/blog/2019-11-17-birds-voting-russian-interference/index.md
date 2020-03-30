@@ -1,7 +1,7 @@
 ---
 title: Birds, Voting, and Russian Interference
 tags: [voting]
-from_Rmd: yes
+linkSource: yes
 ---
 
 Since 2005, [Forest and Bird](https://www.forestandbird.org.nz) has run annual elections for New Zealand's [Bird of the Year](https://www.birdoftheyear.org.nz).

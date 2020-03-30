@@ -3,7 +3,7 @@
 # This script defines the build_one function used in R/build.R.
 #
 # Ben Davies
-# January 2020
+# March 2020
 
 local({
   a <- commandArgs(TRUE)
@@ -20,9 +20,11 @@ local({
   set.seed(0)
   knitr::knit(a[1], a[2], quiet = TRUE, encoding = "UTF-8", envir = .GlobalEnv)
   if (file.exists(a[2])) {
-    x <- blogdown:::append_yaml(
-      xfun::read_utf8(a[2]), list(from_Rmd = TRUE)
-    )
+    x <- xfun::read_utf8(a[2])
+    y <- xfun::read_utf8(a[1])
+    if (sum(grepl('```', y)) > 0 & sum(grepl('linkSource', y)) == 0) {
+      x <- blogdown:::append_yaml(x, list(linkSource = TRUE))
+    }
     x <- gsub("(\\\n){2,}", "\n\n", paste(x, collapse = "\n"))  # Excess \n's 
     x <- gsub("(\\\n)+$", "\n", x)  # EoF
     x <- xfun::protect_math(x)

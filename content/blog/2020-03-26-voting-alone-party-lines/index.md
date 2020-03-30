@@ -1,7 +1,7 @@
 ---
 title: Voting along party lines
 tags: [politics, voting]
-from_Rmd: yes
+linkSource: yes
 ---
 
 Later this year, New Zealanders will vote in a referendum on whether to legalise voluntary euthanasia under the conditions specified in the [End of Life Choice Bill](http://www.legislation.govt.nz/bill/member/2017/0269/latest/DLM7285905.html) (hereafter "the Bill").

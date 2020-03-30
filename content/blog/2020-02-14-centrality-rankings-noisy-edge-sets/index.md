@@ -1,7 +1,7 @@
 ---
 title: Centrality rankings with noisy edge sets
 tags: [networks, simulation]
-from_Rmd: yes
+linkSource: yes
 ---
 
 Suppose I want to rank the centralities of nodes in a network.

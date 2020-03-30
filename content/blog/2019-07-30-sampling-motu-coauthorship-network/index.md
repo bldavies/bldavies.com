@@ -1,7 +1,7 @@
 ---
 title: Sampling the Motu Coauthorship Network
 tags: [collaboration, networks, simulation]
-from_Rmd: yes
+linkSource: yes
 ---
 
 Suppose I have some data that describe a bipartite author-publication network.

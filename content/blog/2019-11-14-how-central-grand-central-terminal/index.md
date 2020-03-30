@@ -1,7 +1,7 @@
 ---
 title: How Central is Grand Central Terminal?
 tags: [networks, packages, transport]
-from_Rmd: yes
+linkSource: yes
 ---
 
 I spent most of October travelling in the United States.

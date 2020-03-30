@@ -1,7 +1,7 @@
 ---
 title: Guest Appearances on *The Joe Rogan Experience*
 tags: [podcasts, web scraping]
-from_Rmd: yes
+linkSource: yes
 ---
 
 [*The Joe Rogan Experience*](https://www.joerogan.com/#jre-section) (*JRE*) is a podcast hosted by comedian and mixed martial arts (MMA) commentator Joe Rogan.

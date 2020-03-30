@@ -1,7 +1,7 @@
 ---
 title: NBER (co-)authorships
 tags: [collaboration, networks, packages]
-from_Rmd: yes
+linkSource: yes
 ---
 
 I recently updated the R package [nberwp](https://github.com/bldavies/nberwp) to include data on NBER working paper authorships.

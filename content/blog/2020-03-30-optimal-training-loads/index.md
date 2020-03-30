@@ -2,7 +2,6 @@
 title: Optimal training loads
 tags: [microeconomics]
 math: yes
-from_Rmd: yes
 ---
 
 Suppose I'm training for an upcoming race.

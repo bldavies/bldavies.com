@@ -1,7 +1,7 @@
 ---
 title: motuwp is now an R package
 tags: [collaboration, networks, packages]
-from_Rmd: yes
+linkSource: yes
 ---
 
 My current project at Motu involves analysing co-authorship networks.

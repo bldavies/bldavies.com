@@ -1,7 +1,7 @@
 ---
 title: Habitat Choices of First-Generation Pokémon
 tags: [networks]
-from_Rmd: yes
+linkSource: yes
 ---
 
 In this post, I use R's [igraph](http://igraph.org) package to analyse the cohabitation network among wild Pokémon species.

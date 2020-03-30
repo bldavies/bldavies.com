@@ -2,7 +2,6 @@
 title: Spotify Premium pricing
 tags: [microeconomics, Spotify]
 math: yes
-from_Rmd: yes
 ---
 
 [Spotify](https://www.spotify.com/) offers two music and podcast streaming services:

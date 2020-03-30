@@ -1,7 +1,7 @@
 ---
 title: White Elephant Gift Exchanges
 tags: [matching, simulation]
-from_Rmd: yes
+linkSource: yes
 ---
 
 Motu's staff Christmas party is this Friday.
