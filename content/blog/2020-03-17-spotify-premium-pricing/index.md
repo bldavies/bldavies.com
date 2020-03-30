@@ -1,7 +1,7 @@
 ---
 title: Spotify Premium pricing
 tags: [microeconomics, Spotify]
-math: yes
+loadMathJax: yes
 ---
 
 [Spotify](https://www.spotify.com/) offers two music and podcast streaming services:

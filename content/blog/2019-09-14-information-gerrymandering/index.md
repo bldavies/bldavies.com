@@ -1,8 +1,8 @@
 ---
 title: Information Gerrymandering
 tags: [networks, simulation, voting]
-math: true
 linkSource: yes
+loadMathJax: yes
 ---
 
 Last week *Nature* published "[Information Gerrymandering and Undemocratic Decisions](https://doi.org/10.1038/s41586-019-1507-6)," an article analysing the effect of peer influences on the outcome of collective decisions.

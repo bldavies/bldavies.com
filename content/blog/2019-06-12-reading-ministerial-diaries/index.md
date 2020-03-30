@@ -1,8 +1,8 @@
 ---
 title: Reading the Ministerial Diaries
 tags: [text mining]
-math: true
 linkSource: yes
+loadMathJax: yes
 ---
 
 In December 2018, the New Zealand Government [announced](https://www.beehive.govt.nz/release/government-proactively-release-ministerial-diaries) that its ministers "will for the first time release details of their internal and external meetings."

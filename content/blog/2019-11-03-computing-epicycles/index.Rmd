@@ -1,7 +1,6 @@
 ---
 title: Computing Epicycles
 tags: [animation, math]
-math: true
 ---
 
 ```{r setup, echo = FALSE, message = F, warning = F}

@@ -1,8 +1,8 @@
 ---
 title: 'College Degrees in the US: Similarity Measures'
 tags: [education, networks]
-math: true
 linkSource: yes
+loadMathJax: yes
 ---
 
 In my last post, I used the [2016 ACS PUMS](https://census.gov/programs-surveys/acs/data/pums.html) data to analyse how educational attainment and degree field choices vary between demographic groups.

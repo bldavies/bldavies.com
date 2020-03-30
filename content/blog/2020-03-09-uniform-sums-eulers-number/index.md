@@ -1,8 +1,8 @@
 ---
 title: Uniform sums and Euler's number
 tags: [math, simulation]
-math: yes
 linkSource: yes
+loadMathJax: yes
 ---
 
 Suppose I sample values uniformly at random from the unit interval.

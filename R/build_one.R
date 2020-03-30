@@ -25,6 +25,9 @@ local({
     if (sum(grepl('```', y)) > 0 & sum(grepl('linkSource', y)) == 0) {
       x <- blogdown:::append_yaml(x, list(linkSource = TRUE))
     }
+    if (sum(grepl('\\$', y)) > 0 & sum(grepl('loadMathJax', y)) == 0) {
+      x <- blogdown:::append_yaml(x, list(loadMathJax = TRUE))
+    }
     x <- gsub("(\\\n){2,}", "\n\n", paste(x, collapse = "\n"))  # Excess \n's 
     x <- gsub("(\\\n)+$", "\n", x)  # EoF
     x <- xfun::protect_math(x)

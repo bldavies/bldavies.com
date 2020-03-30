@@ -1,7 +1,7 @@
 ---
 title: Matching runners
 tags: [matching, running]
-math: yes
+loadMathJax: yes
 ---
 
 Running in pairs (and, more generally, in groups) can be more rewarding than running alone.

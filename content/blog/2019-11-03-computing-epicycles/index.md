@@ -1,8 +1,8 @@
 ---
 title: Computing Epicycles
 tags: [animation, math]
-math: true
 linkSource: yes
+loadMathJax: yes
 ---
 
 Earlier this year Grant Sanderson, creator of the YouTube channel [3blue1brown](https://www.3blue1brown.com), posted a [video](https://www.youtube.com/watch?v=r6sGWTCMz2k) explaining how [Fourier series](http://mathworld.wolfram.com/FourierSeries.html) approximate periodic functions using sums of sines and cosines.

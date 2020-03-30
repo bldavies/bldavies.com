@@ -1,7 +1,6 @@
 ---
 title: Reading the Ministerial Diaries
 tags: [text mining]
-math: true
 ---
 
 ```{r setup, include=FALSE}

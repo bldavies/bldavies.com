@@ -1,4 +1,4 @@
-{{ if and (.Params.math) (or (in (string .Content) "\\") (in (string .Content) "$")) }}
+{{ if .Params.loadMathJax }}
 <script src="{{ "js/math-code.js" | relURL }}"></script>
 <script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 {{ end }}
