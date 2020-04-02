@@ -22,10 +22,10 @@ local({
   if (file.exists(a[2])) {
     x <- xfun::read_utf8(a[2])
     y <- xfun::read_utf8(a[1])
-    if (sum(grepl('```', y)) > 0 & sum(grepl('linkSource', y)) == 0) {
+    if (sum(grepl("```", y)) > 0 & sum(grepl("linkSource", y)) == 0) {
       x <- blogdown:::append_yaml(x, list(linkSource = TRUE))
     }
-    if (sum(grepl('\\$', y)) > 0 & sum(grepl('loadMathJax', y)) == 0) {
+    if (sum(grepl("\\$", y)) > 0 & sum(grepl("loadMathJax", y)) == 0) {
       x <- blogdown:::append_yaml(x, list(loadMathJax = TRUE))
     }
     x <- gsub("(\\\n){2,}", "\n\n", paste(x, collapse = "\n"))  # Excess \n's 
