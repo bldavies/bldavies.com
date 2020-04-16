@@ -1,6 +1,6 @@
 ---
 title: Matching runners
-tags: [matching, running]
+tags: [sports]
 loadMathJax: yes
 ---
 

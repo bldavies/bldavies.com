@@ -1,6 +1,6 @@
 ---
 title: Guest Appearances on *The Joe Rogan Experience*
-tags: [podcasts, web scraping]
+tags: [entertainment, web scraping]
 linkSource: yes
 ---
 

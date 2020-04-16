@@ -1,6 +1,6 @@
 ---
 title: Degree-preserving randomisation
-tags: [networks, simulation]
+tags: [networks]
 ---
 
 ```{r setup, echo = F, message = F, warning = F}

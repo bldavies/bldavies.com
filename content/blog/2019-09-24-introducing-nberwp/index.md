@@ -1,6 +1,6 @@
 ---
 title: Introducing nberwp
-tags: [packages, text mining]
+tags: [text mining]
 linkSource: yes
 ---
 

@@ -1,6 +1,6 @@
 ---
 title: DeGroot learning in social networks
-tags: [math, networks, social learning]
+tags: [networks]
 ---
 
 ```{r setup, echo = F, message = F, warning = F}

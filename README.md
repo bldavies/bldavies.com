@@ -12,6 +12,8 @@ I organise blog posts as [leaf bundles](https://gohugo.io/content-management/pag
 Some posts are written in [R Markdown](https://rmarkdown.rstudio.com).
 I convert such posts to Markdown using `R/build.R`.
 
+I classify my blog posts using [tags](https://gohugo.io/content-management/taxonomies/) that capture the topics discussed (rather than, say, the tools used).
+
 ### Research
 
 I list my publications in `data/publications.yaml` and format this list using `layouts/research/list.html`.

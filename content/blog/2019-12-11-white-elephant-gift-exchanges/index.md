@@ -1,6 +1,6 @@
 ---
 title: White Elephant Gift Exchanges
-tags: [matching, simulation]
+tags: [games, simulation]
 linkSource: yes
 ---
 

@@ -1,6 +1,6 @@
 ---
 title: Sampling the Motu Coauthorship Network
-tags: [collaboration, networks, simulation]
+tags: [networks, statistics]
 ---
 
 ```{r setup, echo = FALSE}

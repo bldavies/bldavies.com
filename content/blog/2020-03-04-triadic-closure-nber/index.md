@@ -1,6 +1,6 @@
 ---
 title: Triadic closure at the NBER
-tags: [collaboration, matching, networks]
+tags: [academia, networks]
 linkSource: yes
 ---
 

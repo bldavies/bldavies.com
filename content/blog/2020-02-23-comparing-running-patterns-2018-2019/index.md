@@ -1,6 +1,6 @@
 ---
 title: Comparing my running patterns during 2018 and 2019
-tags: [packages, running, Strava]
+tags: [sports]
 linkSource: yes
 ---
 

@@ -1,6 +1,6 @@
 ---
 title: NBER (co-)authorships
-tags: [collaboration, networks, packages]
+tags: [networks]
 ---
 
 ```{r setup, echo = F, message = F, warning = F}

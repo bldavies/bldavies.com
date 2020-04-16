@@ -1,6 +1,6 @@
 ---
 title: Uniform sums and Euler's number
-tags: [math, simulation]
+tags: [statistics]
 ---
 
 Suppose I sample values uniformly at random from the unit interval.

@@ -1,6 +1,6 @@
 ---
 title: Spotify Premium pricing
-tags: [microeconomics, Spotify]
+tags: [economics, entertainment]
 ---
 
 [Spotify](https://www.spotify.com/) offers two music and podcast streaming services:

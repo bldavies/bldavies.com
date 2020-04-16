@@ -1,6 +1,6 @@
 ---
 title: Activity streams in stravadata
-tags: [running, Strava]
+tags: [sports]
 loadMathJax: no
 linkSource: yes
 ---

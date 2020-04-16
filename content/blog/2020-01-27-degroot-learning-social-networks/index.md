@@ -1,6 +1,6 @@
 ---
 title: DeGroot learning in social networks
-tags: [math, networks, social learning]
+tags: [networks]
 linkSource: yes
 loadMathJax: yes
 ---

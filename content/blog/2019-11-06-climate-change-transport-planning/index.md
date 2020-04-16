@@ -1,6 +1,6 @@
 ---
 title: Climate Change and Transport Planning
-tags: [climate change, publications, transport]
+tags: [climate change, economics, transport]
 ---
 
 Last year I organised a [dialogue](https://motu.nz/resources/dialogue-groups/) on climate change adaptation within New Zealand's transport sector.

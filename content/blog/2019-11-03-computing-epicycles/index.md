@@ -1,6 +1,6 @@
 ---
 title: Computing Epicycles
-tags: [animation, math]
+tags: [mathematics]
 linkSource: yes
 loadMathJax: yes
 ---
