@@ -1,6 +1,6 @@
 ---
 title: motuwp is now an R package
-tags: [networks]
+topics: [networks]
 linkSource: yes
 ---
 

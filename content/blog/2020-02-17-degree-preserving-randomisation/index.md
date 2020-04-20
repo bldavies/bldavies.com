@@ -1,6 +1,6 @@
 ---
 title: Degree-preserving randomisation
-tags: [networks]
+topics: [networks]
 linkSource: yes
 ---
 

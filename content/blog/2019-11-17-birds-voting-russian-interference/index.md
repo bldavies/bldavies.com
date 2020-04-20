@@ -1,6 +1,6 @@
 ---
 title: Birds, Voting, and Russian Interference
-tags: [voting]
+topics: [politics]
 linkSource: yes
 ---
 

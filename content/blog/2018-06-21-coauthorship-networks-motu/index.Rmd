@@ -1,6 +1,6 @@
 ---
 title: Coauthorship Networks at Motu
-tags: [networks, web scraping]
+topics: [networks]
 ---
 
 ```{r setup, echo = FALSE}

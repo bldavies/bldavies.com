@@ -12,7 +12,7 @@ I organise blog posts as [leaf bundles](https://gohugo.io/content-management/pag
 Some posts are written in [R Markdown](https://rmarkdown.rstudio.com).
 I convert such posts to Markdown using `R/build.R`.
 
-I classify my blog posts using [tags](https://gohugo.io/content-management/taxonomies/) that capture the topics discussed (rather than, say, the tools used).
+I use a custom [taxonomy](https://gohugo.io/content-management/taxonomies/) to classify my blog posts based on the topics they discuss.
 
 ### Research
 

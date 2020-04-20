@@ -1,6 +1,6 @@
 ---
 title: Reading the Ministerial Diaries
-tags: [politics, text mining]
+topics: [politics]
 ---
 
 ```{r setup, include=FALSE}

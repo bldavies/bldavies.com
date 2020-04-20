@@ -1,7 +1,7 @@
 baseurl: "https://bldavies.com/"
 blackfriday:
   fractions: false
-disableKinds: ["taxonomy", "taxonomyTerm", "sitemap"]
+disableKinds: ["taxonomyTerm", "sitemap"]
 footnotereturnlinkcontents: "↩"
 frontmatter:
   date: [":filename", ":default"]
@@ -18,4 +18,6 @@ permalinks:
   blog: "/blog/:slug/"
 pygmentsCodeFences: true
 pygmentsUseClasses: true
+taxonomies:
+  topic: topics
 title: Ben Davies

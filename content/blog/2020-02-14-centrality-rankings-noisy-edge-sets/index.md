@@ -1,6 +1,6 @@
 ---
 title: Centrality rankings with noisy edge sets
-tags: [networks, statistics]
+topics: [networks, statistics]
 linkSource: yes
 ---
 

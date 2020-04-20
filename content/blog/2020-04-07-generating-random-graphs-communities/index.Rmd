@@ -1,6 +1,6 @@
 ---
 title: Generating random graphs with communities
-tags: [networks, simulation]
+topics: [networks, simulation]
 ---
 
 Suppose I want to generate some random graphs that exhibit [community structure](https://en.wikipedia.org/wiki/Community_structure).

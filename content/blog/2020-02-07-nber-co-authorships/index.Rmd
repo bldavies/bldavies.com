@@ -1,6 +1,6 @@
 ---
 title: NBER (co-)authorships
-tags: [networks]
+topics: [networks]
 ---
 
 ```{r setup, echo = F, message = F, warning = F}

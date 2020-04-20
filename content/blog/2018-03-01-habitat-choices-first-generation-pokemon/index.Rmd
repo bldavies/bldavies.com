@@ -1,6 +1,6 @@
 ---
 title: Habitat Choices of First-Generation Pokémon
-tags: [networks]
+topics: [games, networks]
 ---
 
 ```{r setup, echo = F, message = F, warning = F}

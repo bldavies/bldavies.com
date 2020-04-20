@@ -1,6 +1,6 @@
 ---
 title: Uniform sums and Euler's number
-tags: [statistics]
+topics: [mathematics, statistics]
 linkSource: yes
 loadMathJax: yes
 ---

@@ -1,6 +1,6 @@
 ---
 title: 'College Degrees in the US: Demographics'
-tags: [education]
+topics: [education]
 linkSource: yes
 ---
 

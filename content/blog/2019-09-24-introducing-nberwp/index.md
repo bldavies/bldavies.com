@@ -1,6 +1,6 @@
 ---
 title: Introducing nberwp
-tags: [text mining]
+topics: [economics]
 linkSource: yes
 ---
 

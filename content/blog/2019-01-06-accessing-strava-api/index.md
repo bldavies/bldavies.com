@@ -1,6 +1,6 @@
 ---
 title: Accessing the Strava API with R
-tags: [sports]
+topics: [running]
 linkSource: yes
 ---
 

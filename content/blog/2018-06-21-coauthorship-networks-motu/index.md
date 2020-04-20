@@ -1,6 +1,6 @@
 ---
 title: Coauthorship Networks at Motu
-tags: [networks, web scraping]
+topics: [networks]
 linkSource: yes
 ---
 

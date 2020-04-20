@@ -1,6 +1,6 @@
 ---
 title: Optimal training loads
-tags: [sports]
+topics: [economics, running]
 loadMathJax: yes
 ---
 

@@ -1,6 +1,6 @@
 ---
 title: Best efforts in stravadata
-tags: [sports]
+topics: [running]
 loadMathJax: no
 linkSource: yes
 ---

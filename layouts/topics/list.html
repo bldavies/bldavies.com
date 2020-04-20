@@ -1,14 +1,6 @@
 {{ partial "header.html" . }}
 
-<h1>{{ .Title | markdownify }}</h1>
-{{ .Content }}
-
-<p>
-  Topics:
-  {{ range .Site.Taxonomies.topics }}
-  <a class="topic-link" href="{{ .Page.Permalink }}">{{ .Page.Title }} ({{ .Count }})</a>
-  {{ end }}
-</p>
+<h1>Blog posts on {{ .Title }}</h1>
 
 {{ range .Data.Pages.GroupByDate "2006" }}
 <h2>{{ .Key }}</h2>

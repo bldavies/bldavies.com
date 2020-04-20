@@ -1,6 +1,6 @@
 ---
 title: 'College Degrees in the US: Similarity Measures'
-tags: [education, networks]
+topics: [education, networks]
 linkSource: yes
 loadMathJax: yes
 ---

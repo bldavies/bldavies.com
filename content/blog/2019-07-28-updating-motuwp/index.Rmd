@@ -1,6 +1,5 @@
 ---
 title: Updating motuwp
-tags: [web scraping]
 ---
 
 ```{r setup, echo = FALSE}

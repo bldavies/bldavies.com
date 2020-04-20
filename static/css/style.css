@@ -203,7 +203,7 @@ table th {
   text-transform: uppercase;
 }
 
-.tag-link {
+.topic-link {
   background-color: #f0f0f0;
   border: none;
   border-radius: 0.25rem;
@@ -213,7 +213,7 @@ table th {
   padding: 0.125rem 0.25rem;
 }
 
-.tag-link:hover {
+.topic-link:hover {
   border: none;
   background-color: #ddd;
   text-decoration: none;

@@ -1,6 +1,6 @@
 ---
 title: How Central is Grand Central Terminal?
-tags: [networks, transport]
+topics: [networks]
 linkSource: yes
 ---
 

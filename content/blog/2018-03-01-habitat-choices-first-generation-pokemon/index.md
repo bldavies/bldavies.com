@@ -1,6 +1,6 @@
 ---
 title: Habitat Choices of First-Generation Pokémon
-tags: [networks]
+topics: [games, networks]
 linkSource: yes
 ---
 
