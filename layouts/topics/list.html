@@ -2,16 +2,6 @@
 
 <h1>Blog posts on {{ .Title }}</h1>
 
-{{ range .Data.Pages.GroupByDate "2006" }}
-<h2>{{ .Key }}</h2>
-<ul class="page-index">
-{{ range .Pages }}
-  <li>
-    <a href="{{ .Permalink }}">{{ .Title | markdownify }}</a>
-    <span class="page-index-date">({{ .Date.Format "Jan 02" }})</span>
-  </li>
-{{ end }}
-</ul>
-{{ end }}
+{{ partial "page-index.html" . }}
 
 {{ partial "footer.html" . }}
