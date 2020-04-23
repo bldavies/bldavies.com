@@ -5,7 +5,7 @@ https://bldavies.netlify.com/*  https://bldavies.com/:splat  301!
 # Blog components
 /blog/:slug/data/               /blog/:slug/
 /blog/:slug/figures/            /blog/:slug/
-/blog/topics/                   /blog/
+/topics/                        /blog/
 
 # Blog slugs
 /blog/jre-guests/               /blog/guest-appearances-joe-rogan-experience/
