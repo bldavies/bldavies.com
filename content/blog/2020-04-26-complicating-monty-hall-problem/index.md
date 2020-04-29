@@ -1,6 +1,6 @@
 ---
 title: Complicating the Monty Hall problem
-topics: [games, statistics]
+topics: [games, probability]
 loadMathJax: yes
 ---
 

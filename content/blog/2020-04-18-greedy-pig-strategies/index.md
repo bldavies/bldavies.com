@@ -1,6 +1,6 @@
 ---
 title: Greedy Pig strategies
-topics: [games, simulation, statistics]
+topics: [games, probability, simulation]
 linkSource: yes
 loadMathJax: yes
 ---
