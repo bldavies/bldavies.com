@@ -1,6 +1,6 @@
 ---
 title: Greedy Pig strategies
-topics: [games, probability, simulation]
+topics: [decision-making, games, probability, simulation]
 ---
 
 ```{r echo = F, message = F, warning = F}

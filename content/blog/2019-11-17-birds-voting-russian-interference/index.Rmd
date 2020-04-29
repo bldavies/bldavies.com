@@ -1,6 +1,6 @@
 ---
 title: Birds, Voting, and Russian Interference
-topics: [politics]
+topics: [decision-making]
 ---
 
 ```{r setup, echo = F, message = F, warning = F}

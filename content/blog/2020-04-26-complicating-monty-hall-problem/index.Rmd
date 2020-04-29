@@ -1,6 +1,6 @@
 ---
 title: Complicating the Monty Hall problem
-topics: [games, probability]
+topics: [decision-making, games, probability]
 ---
 
 The [Monty Hall problem](https://en.wikipedia.org/wiki/Monty_Hall_problem) posits a game show with three doors: one leading to a prize, and two leading to goats.

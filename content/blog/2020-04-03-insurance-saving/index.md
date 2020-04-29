@@ -1,6 +1,6 @@
 ---
 title: Insurance and saving
-topics: [economics]
+topics: [decision-making]
 loadMathJax: yes
 ---
 

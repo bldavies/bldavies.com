@@ -1,6 +1,6 @@
 ---
 title: Voting along party lines
-topics: [politics]
+topics: [decision-making, politics]
 ---
 
 ```{r setup, echo = F, message = F, warning = F}
