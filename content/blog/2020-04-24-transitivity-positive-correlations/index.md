@@ -1,6 +1,6 @@
 ---
 title: Transitivity in positive correlations
-topics: [mathematics, statistics]
+topics: [statistics]
 loadMathJax: yes
 ---
 

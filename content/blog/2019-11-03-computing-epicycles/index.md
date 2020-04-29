@@ -1,6 +1,5 @@
 ---
 title: Computing Epicycles
-topics: [mathematics]
 linkSource: yes
 loadMathJax: yes
 ---
