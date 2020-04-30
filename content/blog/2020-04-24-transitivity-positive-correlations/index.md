@@ -50,5 +50,6 @@ from which we obtain
 &= 2\rho^2-1.
 \end{align}$$`
 Thus, if `\(\rho\in(0,1/\sqrt{2})\)` then `\(X\)` and `\(Y\)` share a negative correlation even though both are correlated positively with `\(Z\)`.
+Intuitively, if `\(\rho\)` is sufficiently small then the negative correlation between the error terms `\(W\)` and `\(-W\)` dominates the positive correlations between `\(X\)` and `\(Z\)`, and `\(Y\)` and `\(Z\)`.
 
 [^normal]: Here `\(N(\mu,\sigma^2)\)` denotes the normal distribution with mean `\(\mu\)` and variance `\(\sigma^2\)`.
