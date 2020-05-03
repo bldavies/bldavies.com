@@ -1,6 +1,6 @@
 ---
 title: Spotify Premium pricing
-topics: [decision-making]
+topics: [decision-making, microeconomics]
 ---
 
 [Spotify](https://www.spotify.com/) offers two music and podcast streaming services:

@@ -1,6 +1,6 @@
 ---
 title: Spotify Premium pricing
-topics: [decision-making]
+topics: [decision-making, microeconomics]
 loadMathJax: yes
 ---
 
