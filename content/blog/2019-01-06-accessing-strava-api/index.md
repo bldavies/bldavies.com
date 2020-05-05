@@ -8,6 +8,8 @@ linkSource: yes
 Strava [provides an API](https://developers.strava.com) for accessing such data at the activity (e.g., run or cycle) level.
 In this post, I explain how to extract data from the Strava API using R, and I analyse my running and cycling data from 2018.
 
+*Note: I implement the process described in this post in the R package [stravadata](https://github.com/bldavies/stravadata).*
+
 ## Setup and authentication
 
 Strava uses [OAuth 2.0](https://oauth.net/2/) to authorise access to the API data.
