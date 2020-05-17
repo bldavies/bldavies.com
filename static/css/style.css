@@ -72,6 +72,12 @@ h3 {
   font-size: 1.25rem;
 }
 
+hr {
+  border: none;
+  height: 1px;
+  background-color: #ddd;
+}
+
 img {
   display: block;
   margin: 1rem auto;
