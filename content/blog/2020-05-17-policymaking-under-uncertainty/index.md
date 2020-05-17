@@ -5,7 +5,7 @@ topics: [decision-making, politics]
 
 [The COVID-19 pandemic](https://en.wikipedia.org/wiki/COVID-19_pandemic) exposes policymakers to several sources of uncertainty:
 
-* How disruptive is the virus?
+* How dangerous is the virus?
 * What will be the consequences of policies introduced to combat the virus?
 * How willing and able are people to tolerate those consequences?
 
@@ -28,9 +28,9 @@ This signal can help prevent public dissent.
 For example, NZ's relatively early transition to [COVID-19 Alert Level](https://covid19.govt.nz/alert-system/covid-19-alert-system/) 4 signalled our government's strong belief that the cost of letting the virus spread outweighed the cost of entering a nationwide lockdown.
 This signal probably made New Zealanders more willing to tolerate the consequences of staying home---they were told, in no uncertain terms, that doing so would "save lives."
 
-Committing early also provides information about future conditions to households and firms, who may be less informed than the PM about the distribution of period three states.
+Committing early also provides information about future conditions to households and firms, who may be less informed than the PM about the distribution of future states.
 For example, one of the NZ government's earliest actions during the COVID-19 pandemic was to implement a [wage subsidy scheme](https://www.employment.govt.nz/leave-and-holidays/other-types-of-leave/coronavirus-workplace/wage-subsidy/) that provided 12 weeks of financial support to firms and their employees.
-Implementing the scheme signalled that our government expected the economic downturn caused by the virus to last at least 12 weeks.
+The scheme signalled that our government expected the economic downturn caused by the virus to last at least 12 weeks.
 This signal allowed households and firms to calibrate their expectations about, and adjust their behaviour to prepare for, the future.
 
 One problem with the "commit early" approach is that the PM may commit to policies that appear optimal *ex ante* but turn out to be sub-optimal *ex post*.
