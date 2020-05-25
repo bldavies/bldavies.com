@@ -1,6 +1,6 @@
 ---
 title: Coauthorship Networks at Motu
-topics: [networks]
+topics: [networks, research]
 linkSource: yes
 ---
 

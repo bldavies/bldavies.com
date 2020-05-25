@@ -1,6 +1,6 @@
 ---
 title: NBER (co-)authorships
-topics: [networks]
+topics: [networks, research]
 linkSource: yes
 ---
 
