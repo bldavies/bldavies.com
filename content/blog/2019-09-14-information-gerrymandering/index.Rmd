@@ -1,6 +1,6 @@
 ---
 title: Information Gerrymandering
-topics: [decision-making, networks, simulation]
+topics: [networks, simulation, voting]
 ---
 
 ```{r setup, echo = FALSE, message = F, warning = F}
