@@ -1,5 +1,6 @@
 ---
 title: Stanford
+topics: [education, research]
 ---
 
 I am excited to announce that I will be moving to the United States later this year to pursue a PhD in economics at [Stanford University](https://www.stanford.edu).
