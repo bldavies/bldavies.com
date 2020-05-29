@@ -1,0 +1,216 @@
+---
+title: Estimating research field similarities
+topics: [networks, research]
+loadMathJax: no
+---
+
+```{r setup, echo = F, message = F, warning = F}
+library(bldr)
+library(dplyr)
+library(ggplot2)
+library(ggraph)
+library(igraph)
+library(knitr)
+library(readxl)
+library(stringr)
+library(scales)
+library(tidygraph)
+library(tidyr)
+library(widyr)
+library(xfun)
+
+theme_set(
+  theme_minimal() +
+    theme(legend.justification = c(1, 0),
+          legend.position = c(1, 0),
+          panel.grid.minor = element_blank(),
+          plot.title = element_text(face = 'bold'),
+          strip.text = element_text(face = 'bold', hjust = 0, margin = margin(b = 5), size = 10))
+)
+
+opts_chunk$set(echo = F, message = F, warning = F,
+               fig.width = 6, fig.height = 6, dpi = 100,
+               dev = 'svg', fig.ext = 'svg')
+
+fields_raw <- read_xlsx('data/ext_list_october_2019.xlsx',
+                        sheet = 'ASJC classification codes')
+
+fields <- fields_raw[, 4:6] %>%
+  `names<-`(c('field', 'field_desc', 'area_desc')) %>%
+  mutate(field = as.integer(substr(field, 1, 2)) * 100) %>%
+  filter(!is.na(field) & field != 1000)  # Exclude "Multidiscipliary"
+
+fields$abbr <- c(
+  'AgrBioSci',
+  'ArtHum',
+  'BchmGenMolBio',
+  'BusMgtAcc',
+  'ChemEng',
+  'Chem',
+  'CompSci',
+  'DcsnSci',
+  'ErthSci',
+  'EcoFin',
+  'Energy',
+  'Engr',
+  'EnvSci',
+  'ImmMbio',
+  'MatSci',
+  'Math',
+  'Medicine',
+  'Neur',
+  'Nursing',
+  'PhrmTox',
+  'PhysAstr',
+  'Psyc',
+  'SocSci',
+  'Vet',
+  'Dentistry',
+  'HlthProf'
+)
+
+sources_raw <- read_xlsx('data/ext_list_october_2019.xlsx',
+                         sheet = 'Scopus Sources September 2019')
+
+sources <- sources_raw[, c(1, 5, 16, 25)] %>%
+  `names<-`(c('source', 'status', 'type', 'field')) %>%
+  filter(status == 'Active') %>%
+  filter(type == 'Journal') %>%
+  mutate(field = gsub('[^0-9]', ' ', field),
+         field = str_squish(field),
+         field = str_split(field, ' ')) %>%
+  unnest('field') %>%
+  mutate(field = floor(as.integer(field) / 100) * 100) %>%
+  distinct(source, field) %>%
+  arrange(source, field)
+```
+
+Research often draws on multiple fields, each contributing field-specific ideas and techniques to the production of new knowledge.
+The more similar are two fields, the easier it is to combine their ideas and techniques, the more frequently such combination occurs, and the more demand there is for ways to publish the consequent research.
+Likewise, the more similar are two fields, the easier it is to attract (subscription fee-paying) readers to journals covering those fields, and so the more willing publishers are to supply such journals.
+Thus, in equilibrium, the frequency with which journals cover pairs of research fields rises with the similarity between those fields.
+
+This argument suggests that we can estimate research field similarities from data on journals and the fields they cover.
+One source of such data is the [Scopus](https://www.scopus.com/home.uri) source list, which matches journals to fields within Scopus' [All Science Journal Classification (ASJC)](https://service.elsevier.com/app/answers/detail/a_id/15181/supporthub/scopus/) system.
+The Scopus source list covers `r comma(n_distinct(sources$source))` active journals, each assigned to one or more of `r nrow(fields)` ASJC fields.[^multidisciplinary]
+Each of these fields belongs to one of four subject areas: Health, Life, Physical, and Social Sciences.
+The bar chart below presents the distribution of journals across fields, with bars coloured by subject area.[^fractional]
+
+[^multidisciplinary]: I exclude the `r nrow(fields) + 1`th field, "Multidisciplinary," from my analysis.
+
+[^fractional]: I count journals "fractionally" so that, for example, journals assigned to four fields contribute a quarter to each field's count.
+
+```{r counts}
+fields %>%
+  left_join(sources) %>%
+  add_count(source) %>%
+  mutate(lab = ifelse(field_desc != abbr, paste0(field_desc, ' (', abbr, ')'), field_desc)) %>%
+  count(lab, area_desc, wt = 1 / n) %>%
+  mutate(n = 100 * n / sum(n)) %>%
+  ggplot(aes(reorder(lab, n), n)) +
+  geom_col(aes(fill = area_desc), alpha = 0.5) +
+  geom_text(aes(y = n + 0.1, label = lab), hjust = 0, size = 3) +
+  coord_flip(clip = 'off') +
+  guides(fill = guide_legend(title.hjust = 1, label.position = 'left')) +
+  labs(x = NULL,
+       y = 'Percentage of journals',
+       title = 'Distribution of journals across ASJC fields',
+       subtitle = 'Medicine, Social Sciences, and Arts and Humanities have the most journals',
+       fill = 'Subject area') +
+  scale_x_discrete(expand = c(0, 0), labels = NULL) +
+  scale_y_continuous(expand = c(0, 0), limits = c(0, 21.25)) +
+  scale_fill_brewer(palette = 'Set1') +
+  theme(panel.grid.major.y = element_blank())
+```
+
+I estimate the similarity between ASJC fields as follows.
+First, I count the number of journals assigned to each pair of fields.
+I then divide these co-assignment counts by the number of journals assigned to at least one of the paired fields.
+This normalisation delivers the [Jaccard similarities](https://en.wikipedia.org/wiki/Jaccard_index) between the sets of journals assigned to each field.
+
+```{r}
+similarities <- sources %>%
+  pairwise_count(field, source, diag = T) %>%
+  group_by(item1) %>%
+  mutate(n1 = sum(n * (item1 == item2))) %>%
+  group_by(item2) %>%
+  mutate(n2 = sum(n * (item1 == item2))) %>%
+  ungroup() %>%
+  mutate(jaccard = n / (n1 + n2 - n)) %>%
+  filter(item1 != item2)
+
+table_data <- tidyr::crossing(item1 = fields$field, item2 = fields$field) %>%
+  left_join(fields, by = c('item1' = 'field')) %>%
+  left_join(fields, by = c('item2' = 'field')) %>%
+  left_join(similarities) %>%
+  filter(field_desc.x < field_desc.y) %>%
+  arrange(-jaccard) %>%
+  mutate_if(is.double, function(x) ifelse(is.na(x), 0, x)) %>%
+  mutate(t = n1 + n2 - n) %>%
+  select(field_desc.x, field_desc.y, n, t, jaccard)
+```
+
+On average, each ASJC field pair shares `r round(mean(table_data$n), 2)` co-assignments and a Jaccard similarity of `r round(mean(table_data$jaccard), 2)`.
+About `r round(100 * mean(table_data$n > 0))`% of pairs share at least one journal co-assignment.
+The table below presents the ten field pairs with the greatest Jaccard similarities.
+
+```{r}
+table_data %>%
+  select(-t) %>%
+  head(10) %>%
+  mutate(n = comma(n, accuracy = 1)) %>%
+  kable(align = 'c', col.names = c('Field 1', 'Field 2', 'Co-assignments',  'Jaccard similarity'), digits = 2)
+```
+
+We can visualise the similarities between ASJC fields by constructing a network in which (i) nodes represent fields and (ii) edges have weights proportional to incident nodes' similarities.
+I present this network below, restricting my visualisation to the sub-network induced by the 50 edges of largest weight.
+To improve readability, I label some nodes using the field abbreviations given in parentheses in the bar chart above.
+I draw fields with greater similarities closer together.
+
+```{r map}
+net <- similarities %>%
+  select(item1, item2, weight = jaccard) %>%
+  filter(item1 < item2) %>%
+  graph_from_data_frame(directed = F) %>%
+  simplify()
+
+subnet <- net %>%
+  as_tbl_graph() %>%
+  mutate(field = as.integer(name)) %>%
+  left_join(distinct(fields, field, area_desc, abbr)) %>%
+  activate('edges') %>%
+  top_n(50, weight) %>%
+  activate('nodes') %>%
+  mutate(component = group_components()) %>%
+  filter(component == 1)
+
+set.seed(0)
+net %>%
+  as_tbl_graph() %>%
+  mutate(field = as.integer(name)) %>%
+  left_join(distinct(fields, field, area_desc, abbr)) %>%
+  filter(name %in% V(subnet)$name) %>%
+  activate(edges) %>%
+  mutate(colour = c(NA, 'grey80')[1 + (rank(-weight) <= 50)]) %>%
+  ggraph('fr') +
+  geom_edge_link0(aes(col = colour)) +
+  geom_node_label(aes(label = abbr, fill = area_desc), alpha = 0.33, size = 3, lineheight = 1) +
+  coord_cartesian(clip = 'off') +
+  labs(title = 'Mapping Jaccard similarities among ASJC fields',
+       subtitle = 'Showing 50 edges of largest weight') +
+  scale_fill_brewer(palette = 'Set1') +
+  scale_edge_colour_identity() +
+  theme(legend.position = 'none')
+```
+
+Overall, fields tend to be most similar to other fields in the same subject area.
+The proximities among nodes, reflecting fields' pairwise similarities, seem intuitive:
+Chemistry (Chem) and Chemical Engineering (ChemEng) are obviously similar, the biological sciences are clustered together, and Astronomy researchers probably don't read many Nursing journals---indeed, there are no journal co-assignments between Physics and Astronomy (PhysAstr) and Nursing.
+
+The paths between fields also make sense.
+For example, Social Science (SocSci) relies on Neuroscience (Neur) to the extent it helps explain how people think and behave, which suggests the fields should be connected via Psychology (Psyc).
+Likewise, Business, Management and Accounting (BusMgtAcc) rely on Mathematics (Math) to the extent that it helps model how people make decisions, which suggests that the fields should be connected via Decision Science (DscnSci).
+
+```{r session-info, echo = F}
+bldr::save_session_info()
+```
