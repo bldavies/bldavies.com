@@ -56,8 +56,8 @@ The University of Canterbury (UC), where I completed my bachelor's degree, [offe
 I won one to work with Richard Watt on a theoretical project related to insurance pricing.
 Completing the project gave me experience to discuss in my [statement of purpose](#statements-of-purpose) and gave Richard something to discuss in his [recommendation letter](#recommendation-letters).
 
-Third, work at a research institute after finishing your bachelor's or master's.
-In New Zealand, the best places are [Motu](https://motu.nz) and [the Reserve Bank](https://www.rbnz.govt.nz), depending on whether you're more interested in microeconomics or macroeconomics.
+Third, work at a research-oriented organisation after finishing your bachelor's or master's.
+In New Zealand, the best place is [Motu](https://motu.nz) or [the Reserve Bank](https://www.rbnz.govt.nz), depending on whether you're more interested in microeconomics or macroeconomics.
 Working at Motu has improved my technical and research skills, and given me experience working with respected economists on substantive research projects.
 It has also helped clarify what a "research career" looks like and whether it's something I want to pursue.
 
@@ -165,7 +165,7 @@ Instead, I was concerned that admissions committees would observe that I chose n
 
 All programs asked for a statement describing my preparation for graduate study, my research experience and interests, and my career goals.
 [Here](statement.pdf) is the statement I submitted to Stanford.
-My statement contained
+It contained
 
 * a brief introduction,
 * a paragraph describing my educational background,
