@@ -7,7 +7,7 @@ frontmatter:
   date: [":filename", ":default"]
 ignoreFiles: ["\\.log$", "\\.RData$", "\\.rds$", "\\.Rmd$"]
 outputs:
-  home: ["HTML"]
+  home: ["HTML", "RSS"]
   section: ["HTML"]
 params:
   author: Benjamin Davies

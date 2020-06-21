@@ -3,4 +3,4 @@ title: Blog
 ---
 
 My blog posts are released under a [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) license.
-Their source files are [available on GitHub](https://github.com/bldavies/bldavies.com).
+They are [available as an RSS feed](../index.xml) and their source files are [hosted on GitHub](https://github.com/bldavies/bldavies.com).
