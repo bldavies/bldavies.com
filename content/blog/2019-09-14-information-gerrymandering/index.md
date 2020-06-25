@@ -1,6 +1,6 @@
 ---
 title: Information Gerrymandering
-topics: [networks, simulation, voting]
+topics: [decision-making, networks, simulation]
 linkSource: yes
 loadMathJax: yes
 ---
