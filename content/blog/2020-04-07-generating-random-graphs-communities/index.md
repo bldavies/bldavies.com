@@ -1,6 +1,6 @@
 ---
 title: Generating random graphs with communities
-topics: [networks, simulation]
+topics: [networks]
 linkSource: yes
 loadMathJax: yes
 ---

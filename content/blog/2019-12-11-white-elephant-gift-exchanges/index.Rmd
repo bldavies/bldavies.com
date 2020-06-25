@@ -1,6 +1,6 @@
 ---
 title: White Elephant Gift Exchanges
-topics: [games, simulation]
+topics: [games]
 ---
 
 ```{r setup, echo = F, message = F, warning = F}

@@ -1,6 +1,6 @@
 ---
 title: White Elephant Gift Exchanges
-topics: [games, simulation]
+topics: [games]
 linkSource: yes
 ---
 
