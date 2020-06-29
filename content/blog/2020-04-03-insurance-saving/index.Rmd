@@ -1,6 +1,6 @@
 ---
 title: Insurance and saving
-topics: [decision-making, microeconomics]
+topics: [microeconomics]
 ---
 
 The seminal model of insurance demand ([Arrow, 1963](https://www.jstor.org/stable/1812044); [Mossin, 1968](https://www.jstor.org/stable/1830049)) describes a consumer who chooses the level of coverage $I^*$ that maximises their expected utility
