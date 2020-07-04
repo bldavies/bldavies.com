@@ -18,7 +18,7 @@ First, I generate 30 ER networks and 30 corresponding noisy networks for a range
 I then compute nodes' betweenness, degree and PageRank centralities in the co-authorship networks with and without noise, and calculate the [Spearman rank correlation](https://en.wikipedia.org/wiki/Spearman%27s_rank_correlation_coefficient) between the true and noisy centralities using each of the three measures.
 Finally, I compute the sample means and 95% confidence intervals for the measure-specific rank correlations across the simulation runs associated with each edge swap probability.
 I present these means and confidence intervals in the left panel of the plot below.
-The right panel presents similar information, but with a [degree-preserving randomisation](https://en.wikipedia.org/wiki/Degree-preserving_randomization) of the co-authorship network within each simulation run before introducing noise.
+The right panel presents similar information, but with a [degree-preserving randomisation](/blog/degree-preserving-randomisation/) of the co-authorship network within each simulation run before introducing noise.
 This randomisation allows me to control for the effect of the co-authorship network's structure on my rank correlation estimates.
 
 ![](figures/correlations-1.svg)
