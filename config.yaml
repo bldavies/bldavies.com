@@ -6,6 +6,10 @@ footnotereturnlinkcontents: "↩"
 frontmatter:
   date: [":filename", ":default"]
 ignoreFiles: ["\\.log$", "\\.RData$", "\\.rds$", "\\.Rmd$"]
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
 outputs:
   home: ["HTML", "RSS"]
   section: ["HTML"]
