@@ -3,6 +3,18 @@
 <h1>{{ .Title | markdownify }}</h1>
 {{ .Content }}
 
+<h2>Journal articles</h2>
+<ul class="page-index">
+{{ range where .Site.Data.publications "article" true }}
+  <li>
+    {{ if .pdf }}<a href="{{ .pdf }}">{{ .title }}</a>{{ else }}{{ .title }}{{ end -}}
+    {{ if .coauthors }} (with {{ .coauthors }}){{ end -}}
+    , <em>{{ .journal }}</em>, {{ .year -}}
+    .
+  </li>
+{{ end }}
+</ul>
+
 <h2>Working papers</h2>
 <ul class="page-index">
 {{ range where .Site.Data.publications "working" true }}
