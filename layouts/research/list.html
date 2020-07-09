@@ -5,11 +5,11 @@
 
 <h2>Working papers</h2>
 <ul class="page-index">
-{{ range where .Site.Data.publications "type" "working" }}
+{{ range where .Site.Data.publications "working" true }}
   <li>
     {{ if .pdf }}<a href="{{ .pdf }}">{{ .title }}</a>{{ else }}{{ .title }}{{ end -}}
     {{ if .coauthors }} (with {{ .coauthors }}){{ end -}}
-    {{ if .date }}, {{ dateFormat "2006" .date }}{{ end -}}
+    {{ if .year }}, {{ .year }}{{ end -}}
     .
   </li>
 {{ end }}
@@ -17,11 +17,11 @@
 
 <h2>Other</h2>
 <ul class="page-index">
-{{ range where .Site.Data.publications "type" "other" }}
+{{ range where .Site.Data.publications "other" true }}
   <li>
     {{ if .pdf }}<a href="{{ .pdf }}">{{ .title }}</a>{{ else }}{{ .title }}{{ end -}}
     {{ if .coauthors }} (with {{ .coauthors }}){{ end -}}
-    {{ if .date }}, {{ dateFormat "2006" .date }}{{ end -}}
+    {{ if .year }}, {{ .year }}{{ end -}}
     .
   </li>
 {{ end }}
