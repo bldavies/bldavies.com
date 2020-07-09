@@ -7,7 +7,7 @@
     </p>
   </div>
 </footer>
-{{ partial "footer_anchorjs" . }}
+{{ if not .IsHome }}{{ partial "footer_anchorjs" . }}{{ end }}
 {{ partial "footer_goatcounter" . }}
 {{ partial "footer_mathjax" . }}
 </body>
