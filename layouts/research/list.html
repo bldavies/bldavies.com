@@ -5,7 +5,7 @@
 
 <h2>Journal articles</h2>
 <ul class="page-index">
-{{ range where .Site.Data.publications "article" true }}
+{{ range .Site.Data.publications.articles }}
   <li>
     {{ if .pdf }}<a href="{{ .pdf }}">{{ .title }}</a>{{ else }}{{ .title }}{{ end -}}
     {{ if .coauthors }} (with {{ .coauthors }}){{ end -}}
@@ -17,7 +17,7 @@
 
 <h2>Working papers</h2>
 <ul class="page-index">
-{{ range where .Site.Data.publications "working" true }}
+{{ range .Site.Data.publications.preprints }}
   <li>
     {{ if .pdf }}<a href="{{ .pdf }}">{{ .title }}</a>{{ else }}{{ .title }}{{ end -}}
     {{ if .coauthors }} (with {{ .coauthors }}){{ end -}}
@@ -29,7 +29,7 @@
 
 <h2>Other</h2>
 <ul class="page-index">
-{{ range where .Site.Data.publications "other" true }}
+{{ range .Site.Data.publications.other }}
   <li>
     {{ if .pdf }}<a href="{{ .pdf }}">{{ .title }}</a>{{ else }}{{ .title }}{{ end -}}
     {{ if .coauthors }} (with {{ .coauthors }}){{ end -}}
