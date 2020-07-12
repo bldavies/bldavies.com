@@ -16,7 +16,7 @@ I use a custom [taxonomy](https://gohugo.io/content-management/taxonomies/) to c
 
 ### Research
 
-I list my publications in `data/publications.yaml` and format this list using `layouts/research/list.html`.
+I organise my research project summaries as leaf bundles under `content/research/`.
 
 ### Vita
 

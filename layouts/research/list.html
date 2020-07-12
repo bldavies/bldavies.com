@@ -3,38 +3,12 @@
 <h1>{{ .Title | markdownify }}</h1>
 {{ .Content }}
 
-<h2>Journal articles</h2>
 <ul class="page-index">
-{{ range .Site.Data.publications.articles }}
+{{ range .Pages }}
   <li>
-    {{ if .pdf }}<a href="{{ .pdf }}">{{ .title }}</a>{{ else }}{{ .title }}{{ end -}}
-    {{ if .coauthors }} (with {{ .coauthors }}){{ end -}}
-    , <em>{{ .journal }}</em>, {{ .year -}}
-    .
-  </li>
-{{ end }}
-</ul>
-
-<h2>Working papers</h2>
-<ul class="page-index">
-{{ range .Site.Data.publications.preprints }}
-  <li>
-    {{ if .pdf }}<a href="{{ .pdf }}">{{ .title }}</a>{{ else }}{{ .title }}{{ end -}}
-    {{ if .coauthors }} (with {{ .coauthors }}){{ end -}}
-    {{ if .year }}, {{ .year }}{{ end -}}
-    .
-  </li>
-{{ end }}
-</ul>
-
-<h2>Other</h2>
-<ul class="page-index">
-{{ range .Site.Data.publications.other }}
-  <li>
-    {{ if .pdf }}<a href="{{ .pdf }}">{{ .title }}</a>{{ else }}{{ .title }}{{ end -}}
-    {{ if .coauthors }} (with {{ .coauthors }}){{ end -}}
-    {{ if .year }}, {{ .year }}{{ end -}}
-    .
+    <a href="{{ .Permalink }}">{{ .Title | markdownify }}</a>
+    {{- if .Params.coauthors }} (with {{ .Params.coauthors }}){{ end -}}
+    {{- if .Params.status }}, {{ .Params.status | markdownify }}{{ end -}}
   </li>
 {{ end }}
 </ul>
