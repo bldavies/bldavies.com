@@ -2,7 +2,7 @@
 title: Bundling and Insurance of Independent Risks
 coauthors: Richard Watt
 pubType: workingPaper
-citation: Davies, B. and R. Watt (2017). "Bundling and Insurance of Independent Risks." Working Papers in Economics 17/05, University of Canterbury.
+citation: Davies, B. and Watt, R. (2017). "Bundling and Insurance of Independent Risks." Working Papers in Economics 17/05, University of Canterbury.
 abstract: |
   Risky prospects can often by disaggregated into several identifiable, smaller risks.
   In such cases, at least two modes of insurance are available: either (i) the disaggregated risks can be insured independently or (ii) the aggregate risk can be insured as one.

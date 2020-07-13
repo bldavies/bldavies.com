@@ -3,7 +3,7 @@ title: Relatedness, Complexity and Local Growth
 coauthors: David C. Maré
 status: forthcoming in *Regional Studies*
 pubType: article
-citation: Davies, B. and D. C. Maré (forthcoming). "Relatedness, Complexity and Local Growth." *Regional Studies*.
+citation: Davies, B. and Maré, D. C. (forthcoming). "Relatedness, Complexity and Local Growth." *Regional Studies*.
 abstract: |
   We derive a measure of the relatedness between economic activities using weighted correlations of local employment shares.
   Our approach recognises variation in the extent of local specialisation and adjusts for differences in data quality between cities.
