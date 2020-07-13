@@ -5,7 +5,7 @@ disableKinds: ["taxonomyTerm", "sitemap"]
 footnotereturnlinkcontents: "↩"
 frontmatter:
   date: [":filename", ":default"]
-ignoreFiles: ["\\.log$", "\\.RData$", "\\.rds$", "\\.Rmd$"]
+ignoreFiles: ["\\.aux$", "\\.log$", "\\.RData$", "\\.rds$", "\\.Rmd$", "\\.tex$"]
 markup:
   goldmark:
     renderer:

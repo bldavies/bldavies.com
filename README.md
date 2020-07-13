@@ -20,8 +20,8 @@ I organise my research project summaries as leaf bundles under `content/research
 
 ### Vita
 
-I build my CV using [pandoc](https://pandoc.org) based on data and templates stored in `_cv`.
-I build a PDF copy for reading and printing, and a text copy for version control.
+I build my CV using `R/cv.R` based on data stored in `_cv/` and the research project summaries under `content/research/`.
+I save the intermediate TeX file for version control.
 
 ## License
 

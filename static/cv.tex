@@ -1,0 +1,84 @@
+\documentclass[11pt,oneside]{memoir}
+
+\title{Curriculum Vitae}
+\author{Benjamin Davies}
+\date{\today}
+
+\usepackage{mathpazo}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in,includefoot]{geometry}
+\usepackage{nohyperref}
+
+\makeevenfoot{plain}{\theauthor}{}{Page~\thepage\ of~\thelastpage}
+\makeoddfoot{plain}{\theauthor}{}{Page~\thepage\ of~\thelastpage}
+\OnehalfSpacing
+\pagestyle{plain}
+\raggedright
+\setaftersecskip{1em}
+\setbeforesecskip{2em}
+\setlength{\parindent}{0pt}
+\setsecheadstyle{\large\bfseries}
+\setsecnumdepth{part}
+
+\newcommand{\entry}[1]{\par\hangindent=0.4in #1}
+
+\begin{document}
+
+	\begin{center}
+		{\Large\bfseries\MakeUppercase{\theauthor}\par}\vskip\aftersecskip
+		\today\par\vskip\beforesecskip
+	\end{center}
+	
+	\parbox{\textwidth}{%
+		\parbox[t]{0.6\textwidth}{%
+			Motu Economic and Public Policy Research\par
+			PO Box 24390, Wellington 6142\par
+			New Zealand
+		}
+		\hfill
+		\parbox[t]{0.3\textwidth}{\raggedleft%
+			ben.davies@motu.org.nz\par
+			https://bldavies.com
+		}
+	}\par
+	
+	\section{Education}
+	
+		\entry{BSc(Hons, 1st class) in Economics and Mathematics, University of Canterbury, 2014--17.}
+	
+	\section{Experience}
+	
+		\entry{Research Analyst, Motu Economic and Public Policy Research, 2018--present.}
+		\entry{Teaching Assistant for undergraduate microeconomic theory and financial economics, University of Canterbury, 2016--17.}
+		\entry{Actuarial Consulting Intern, PwC, 2015--16.}
+	
+	\section{Scholarships and Awards}
+	
+		\entry{Jan Whitwell Prize, New Zealand Association of Economists, 2018.}
+		\entry{Cook Memorial Prize in Mathematics, University of Canterbury, 2017.}
+		\entry{Seamus Hogan Memorial Prize in Economics, University of Canterbury, 2017.}
+		\entry{F.A. Hayek Scholarship in Economics or Political Science, University of Canterbury, 2017.}
+		\entry{Senior Scholarship, University of Canterbury, 2017.}
+		\entry{Page Memorial Prize in Mathematics, University of Canterbury, 2016.}
+		\entry{Economic Society Prize, University of Canterbury, 2016.}
+		\entry{Sir Frank Holmes Prize, Motu Research and Education Foundation, 2016.}
+		\entry{Archibald Charles Callaway Prize in Economics, University of Canterbury, 2015.}
+		\entry{Emerging Leaders' Scholarship, University of Canterbury, 2014.}
+		\entry{Outstanding Scholar Award, New Zealand Qualifications Authority, 2014--16.}
+	
+	\section{Publications}
+	
+		\entry{Davies, B. and Maré, D. C. (forthcoming). ``Relatedness, Complexity and Local Growth.'' \emph{Regional Studies}.}
+	
+	\section{Working Papers}
+	
+		\entry{``Bundling and Insurance of Independent Risks'' (with Richard Watt).}
+	
+	\section{Seminars and Conference Presentations}
+	
+		\entry{\parbox[b]{0.4in}{\emph{2019}: }University of Canterbury; New Zealand Association of Economists Conference, Wellington; Knowledge and Institutions in Complex Systems Workshop, Wellington.}
+		\entry{\parbox[b]{0.4in}{\emph{2018}: }New Zealand Association of Economists Conference, Auckland.}
+		\entry{\parbox[b]{0.4in}{\emph{2017}: }European Group of Risk and Insurance Economists Annual Seminar, London.}
+
+\end{document}
