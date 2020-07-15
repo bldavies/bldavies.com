@@ -101,13 +101,8 @@ research <- tibble(
   arrange(desc(path))
 
 publications <- research %>%
-  filter(pubType %in% c("article")) %>%
+  filter(pubType != "other") %>%
   {sprintf("\t\\entry{%s}", md2tex(.$citation))}
-
-working_papers <- research %>%
-  filter(pubType == "workingPaper") %>%
-  mutate(text = paste0("``", title, ifelse(!is.na(coauthors), sprintf("'' (with %s).", coauthors), ".''"))) %>%
-  {sprintf("\t\\entry{%s}", .$text)}
 
 
 # Presentations ----
@@ -147,10 +142,6 @@ content <- c(
   "\\section{Publications}",
   "",
   publications,
-  "",
-  "\\section{Working Papers}",
-  "",
-  working_papers,
   "",
   "\\section{Seminars and Conference Presentations}",
   "",
