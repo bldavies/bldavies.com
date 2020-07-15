@@ -8,7 +8,9 @@
   <li>
     <a href="{{ .Permalink }}">{{ .Title | markdownify }}</a>
     {{- if .Params.coauthors }} (with {{ .Params.coauthors }}){{ end -}}
-    {{- if .Params.status }}, {{ .Params.status | markdownify }}{{ end -}}
+    {{- if .Params.outlet }}, {{ .Params.outlet | markdownify }}{{ end -}}
+    {{- if .Params.forthcoming }}, forthcoming{{ else }}, {{ dateFormat "2006" .Date }}{{ end -}}
+    .
   </li>
 {{ end }}
 </ul>
