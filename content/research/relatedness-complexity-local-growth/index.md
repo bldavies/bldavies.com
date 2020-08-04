@@ -3,6 +3,7 @@ title: Relatedness, Complexity and Local Growth
 coauthors: David C. Maré
 outlet: "*Regional Studies*"
 forthcoming: true
+date: 2020-07-09
 pubType: article
 citation: Davies, B. and Maré, D. C. (forthcoming). "Relatedness, Complexity and Local Growth." *Regional Studies*.
 abstract: |

@@ -96,9 +96,10 @@ research <- tibble(
   mutate(yaml = map(paste0(research_dir, "/", path), yaml_front_matter),
          title = map_chr(yaml, ~.$title),
          coauthors = map_chr(yaml, ~null2na(.$coauthors)),
+         date = as.Date(map_chr(yaml, ~.$date)),
          pubType = map_chr(yaml, ~.$pubType),
          citation = map_chr(yaml, ~null2na(.$citation))) %>%
-  arrange(desc(path))
+  arrange(desc(date))
 
 publications <- research %>%
   filter(pubType != "other") %>%

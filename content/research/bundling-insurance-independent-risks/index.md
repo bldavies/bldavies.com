@@ -1,6 +1,7 @@
 ---
 title: Bundling and Insurance of Independent Risks
 coauthors: Richard Watt
+date: 2017-08-14
 pubType: workingPaper
 citation: Davies, B. and Watt, R. (2017). "Bundling and Insurance of Independent Risks." Working Papers in Economics 17/05, University of Canterbury.
 abstract: |
