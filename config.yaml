@@ -15,7 +15,7 @@ outputs:
   section: ["HTML"]
 params:
   author: Benjamin Davies
-  description: "Ben Davies is a research analyst at Motu, an economic research institute in Wellington, New Zealand."
+  description: "Ben Davies is an economics PhD student at Stanford University."
   githubContentURL: "https://github.com/bldavies/bldavies.com/tree/master/content/"
 permalinks:
   blog: "/blog/:slug/"

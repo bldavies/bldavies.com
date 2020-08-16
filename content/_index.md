@@ -1,17 +1,17 @@
 ### Hi, I'm Ben.
 
-I'm a research analyst at [Motu](https://motu.nz), an economic research institute in Wellington, New Zealand.
-At Motu I work with [Adam Jaffe](https://motu.nz/about-us/people/adam-jaffe/) and [Dave Maré](https://motu.nz/about-us/people/dave-mare/) on a range of projects that combine economics with network science.
+I'm an economics PhD student at Stanford University.
+I'm interested in how people make decisions, combine skills, share ideas, and form teams.
 
-I joined Motu after completing a BSc(Hons) in economics and mathematics at the University of Canterbury.
+I grew up in New Zealand, and earned a BSc(Hons) in economics and mathematics from the University of Canterbury.
 [I won the Sir Frank Holmes Prize](https://motu.nz/about-us/news/motu-news-december-2016/#frank) for being New Zealand's top undergraduate economics student.
+I worked at [Motu](https://motu.nz) before starting my PhD.
 
-I enjoy writing as a way to organise and clarify my thoughts.
-I publish some of my writing on [my blog](/blog/).
+I [blog](/blog/) about my personal and research interests.
 Some of my favorite blog posts include:
 
-* [White  Elephant Gift Exchanges](/blog/white-elephant-gift-exchanges/)
+* [White Elephant Gift Exchanges](/blog/white-elephant-gift-exchanges/)
 * [How Central is Grand Central Terminal?](/blog/how-central-grand-central-terminal/)
 * [Information Gerrymandering](/blog/information-gerrymandering/)
 
-I spend the rest of my leisure time reading, running, and playing guitar.
+I spend the rest of my leisure time running and playing guitar.
