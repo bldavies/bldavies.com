@@ -88,22 +88,18 @@ honours <- read_csv(paste0(data_dir, "honours.csv")) %>%
 
 # Research ----
 
-research_dir <- "content/research"
-research <- tibble(
-  path = list.files(research_dir, "[.]md", recursive = T)
-) %>%
-  filter(!grepl("_index.md$", path)) %>%
-  mutate(yaml = map(paste0(research_dir, "/", path), yaml_front_matter),
-         title = map_chr(yaml, ~.$title),
-         coauthors = map_chr(yaml, ~null2na(.$coauthors)),
-         date = as.Date(map_chr(yaml, ~.$date)),
-         pubType = map_chr(yaml, ~.$pubType),
-         citation = map_chr(yaml, ~null2na(.$citation))) %>%
-  arrange(desc(date))
+research <- read_yaml("data/research.yaml") %>%
+  bind_rows() %>%
+  arrange(desc(date)) %>%
+  mutate(text = paste0("\"", title,
+                       ifelse(!is.na(coauthors), sprintf("\" (with %s), ", coauthors), ",\" "),
+                       ifelse(!is.na(outlet), sprintf("%s, ", outlet), ""),
+                       ifelse(!is.na(forthcoming), "forthcoming", substr(date, 1, 4)),
+                       "."))
 
 publications <- research %>%
-  filter(pubType != "other") %>%
-  {sprintf("\t\\entry{%s}", md2tex(.$citation))}
+  filter(type == "pub") %>%
+  {sprintf("\t\\entry{%s}", md2tex(.$text))}
 
 
 # Presentations ----

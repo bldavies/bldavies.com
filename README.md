@@ -16,11 +16,11 @@ I use a custom [taxonomy](https://gohugo.io/content-management/taxonomies/) to c
 
 ### Research
 
-I organise my research project summaries as leaf bundles under `content/research/`.
+I list my research projects in `data/research.yaml`.
 
 ### Vita
 
-I build my CV using `R/cv.R` based on data stored in `_cv/` and the research project summaries under `content/research/`.
+I build my CV using `R/cv.R` based on data stored in `_cv/` and `data/research.yaml`.
 I save the intermediate TeX file for version control.
 
 ## License

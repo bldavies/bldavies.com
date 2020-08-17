@@ -1,0 +1,10 @@
+<p>
+  "{{ if .url }}<a href="{{ .url }}">{{ .title }}</a>{{ else }}{{ .title }}{{ end}}
+  {{- if .coauthors }}" (with {{ .coauthors }}),{{ else }},"{{ end }}
+  {{ if .outlet }}{{ .outlet | markdownify }},{{ end }}
+  {{ if .forthcoming }}forthcoming{{ else }}{{ dateFormat "2006" .date }}{{ end -}}
+  .
+  <br/>
+  {{ if .preprint }}<a class="rounded-link" href="{{ .preprint }}">preprint</a>{{ end }}
+  {{ if .dataCode }}<a class="rounded-link" href="{{ .dataCode }}">data/code</a>{{ end }}
+</p>

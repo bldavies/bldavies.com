@@ -3,16 +3,18 @@
 <h1>{{ .Title | markdownify }}</h1>
 {{ .Content }}
 
-<ul class="page-index">
-{{ range .Pages }}
-  <li>
-    <a href="{{ .Permalink }}">{{ .Title | markdownify }}</a>
-    {{- if .Params.coauthors }} (with {{ .Params.coauthors }}){{ end -}}
-    {{- if .Params.outlet }}, {{ .Params.outlet | markdownify }}{{ end -}}
-    {{- if .Params.forthcoming }}, forthcoming{{ else }}, {{ dateFormat "2006" .Date }}{{ end -}}
-    .
-  </li>
+<h2>Publications</h2>
+{{ range .Site.Data.research }}
+{{ if eq .type "pub" }}
+{{ partial "publication.html" . }}
 {{ end }}
-</ul>
+{{ end }}
+
+<h2>Other writing</h2>
+{{ range .Site.Data.research }}
+{{ if ne .type "pub" }}
+{{ partial "publication.html" . }}
+{{ end }}
+{{ end }}
 
 {{ partial "footer.html" . }}
