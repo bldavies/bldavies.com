@@ -42,7 +42,7 @@ Empirical models describe relationships between variables.
 These relationships may not be first-order: the mechanisms that we think operate, and that our models aim to capture, may not be central to the stories playing out in our data.
 To determine the centrality of our hypothesised mechanisms, Dave suggests trying to "kill off the variation:" add explanatory variables until the coefficients on our covariates of interest become insignificant.
 
-For example, in "[Relatedness, Complexity and Local Growth](/research/relatedness-complexity-local-growth)," Dave and I analyse the relationship between local activity growth rates and several covariates that capture the prevalence of local employee interactions.
+For example, in "[Relatedness, Complexity and Local Growth](/blog/relatedness-complexity-local-growth/)," Dave and I analyse the relationship between local activity growth rates and several covariates that capture the prevalence of local employee interactions.
 In theory, such interactions foster the growth of "complex" activities that build on existing local strengths.
 However, in our data, most of the variation in local activity growth is explained by the growth experienced by the city and activity as a whole, and our chosen covariates provide no additional explanatory power.
 Thus, while employee interactions may influence employment dynamics at the margin, such interactions are not central to the story of how New Zealand cities evolved during our period of study.

@@ -13,8 +13,5 @@ https://bldavies.netlify.com/*  https://bldavies.com/:splat  301!
 /blog/pokenet/                  /blog/habitat-choices-first-generation-pokemon/
 /blog/updating-motu-wp/         /blog/updating-motuwp/
 
-# Research
-/research/*                     /research/
-
 # CV
 /cv/                            /cv.pdf
