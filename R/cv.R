@@ -132,7 +132,7 @@ content <- c(
   "",
   experience,
   "",
-  "\\section{Scholarships and Awards}",
+  "\\section{Honours}",
   "",
   honours,
   "",
