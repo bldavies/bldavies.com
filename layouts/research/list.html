@@ -12,7 +12,7 @@
 
 <h2>Other writing</h2>
 {{ range .Site.Data.research }}
-{{ if ne .type "pub" }}
+{{ if not .type }}
 {{ partial "publication.html" . }}
 {{ end }}
 {{ end }}
