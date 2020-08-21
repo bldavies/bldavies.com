@@ -78,7 +78,7 @@ experience <- read_csv(paste0(data_dir, "experience.csv")) %>%
   {.$text}
 
 
-# Scholarships and Awards ---
+# Honours ---
 
 honours <- read_csv(paste0(data_dir, "honours.csv")) %>%
   mutate(text = sprintf("%s, %s.", award, year)) %>%
