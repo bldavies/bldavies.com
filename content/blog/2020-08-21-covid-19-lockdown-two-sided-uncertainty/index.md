@@ -20,7 +20,7 @@ These outcomes are realised in the second period, at which time the government d
 That initial decision influences the joint probability distribution of health and economic outcomes, and the payoffs associated with each choice in the second period.
 The government's decision rule in the first period is to choose the policy that generates the greatest net expected payoff, given the dynamic consequences of the policy chosen.
 
-We allow the payoffs from each choice to vary with a parameter capturing the government's aversion to health risks vis-à-vis economic risks.
+We allow payoffs to vary with a parameter capturing the government's aversion to health risks vis-à-vis economic risks.
 The chart below shows how this parameter affects the payoff from each choice available in the first period.
 As health risk aversion rises, the government increasingly prefers policies that insure against bad health outcomes.
 Consequently, the value of entering lockdown rises while the value of delaying falls.
