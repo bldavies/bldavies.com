@@ -1,5 +1,5 @@
 ---
-title: Computing Epicycles
+title: Computing epicycles
 linkSource: yes
 loadMathJax: yes
 ---

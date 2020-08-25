@@ -1,5 +1,5 @@
 ---
-title: Information Gerrymandering
+title: Information gerrymandering
 topics: [decision-making, networks]
 ---
 

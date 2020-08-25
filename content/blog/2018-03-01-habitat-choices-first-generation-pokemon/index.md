@@ -1,5 +1,5 @@
 ---
-title: Habitat Choices of First-Generation Pokémon
+title: Habitat choices of first-generation Pokémon
 topics: [networks]
 linkSource: yes
 ---

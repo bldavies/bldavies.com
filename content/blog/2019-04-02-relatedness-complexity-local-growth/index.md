@@ -1,5 +1,5 @@
 ---
-title: Relatedness, Complexity and Local Growth
+title: Relatedness, complexity and local growth
 topics: [networks]
 ---
 

@@ -10,8 +10,8 @@ I worked at [Motu](https://motu.nz) before starting my PhD.
 I [blog](/blog/) about my personal and research interests.
 Some of my favorite blog posts include:
 
-* [White Elephant Gift Exchanges](/blog/white-elephant-gift-exchanges/)
-* [How Central is Grand Central Terminal?](/blog/how-central-grand-central-terminal/)
-* [Information Gerrymandering](/blog/information-gerrymandering/)
+* [White elephant gift exchanges](/blog/white-elephant-gift-exchanges/)
+* [How central is Grand Central Terminal?](/blog/how-central-grand-central-terminal/)
+* [Information gerrymandering](/blog/information-gerrymandering/)
 
 I spend the rest of my leisure time running and playing guitar.

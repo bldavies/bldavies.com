@@ -1,5 +1,5 @@
 ---
-title: Climate Change and Transport Planning
+title: Climate change and transport planning
 topics: [decision-making]
 ---
 

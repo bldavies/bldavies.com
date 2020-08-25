@@ -1,5 +1,5 @@
 ---
-title: How Central is Grand Central Terminal?
+title: How central is Grand Central Terminal?
 topics: [networks]
 ---
 

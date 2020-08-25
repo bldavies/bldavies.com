@@ -1,5 +1,5 @@
 ---
-title: Reading the Ministerial Diaries
+title: Reading the ministerial diaries
 topics: [politics]
 linkSource: yes
 loadMathJax: yes

@@ -1,5 +1,5 @@
 ---
-title: Coauthorship Networks at Motu
+title: Coauthorship networks at Motu
 topics: [networks, research]
 ---
 

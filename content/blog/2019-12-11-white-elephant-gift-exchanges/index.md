@@ -1,5 +1,5 @@
 ---
-title: White Elephant Gift Exchanges
+title: White elephant gift exchanges
 topics: [games]
 linkSource: yes
 ---

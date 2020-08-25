@@ -1,5 +1,5 @@
 ---
-title: Sampling the Motu Coauthorship Network
+title: Sampling the Motu coauthorship network
 topics: [networks, statistics]
 linkSource: yes
 ---

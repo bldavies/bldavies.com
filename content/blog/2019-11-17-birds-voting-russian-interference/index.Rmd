@@ -1,5 +1,5 @@
 ---
-title: Birds, Voting, and Russian Interference
+title: Birds, voting, and Russian interference
 topics: [decision-making]
 ---
 

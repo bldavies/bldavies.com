@@ -1,5 +1,5 @@
 ---
-title: Guest Appearances on *The Joe Rogan Experience*
+title: Guest appearances on *The Joe Rogan Experience*
 linkSource: yes
 ---
 

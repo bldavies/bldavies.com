@@ -1,5 +1,5 @@
 ---
-title: "College Degrees in the US: Community Detection"
+title: "College degrees in the US: Community detection"
 topics: [education, networks]
 linkSource: yes
 ---

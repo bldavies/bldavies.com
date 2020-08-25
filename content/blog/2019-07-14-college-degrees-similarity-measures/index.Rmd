@@ -1,5 +1,5 @@
 ---
-title: 'College Degrees in the US: Similarity Measures'
+title: 'College degrees in the US: Similarity measures'
 topics: [education, networks]
 ---
 

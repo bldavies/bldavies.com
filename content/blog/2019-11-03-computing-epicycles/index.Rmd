@@ -1,5 +1,5 @@
 ---
-title: Computing Epicycles
+title: Computing epicycles
 ---
 
 ```{r setup, echo = FALSE, message = F, warning = F}
