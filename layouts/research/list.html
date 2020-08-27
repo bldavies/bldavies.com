@@ -3,16 +3,24 @@
 <h1>{{ .Title | markdownify }}</h1>
 {{ .Content }}
 
-<h2>Publications</h2>
-{{ range .Site.Data.research }}
-{{ if eq .type "pub" }}
+{{ $wpList := where .Site.Data.research "type" "wp" }}
+{{ if $wpList }}
+<h2>Working papers</h2>
+{{ range $wpList }}
 {{ partial "publication.html" . }}
 {{ end }}
 {{ end }}
 
+{{ $pubList := where .Site.Data.research "type" "pub" }}
+<h2>Publications</h2>
+{{ range $pubList }}
+{{ partial "publication.html" . }}
+{{ end }}
+
+{{ $othList := where .Site.Data.research "type" nil  }}
+{{ if $othList }}
 <h2>Other writing</h2>
-{{ range .Site.Data.research }}
-{{ if not .type }}
+{{ range $othList }}
 {{ partial "publication.html" . }}
 {{ end }}
 {{ end }}

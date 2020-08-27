@@ -4,7 +4,7 @@
 # summaries in content/research/.
 #
 # Ben Davies
-# July 2020
+# August 2020
 
 
 # Initialisation ----
@@ -97,6 +97,10 @@ research <- read_yaml("data/research.yaml") %>%
                        ifelse(!is.na(forthcoming), "forthcoming", substr(date, 1, 4)),
                        "."))
 
+working_papers <- research %>%
+  filter(type == "wp") %>%
+  {sprintf("\t\\entry{%s}", md2tex(.$text))}
+
 publications <- research %>%
   filter(type == "pub") %>%
   {sprintf("\t\\entry{%s}", md2tex(.$text))}
@@ -136,6 +140,18 @@ content <- c(
   "",
   honours,
   "",
+  {
+    if (length(working_papers) > 0) {
+      c(
+        "\\section{Working Papers}",
+        "",
+        working_papers,
+        ""
+      )
+    } else {
+      c()
+    }
+  },
   "\\section{Publications}",
   "",
   publications,
