@@ -6,21 +6,21 @@
 {{ $wpList := where .Site.Data.research "type" "wp" }}
 {{ if $wpList }}
 <h2>Working papers</h2>
-{{ range $wpList }}
+{{ range sort $wpList "date" "desc" }}
 {{ partial "publication.html" . }}
 {{ end }}
 {{ end }}
 
 {{ $pubList := where .Site.Data.research "type" "pub" }}
 <h2>Publications</h2>
-{{ range $pubList }}
+{{ range sort $pubList "date" "desc" }}
 {{ partial "publication.html" . }}
 {{ end }}
 
 {{ $othList := where .Site.Data.research "type" nil  }}
 {{ if $othList }}
 <h2>Other writing</h2>
-{{ range $othList }}
+{{ range sort $othList "date" "desc" }}
 {{ partial "publication.html" . }}
 {{ end }}
 {{ end }}
