@@ -8,8 +8,10 @@ I grew up in New Zealand, and earned a BSc(Hons) in economics and mathematics fr
 I worked at [Motu](https://motu.nz) before starting my PhD.
 
 I [blog](/blog/) about my personal and research interests.
-Some of my favorite blog posts include:
+Some highlights include:
 
+* [Applying to economics PhD programs](/blog/applying-economics-phd-programs/)
+* [Policymaking under uncertainty](/blog/policymaking-under-uncertainty/)
 * [White elephant gift exchanges](/blog/white-elephant-gift-exchanges/)
 * [How central is Grand Central Terminal?](/blog/how-central-grand-central-terminal/)
 * [Information gerrymandering](/blog/information-gerrymandering/)
