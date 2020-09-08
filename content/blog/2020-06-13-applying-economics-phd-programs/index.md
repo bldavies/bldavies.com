@@ -137,7 +137,7 @@ Other programs asked for similar information but only for the handful of "most a
 Stanford asked me to match the courses I'd taken with courses offered at Stanford.
 The matching took a while because the courses I took at UC often matched Stanford courses in different subject areas and at different degree levels.
 
-New Zealand universities uses a nine-point GPA system, whereas the universities I applied to use a four-point system.
+New Zealand universities use a nine-point GPA system, whereas the universities I applied to use a four-point system.
 Some programs asked me to report my GPA on its original scale, some asked me to convert it to the four-point scale, and some asked me to leave the GPA field blank.
 Overall, the difference in systems didn't seem to be problematic.
 
