@@ -1,6 +1,6 @@
 ---
 title: Relatedness, complexity and local growth
-topics: [networks]
+topics: [labour markets, networks]
 ---
 
 I recently wrote an article for [*Asymmetric Information*][ai-url] summarising [my paper with Dave Maré][motu-wp] on the relatedness and complexity of economic activities in New Zealand.
