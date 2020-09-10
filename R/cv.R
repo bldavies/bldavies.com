@@ -94,7 +94,7 @@ research <- read_yaml("data/research.yaml") %>%
   mutate(text = paste0("\"", title,
                        ifelse(!is.na(coauthors), sprintf("\" (with %s), ", coauthors), ",\" "),
                        ifelse(!is.na(outlet), sprintf("%s, ", outlet), ""),
-                       ifelse(!is.na(forthcoming), "forthcoming", substr(date, 1, 4)),
+                       ifelse(!is.na({if ("forthcoming" %in% names(.)) forthcoming else rep(NA, nrow(.))}), "forthcoming", substr(date, 1, 4)),
                        "."))
 
 working_papers <- research %>%
