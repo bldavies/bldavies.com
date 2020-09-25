@@ -1,6 +1,6 @@
 ---
 title: Greedy Pig strategies
-topics: [optimisation, probability]
+topics: [games, optimisation, probability]
 linkSource: yes
 loadMathJax: yes
 ---
