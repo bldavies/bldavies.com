@@ -217,6 +217,7 @@ table th {
   font-size: 80%;
   margin: 0.2rem 0.1rem;
   padding: 0.125rem 0.25rem;
+  white-space: nowrap;
 }
 
 .rounded-link:hover {
