@@ -1,6 +1,6 @@
 ---
 title: Product-maximising partitions
-topics: [optimisation]
+topics: [approximation, optimisation]
 linkSource: yes
 loadMathJax: yes
 ---
