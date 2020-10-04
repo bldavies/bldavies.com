@@ -8,12 +8,10 @@ I want to choose the training load that maximises my expected performance on rac
 The harder I train, the better my performance will be but the more likely I am to injure myself.
 How should I balance this trade-off between better performance and greater risk of injury?
 
-We can model this choice problem as follows.[^econ321]
+We can model this choice problem as follows.
 Let $t\in[0,1]$ represent my training load and $a\in\mathbb{R}$ my natural ability.[^t-interpretation]
 My performance on race day is some function $f(t,a)$ of $t$ and $a$.
 I assume that this function is increasing and concave in $t$ (so that there are positive but diminishing returns to training), and increasing in $a$.
-
-[^econ321]: This model is based on one described in my [ECON321](https://www.canterbury.ac.nz/courseinfo/GetCourseDetails.aspx?course=ECON321&occurrence=15S1(C)&year=2015) lecture notes from 2015.
 
 [^t-interpretation]: For example, $t$ could represent the proportion of time before the race that I spend training.
 
