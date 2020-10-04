@@ -5,7 +5,7 @@ linkSource: yes
 ---
 
 Later this year, New Zealanders will vote in a referendum on whether to legalise voluntary euthanasia under the conditions specified in the [End of Life Choice Bill](http://www.legislation.govt.nz/bill/member/2017/0269/latest/DLM7285905.html) (hereafter "the Bill").
-Members of Parliament (MPs) [read](https://en.wikipedia.org/wiki/Reading_(legislature)) (i.e., debated) the Bill three times, each time holding a [conscience vote](https://en.wikipedia.org/wiki/Conscience_vote) on whether to progress the Bill towards becoming legislation.
+Members of Parliament (MPs) read the Bill three times, each time holding a [conscience vote](https://en.wikipedia.org/wiki/Conscience_vote) on whether to progress the Bill towards becoming legislation.
 The table below presents the percentage and fraction of MPs who voted in favour of the Bill, separated by political party and reading.[^data]
 
 [^data]: The data used in this post are available [here](https://github.com/bldavies/eolc-bill/).
