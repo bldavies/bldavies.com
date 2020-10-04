@@ -3,8 +3,7 @@
 I'm an economics PhD student at Stanford University.
 My research interests span social, financial, labour, and innovation economics.
 
-I grew up in New Zealand, and earned a BSc(Hons) in economics and mathematics from the University of Canterbury.
-[I won the Sir Frank Holmes Prize](https://motu.nz/about-us/news/motu-news-december-2016/#frank) for being New Zealand's top undergraduate economics student.
+I studied undergraduate economics and mathematics in New Zealand, and [won the Sir Frank Holmes Prize](https://motu.nz/about-us/news/motu-news-december-2016/#frank) for being New Zealand's top undergraduate economics student.
 I worked at [Motu](https://motu.nz) before starting my PhD.
 
 I [blog](/blog/) about my personal and research interests.
