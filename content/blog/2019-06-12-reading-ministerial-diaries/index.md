@@ -1,6 +1,6 @@
 ---
 title: Reading the ministerial diaries
-topics: [politics]
+topics: [politics, text mining]
 linkSource: yes
 loadMathJax: yes
 ---
