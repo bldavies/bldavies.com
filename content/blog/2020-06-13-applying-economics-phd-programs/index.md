@@ -164,8 +164,7 @@ Instead, I was concerned that admissions committees would observe that I chose n
 ### Statements of purpose
 
 All programs asked for a statement describing my preparation for graduate study, my research experience and interests, and my career goals.
-[Here](statement.pdf) is the statement I submitted to Stanford.
-It contained
+[The statement I submitted to Stanford](statement.pdf) contained
 
 * a brief introduction,
 * a paragraph describing my educational background,
