@@ -44,7 +44,7 @@ simulate_votes <- function(n_votes, committee_size, n_influences, n_days) {
 ```
 
 `simulate_one` randomises committee members' initial positions---encoding "accept" as one and "reject" as zero---before updating these positions based on neighbouring majorities.
-Running `simulate_one` many times allows me to simulate the committees's decision for an ensemble of randomly generated influence networks.
+Running `simulate_one` many times allows me to simulate the committee's decision for an ensemble of randomly generated influence networks.
 The last few lines of `simulate_votes` generate this ensemble and output the simulation results.
 
 Let's simulate the committee's vote 1000 times, including one week of daily position updates, and tabulate the simulated decision frequencies:
