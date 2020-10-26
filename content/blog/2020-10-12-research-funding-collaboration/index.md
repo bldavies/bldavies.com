@@ -15,7 +15,7 @@ Such contests may promote collaboration for several reasons:
 These arguments suggest that the members of more successful proposal teams are more likely to become co-authors.
 We test this hypothesis empirically, using data from New Zealand.
 Our data include Scopus publication records on New Zealand researchers and their international co-authors.
-We link these records to data on applications to the [Marsden Fund](https://www.royalsociety.org.nz/what-we-do/funds-and-opportunities/marsden), the premiere source of funding for basic research in New Zealand.
+We link these records to data on applications to the [Marsden Fund](https://www.royalsociety.org.nz/what-we-do/funds-and-opportunities/marsden), the premier source of funding for basic research in New Zealand.
 
 In our data, researchers with more successful Marsden Fund applications tended to have more co-authors.
 However, this tendency may be driven by confounding factors, such as researchers' ability to generate publishable research.
