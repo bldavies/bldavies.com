@@ -13,11 +13,13 @@ However, the network's structure changes over time, in discrete time steps, acco
 1. everyone updates their belief to match the majority within their friend group (comprised of themselves and their neighbours in the network), defaulting to their previous belief to break ties;
 2. edges appear between people who hold the same belief and disappear between people who hold different beliefs, both with probability 0.01.
 
-The first rule describes a "social learning" process: people update their beliefs to match the majority among their friends.
+The first rule describes a "social learning" process: people update their beliefs to match the majority among their friends.[^degroot]
 The second rule describes a "peer selection" process: people choose friends who share the same beliefs.
 These two processes can lead to polarized beliefs, even if there is no polarization before the processes begin.
 I demonstrate this phenomenon in the figure below, which plots the beliefs and connections in a simulated network after zero, 10, 20, and 30 time steps.
 The figure shows how people grow increasingly connected to others with the same belief and decreasingly connected to others with the opposing belief.
+
+[^degroot]: See [my blog post on DeGroot learning](/blog/degroot-learning-social-networks/) for more discussion of social learning processes.
 
 ![](figures/networks-1.svg)
 
