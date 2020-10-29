@@ -1,0 +1,64 @@
+─ Session info ───────────────────────────────────────────────────────────────
+ setting  value                       
+ version  R version 4.0.3 (2020-10-10)
+ os       macOS Catalina 10.15.7      
+ system   x86_64, darwin17.0          
+ ui       X11                         
+ language (EN)                        
+ collate  en_NZ.UTF-8                 
+ ctype    en_NZ.UTF-8                 
+ tz       America/Los_Angeles         
+ date     2020-10-29                  
+
+─ Packages ───────────────────────────────────────────────────────────────────
+ package      * version date       lib source                        
+ assertthat     0.2.1   2019-03-21 [1] CRAN (R 4.0.0)                
+ bldr           0.1.0   2020-08-27 [1] Github (bldavies/bldr@4b25a75)
+ cli            2.1.0   2020-10-12 [1] CRAN (R 4.0.2)                
+ colorspace     1.4-1   2019-03-18 [1] CRAN (R 4.0.0)                
+ crayon         1.3.4   2017-09-16 [1] CRAN (R 4.0.0)                
+ digest         0.6.27  2020-10-24 [1] CRAN (R 4.0.2)                
+ dplyr        * 1.0.2   2020-08-18 [1] CRAN (R 4.0.0)                
+ ellipsis       0.3.1   2020-05-15 [1] CRAN (R 4.0.0)                
+ evaluate       0.14    2019-05-28 [1] CRAN (R 4.0.0)                
+ fansi          0.4.1   2020-01-08 [1] CRAN (R 4.0.0)                
+ farver         2.0.3   2020-01-16 [1] CRAN (R 4.0.0)                
+ generics       0.0.2   2018-11-29 [1] CRAN (R 4.0.0)                
+ ggforce        0.3.2   2020-06-23 [1] CRAN (R 4.0.0)                
+ ggplot2      * 3.3.2   2020-06-19 [1] CRAN (R 4.0.0)                
+ ggraph       * 2.0.3   2020-05-20 [1] CRAN (R 4.0.0)                
+ ggrepel        0.8.2   2020-03-08 [1] CRAN (R 4.0.0)                
+ glue           1.4.2   2020-08-27 [1] CRAN (R 4.0.2)                
+ graphlayouts   0.7.1   2020-10-26 [1] CRAN (R 4.0.2)                
+ gridExtra      2.3     2017-09-09 [1] CRAN (R 4.0.0)                
+ gtable         0.3.0   2019-03-25 [1] CRAN (R 4.0.0)                
+ igraph       * 1.2.6   2020-10-06 [1] CRAN (R 4.0.2)                
+ knitr        * 1.30    2020-09-22 [1] CRAN (R 4.0.2)                
+ labeling       0.4.2   2020-10-20 [1] CRAN (R 4.0.2)                
+ lifecycle      0.2.0   2020-03-06 [1] CRAN (R 4.0.0)                
+ magrittr       1.5     2014-11-22 [1] CRAN (R 4.0.0)                
+ MASS           7.3-53  2020-09-09 [1] CRAN (R 4.0.3)                
+ munsell        0.5.0   2018-06-12 [1] CRAN (R 4.0.0)                
+ pillar         1.4.6   2020-07-10 [1] CRAN (R 4.0.2)                
+ pkgconfig      2.0.3   2019-09-22 [1] CRAN (R 4.0.0)                
+ polyclip       1.10-0  2019-03-14 [1] CRAN (R 4.0.0)                
+ purrr        * 0.3.4   2020-04-17 [1] CRAN (R 4.0.0)                
+ R6             2.5.0   2020-10-28 [1] CRAN (R 4.0.3)                
+ Rcpp           1.0.5   2020-07-06 [1] CRAN (R 4.0.0)                
+ rlang          0.4.8   2020-10-08 [1] CRAN (R 4.0.2)                
+ scales         1.1.1   2020-05-11 [1] CRAN (R 4.0.0)                
+ sessioninfo    1.1.1   2018-11-05 [1] CRAN (R 4.0.0)                
+ stringi        1.5.3   2020-09-09 [1] CRAN (R 4.0.2)                
+ stringr        1.4.0   2019-02-10 [1] CRAN (R 4.0.0)                
+ tibble         3.0.4   2020-10-12 [1] CRAN (R 4.0.2)                
+ tidygraph    * 1.2.0   2020-05-12 [1] CRAN (R 4.0.0)                
+ tidyr        * 1.1.2   2020-08-27 [1] CRAN (R 4.0.2)                
+ tidyselect     1.1.0   2020-05-11 [1] CRAN (R 4.0.0)                
+ tweenr         1.0.1   2018-12-14 [1] CRAN (R 4.0.0)                
+ vctrs          0.3.4   2020-08-29 [1] CRAN (R 4.0.2)                
+ viridis        0.5.1   2018-03-29 [1] CRAN (R 4.0.0)                
+ viridisLite    0.3.0   2018-02-01 [1] CRAN (R 4.0.0)                
+ withr          2.3.0   2020-09-22 [1] CRAN (R 4.0.2)                
+ xfun           0.18    2020-09-29 [1] CRAN (R 4.0.2)                
+
+[1] /Library/Frameworks/R.framework/Versions/4.0/Resources/library

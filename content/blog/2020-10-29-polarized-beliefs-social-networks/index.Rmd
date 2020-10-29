@@ -1,0 +1,233 @@
+---
+title: Polarized beliefs in social networks
+topics: [networks]
+loadMathJax: no
+---
+
+```{r setup, echo = F, message = F, warning = F}
+library(dplyr)
+library(ggplot2)
+library(ggraph)
+library(igraph)
+library(knitr)
+library(purrr)
+library(tidygraph)
+library(tidyr)
+
+opts_chunk$set(echo = F, message = F, warning = F,
+               fig.width = 6, fig.height = 4, dpi = 100,
+               dev = 'svg', fig.ext = 'svg')
+
+theme_set(
+  theme_minimal() +
+    theme(legend.title = element_text(size = 10),
+          panel.grid.minor = element_blank(),
+          plot.title = element_text(face = 'bold'),
+          plot.subtitle = element_text(margin = margin(b = 10)),
+          strip.text = element_text(face = 'bold', hjust = 0, margin = margin(b = 5), size = 10))
+)
+```
+
+```{r simulation-functions}
+simulate_one = function(adj, p, q, tol, t_max) {
+  # adj   = adjacency matrix (must be square)
+  # p     = prob of deleting edge over disagreement
+  # q     = prob of creating edge over agreement
+  # tol   = min deviation from 0.5 needed to update belief (= 1 => no updates)
+  # t_max = number of rounds
+  
+  # Extract params
+  n = dim(adj)[1]
+  if (dim(adj)[1] != dim(adj)[2] | sum(adj %in% c(0, 1)) < n ^ 2) {
+    stop('adj must be square binary matrix')
+  }
+  
+  # Initialise beliefs
+  belief = sample(rep(c(0, 1), n %/% 2), n)
+  
+  # Initialise outputs
+  adj_list = vector('list', t_max)
+  net_df_list = vector('list', t_max)
+  node_df_list = vector('list', t_max)
+  
+  # Iterate
+  for (t in seq_len(t_max)) {
+    
+    # Identify neighbours and form new beliefs
+    net = graph_from_adjacency_matrix(adj, 'undirected', diag = F)
+    nb = neighborhood(net)
+    nb_maj = map_dbl(nb, ~mean(belief[.]))
+    new_belief = round(ifelse(abs(nb_maj - 0.5) < tol, belief, nb_maj))
+    
+    # Store data
+    adj_list[[t]] = adj
+    net_df_list[[t]] = tibble(
+      t = t,
+      `Mean degree` = mean(degree(net)),
+      `Belief assortativity` = assortativity_nominal(net, belief + 1),
+      `Belief updates (% nodes)` = 100 * sum(belief != new_belief) / n
+    )
+    node_df_list[[t]] = tibble(
+      agent = 1:n,
+      t = rep(t, n),
+      belief = belief, 
+      degree = degree(net),
+      nb_maj = nb_maj,
+      new_belief = new_belief
+    )
+    
+    # Update adjacency matrix
+    belief_mat = matrix(rep(belief, n), nrow = n)
+    same_belief = 1 * (belief_mat == t(belief_mat))
+    flip_probs = p * (adj * (1 - same_belief)) + q * ((1 - adj) * same_belief) / 2
+    flips = matrix(1 * runif(n ^ 2) < flip_probs, nrow = n)
+    flips = pmax(flips, t(flips))  # Force symmetry (double counting fixed by halving probs above)
+    adj = (adj + flips) %% 2
+    
+    # Update beliefs
+    belief = new_belief
+  }
+  
+  # Return outputs
+  list(adj_list = adj_list, net_df_list = net_df_list, node_df_list = node_df_list)
+}
+
+simulate_many = function(adj, N, p, q, tol, t_max) {
+  # N = number of realisations
+  # see simulate_one for other params
+  
+  # Simulate processes and extract network attribute data frames
+  res_list = vector('list', N)
+  for (i in seq_len(N)) {
+    res_list[[i]] = simulate_one(adj, p, q, tol, t_max)$net_df_list %>%
+      bind_rows() %>%
+      mutate(run = i)
+  }
+  
+  # Return output
+  bind_rows(res_list)
+}
+```
+
+```{r parameterisation}
+G = k.regular.game(50, 4)
+adj = as_adjacency_matrix(G, sparse = F)
+N = 30
+p = 0.01
+q = 0.01
+tol = 1e-4
+t_max = 31
+```
+
+```{r simulations, eval = F}
+set.seed(0)
+sim = simulate_one(adj, p, q, tol, t_max)
+
+set.seed(0)
+sims_edges = simulate_many(adj, N, p, q, 1, t_max)  # Edge revisions only
+sims_learn = simulate_many(adj, N, 0, 0, tol, t_max)  # Learning only
+sims_both  = simulate_many(adj, N, p, q, tol, t_max)
+
+cache = list(sim = sim, sims_edges = sims_edges, sims_learn = sims_learn, sims_both = sims_both)
+save(cache, file = 'data/cache.rds')
+```
+
+```{r load-cache}
+load('data/cache.rds')
+sim = cache$sim
+sims_edges = cache$sims_edges
+sims_learn = cache$sims_learn
+sims_both = cache$sims_both
+```
+
+Suppose each of 50 people has four friends.
+Everyone believes that some proposition---say, "corporate tax rates should be higher"---is either true or false, with equal probability and independently of everyone else.
+Consequently, the social network among the 50 people is unsorted with respect to peoples' beliefs.
+However, the network's structure changes over time, in discrete time steps, according to two rules:
+
+1. everyone updates their belief to match the majority within their friend group (comprised of themselves and their neighbours in the network), defaulting to their previous belief to break ties;
+2. edges appear between people who hold the same belief and disappear between people who hold different beliefs, both with probability 0.01.
+
+The first rule describes a "social learning" process: people update their beliefs to match the majority among their friends.
+The second rule describes a "peer selection" process: people choose friends who share the same beliefs.
+These two processes can lead to polarized beliefs, even if there is no polarization before the processes begin.
+I demonstrate this phenomenon in the figure below, which plots the beliefs and connections in a simulated network after zero, 10, 20, and 30 time steps.
+The figure shows how people grow increasingly connected to others with the same belief and decreasingly connected to others with the opposing belief.
+
+```{r networks}
+get_sim_net = function(t) {
+  sim$adj_list[[t]] %>%
+    graph_from_adjacency_matrix('undirected') %>%
+    as_tbl_graph() %>%
+    mutate(agent = 1:gorder(G)) %>%
+    left_join(sim$node_df_list[[t]]) %>%
+    activate(edges) %>%
+    mutate(t = t)
+}
+
+plot_nets = map(c(1, 11, 21, 31), get_sim_net)
+
+set.seed(0)
+beliefs = c('Proposition is true', 'Proposition is false')
+keys = c('Initial network', '10 time steps', '20 time steps', '30 time steps')
+bind_graphs(plot_nets) %>%
+  activate(nodes) %>%
+  mutate(belief = factor(beliefs[belief + 1], beliefs)) %>%
+  ggraph('stress') +
+  geom_edge_link0(alpha = 0.1) +
+  geom_node_point(aes(col = belief)) +
+  facet_nodes(. ~ factor(keys[dense_rank(t)], keys), scales = 'free') +
+  labs(title = 'Social learning and peer selection lead to polarization',
+       subtitle = 'Simulated network\'s structure after zero, 10, 20, and 30 time steps',
+       col = 'Belief') +
+  theme(legend.position = 'bottom')
+```
+
+The social learning and peer selection processes can lead to polarization both together and separately.
+I justify this claim in the figure below.
+The left-hand panel plots the network's "assortativity coefficient," which measures the overall correlation among friends' beliefs.[^newman-2003]
+This coefficient equals one when all neighbours share the same beliefs (complete polarization) and equals zero when edges are "as random."
+The right-hand panel plots the proportion of people in the network who update their belief at each time step.
+Both panels present means and 95% confidence intervals across `r N` simulated networks, each with randomized initial beliefs.
+
+[^newman-2003]: See [Newman (2003)](https://arxiv.org/abs/cond-mat/0209450v2) for a definition and discussion of the assortativity coefficient.
+
+```{r network-attributes}
+processes = c('Social learning', 'Peer selection', 'Both')
+bind_rows(
+  mutate(sims_learn, Process = processes[1]),
+  mutate(sims_edges, Process = processes[2]),
+  mutate(sims_both, Process = processes[3])
+) %>%
+  select(-`Mean degree`) %>%
+  mutate(Process = factor(Process, processes)) %>%
+  gather(key, value, -t, -run, -Process) %>%
+  group_by(t, Process, key) %>%
+  summarise(mean = mean(value),
+            sd = sd(value),
+            n = n()) %>%
+  ungroup() %>%
+  mutate(ci_radius = qt(1 - 0.05 / 2, n - 1) * sd / sqrt(n)) %>%
+  ggplot(aes(t - 1)) +
+  geom_ribbon(aes(ymin = mean - ci_radius, ymax = mean + ci_radius, fill = Process), alpha = 0.5) +
+  geom_line(aes(y = mean, col = Process)) +
+  facet_wrap(~key, scales = 'free') +
+  guides(fill = guide_legend(title.hjust = 1, label.position = 'left')) +
+  labs(x = 'Time step',
+       y = NULL,
+       title = 'Belief dynamics',
+       subtitle = paste('Means and 95% CIs across', N, 'simulated networks')) +
+  coord_cartesian(clip = 'off') +
+  scale_x_continuous(expand = c(0, 0)) +
+  theme(legend.justification = c(1, 1),
+        legend.position = c(1, 1))
+```
+
+The social learning process leads to positive sorting because, by construction, people increasingly share the same beliefs as their friends.
+The peer selection process leads to positive sorting because, by construction, edges increasingly connect people with common beliefs only.
+The two processes work together to isolate the subnetworks of people who believe the proposition is true and false.
+Interestingly, most belief updates occur very early: after about five time steps, most of the structural changes in the social network result from edge creations and deletions rather than from belief updates.
+
+```{r session-info, echo = F}
+bldr::save_session_info()
+```
