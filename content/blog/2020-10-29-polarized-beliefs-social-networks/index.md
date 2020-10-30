@@ -5,7 +5,7 @@ loadMathJax: no
 linkSource: yes
 ---
 
-Suppose each of 50 people has four friends.
+Suppose 50 people each have four friends.
 Everyone believes that some proposition---say, "corporate tax rates should be higher"---is either true or false, with equal probability and independently of everyone else.
 Consequently, the social network among the 50 people is unsorted with respect to peoples' beliefs.
 However, the network's structure changes over time, in discrete time steps, according to two rules:
