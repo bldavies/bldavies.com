@@ -122,8 +122,7 @@ presentations <- read_csv(paste0(data_dir, "presentations.csv"), col_types = col
 
 content <- c(
   "\\begin{center}",
-  "\t{\\Large\\bfseries\\MakeUppercase{\\theauthor}\\par}\\vskip\\aftersecskip",
-  "\t\\today\\par\\vskip\\beforesecskip",
+  "\t{\\Large\\bfseries\\MakeUppercase{\\theauthor}\\par}\\vskip\\beforesecskip",
   "\\end{center}",
   "",
   contact_info,
@@ -158,7 +157,11 @@ content <- c(
   "",
   "\\section{Seminars and Conference Presentations}",
   "",
-  presentations
+  presentations,
+  "\\vskip\\beforesecskip",
+  "\\begin{center}",
+  "\t\\footnotesize Last updated: \\today",
+  "\\end{center}"
 ) %>%
   {paste0("\t", .)}
 
