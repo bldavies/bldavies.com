@@ -1,0 +1,205 @@
+---
+title: "Aggregating preferences: Bird of the Year edition"
+topics: [decision-making]
+loadMathJax: no
+---
+
+```{r setup, echo = F, message = F, warning = F}
+library(dplyr)
+library(ggplot2)
+library(knitr)
+library(readr)
+library(scales)
+library(tidyr)
+
+opts_chunk$set(echo = F, message = F, warning = F,
+               fig.width = 6, fig.height = 3, dpi = 100,
+               dev = 'svg', fig.ext = 'svg')
+
+bldr::set_ggtheme()
+```
+
+Earlier this month the [kākāpō](https://www.birdoftheyear.org.nz/kakapo) was elected [Bird of the Year](https://www.birdoftheyear.org.nz) for 2020.
+The news prompted me to review the results of [last year's election](/blog/birds-voting-russian-interference/), in which the kākāpō lost narrowly to the yellow-eyed penguin.
+In particular, I wanted to determine whether the 2019 results were sensitive to the method used to aggregate voters' preferences.
+This post summarises my findings: different methods deliver (slightly) different outcomes, and at least one method would have crowned the kākāpō.
+
+```{r votes-save, eval = F}
+votes_raw = read_csv('../2019-11-17-birds-voting-russian-interference/data/BOTY-votes-2019.csv', col_types = cols(country = 'c'))
+
+votes = votes_raw %>%
+  count(vote_1, vote_2, vote_3, vote_4, vote_5, name = 'n_reps') %>%
+  mutate(ballot = row_number()) %>%
+  gather(rank, bird, -ballot, -n_reps) %>%
+  drop_na() %>%
+  mutate(rank = as.integer(sub('vote_', '', rank)))
+
+save(votes, file = 'data/votes.rds')
+```
+
+```{r votes-load}
+load('data/votes.rds')
+
+birds = sort(unique(votes$bird))
+```
+
+Bird of the Year elections run as follows.
+Each voter selects up to five birds, ranks their selections in order of preference, and submits their ranking on the election website.
+These submissions determine the winning bird via the [instant-runoff](https://en.wikipedia.org/wiki/Instant-runoff_voting) (IR) method:
+
+1. Count the ballots on which each bird is ranked first.
+2. If one bird is ranked first on a majority of ballots then elect it.
+   Otherwise, eliminate the bird ranked first on the fewest ballots and return to step 1.
+
+Using the IR method, rather than a [plurality vote](https://en.wikipedia.org/wiki/Plurality_voting) (in which the bird listed first on the most ballots wins), mitigates [vote-splitting](https://en.wikipedia.org/wiki/Vote_splitting) because voters can list multiple birds on their ballots.
+However, the IR method violates the [Condorcet criterion](https://en.wikipedia.org/wiki/Condorcet_criterion): a bird may lose the election even if it would beat every other bird in a head-to-head plurality vote.
+One way to satisfy this criterion is to use [Copeland's method](https://en.wikipedia.org/wiki/Copeland%27s_method), which ranks birds by the number of pairwise plurality votes they win minus the number of such votes they lose.
+
+The IR method and Copeland's method both rely on noiseless within-ballot rankings.
+I suspect this property does not hold for Bird of the Year elections.
+After selecting up to five birds, voters are asked to rearrange their selections from most to least preferred before submitting their ballots.
+It seems likely that this rearrangement does not occur, either because voters can't be bothered or because they are approximately indifferent among their selections.
+In either case, voters' preferences might be better aggregated using an [approval](https://en.wikipedia.org/wiki/Approval_voting)-based system: each bird earns one point for each ballot appearance, and the bird with the most points wins.
+
+```{r ballot_sizes}
+ballot_sizes = votes %>%
+  count(ballot, n_reps, name = 'size') %>%
+  count(size, wt = n_reps) %>%
+  mutate(p = round(100 * n / sum(n), 1))
+```
+
+One obvious problem with the approval-based system is that voters may approve of more than five birds, but cannot signal such approval because the "up to five" constraint binds.
+On the other hand, some voters may feel obliged to list five birds on their ballots even if they approve of only four birds or fewer.[^ballot-sizes]
+The most defensible way to deal with these possibilities seems (to me) to be to use a plurality vote, which assumes the minimal completeness of voters' individual preferences by treating only their first choices as informative.[^first-choices]
+
+[^ballot-sizes]: Of the `r comma(sum(ballot_sizes$n))` ballots cast in last year's election, `r filter(ballot_sizes, size == 5)$p`% listed five birds, `r filter(ballot_sizes, size == 4)$p`% listed four birds, `r filter(ballot_sizes, size == 3)$p`% listed three birds, `r filter(ballot_sizes, size == 2)$p`% listed two birds, and `r filter(ballot_sizes, size == 1)$p`% listed one bird.
+
+[^first-choices]: Nominating a "first choice" requires only that a voter can identify at least one bird that they prefer to at least one other bird.
+
+```{r pairwise_battles-save, eval = F}
+pairwise_battles = votes %>%
+  group_by(ballot) %>%
+  mutate(sup1 = lag(bird, 1),
+         sup2 = lag(bird, 2),
+         sup3 = lag(bird, 3),
+         sup4 = lag(bird, 4)) %>%
+  ungroup() %>%
+  gather(key, superior, sup1:sup4) %>%
+  drop_na() %>%
+  select(-key, -rank) %>%
+  crossing(opponent = birds) %>%
+  filter(superior != opponent) %>%
+  filter(bird != opponent) %>%
+  distinct(n_reps, ballot, bird, opponent) %>%
+  count(bird, opponent, wt = n_reps, name = 'n_wins') %>%
+  {full_join(., .[, c(2, 1, 3)]%>%`names<-`(c('bird', 'opponent', 'n_losses')))} %>%
+  mutate_at(c('n_wins', 'n_losses'), function(x) ifelse(is.na(x), 0, x))
+
+save(pairwise_battles, file = 'data/pairwise_battles.rds')
+```
+
+```{r pairwise_battles-load}
+load('data/pairwise_battles.rds')
+```
+
+```{r get_places_ir}
+get_places_ir = function(votes) {
+  n = n_distinct(votes$bird)
+  res = rep('', n)
+  rem_votes = votes
+  i = 0
+  while (i < n) {
+    res[n - i] = rem_votes %>%
+      filter(rank == 1) %>%
+      count(bird, wt = n_reps, sort = T) %>%
+      {.$bird[nrow(.)]}
+    affected_ballots = rem_votes %>%
+      filter(bird == res[n - i]) %>%
+      {.$ballot}
+    rem_votes = rem_votes %>%
+      filter(ballot %in% affected_ballots) %>%
+      filter(bird != res[n - i]) %>%
+      group_by(ballot) %>%
+      mutate(rank = dense_rank(rank)) %>%
+      ungroup() %>%
+      bind_rows(filter(rem_votes, !ballot %in% affected_ballots))
+    i = i + 1
+  }
+  tibble(bird = res, place = 1:n)
+}
+```
+
+```{r keys}
+keys = c('IR', 'Copeland', 'Approval', 'Plurality')
+```
+
+```{r places-save, eval = F}
+places_ir = get_places_ir(votes)
+
+places_copeland = pairwise_battles %>%
+  mutate(points = (n_wins > n_losses) - (n_wins < n_losses)) %>%
+  count(bird, wt = points, sort = T) %>%
+  mutate(place = min_rank(-n))
+
+places_approval = votes %>%
+  count(bird, wt = n_reps) %>%
+  mutate(place = min_rank(-n))
+
+places_plurality = votes %>%
+  filter(rank == 1) %>%
+  count(bird, wt = n_reps) %>%
+  mutate(place = min_rank(-n))
+
+places = bind_rows(
+  mutate(places_ir, key = keys[1]),
+  mutate(places_copeland, key = keys[2]),
+  mutate(places_approval, key = keys[3]),
+  mutate(places_plurality, key = keys[4])
+) %>%
+  mutate(key = factor(key, keys)) %>%
+  select(-n) %>%
+  spread(key, place)
+
+save(places, file = 'data/places.rds')
+```
+
+```{r places-load}
+load('data/places.rds')
+```
+
+The table below presents the top-placing birds in the 2019 election using the IR method, and those birds' places under the other preference aggregation methods described above.
+The kākāpō was actually the Condorcet winner; it would have beaten every other bird in a head-to-head plurality vote.
+Nevertheless the IR method crowned the yellow-eyed penguin, as would have the approval-based system and a simple plurality vote.
+
+```{r place-table}
+places %>%
+  arrange(IR) %>%
+  head(10) %>%
+  kable(align = 'lcccc',
+        col.names = c('Bird', paste(names(.)[2:length(names(.))], 'place')))
+```
+
+The figure below compares all candidate birds' places using the IR method to their places obtained using the alternative methods.
+The IR method delivers results most similar to a plurality vote and least similar to Copeland's method, as shown by the relative deviations of points from the 45-degree line.
+These patterns suggest that voters' second through fifth choices for Bird of the Year didn't affect the 2019 election outcome materially.
+
+```{r comparison}
+places %>%
+  gather(key, value, -bird, -IR) %>%
+  mutate(key = factor(key, keys[2:length(keys)])) %>%
+  ggplot(aes(IR, value)) +
+  geom_point() +
+  facet_wrap(~key) +
+  labs(x = 'Place under instant-runoff',
+       y = 'Place under alt. method',
+       title = 'Comparing preference aggregation methods',
+       subtitle = 'Instant-runoff delivers results most similar to a plurality vote') +
+  coord_cartesian(clip = 'off') +
+  scale_x_continuous(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) +
+  theme(panel.spacing.x = unit(1, 'line'))
+```
+
+```{r session-info, echo = F}
+bldr::save_session_info()
+```
