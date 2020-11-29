@@ -9,13 +9,12 @@
 body {
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
+  background-color: #fafafa;
   color: #222;
   font-family: -apple-system, helvetica, arial, sans-serif;
   font-size: 16px;
   line-height: 1.5;
   margin: auto;
-  max-width: 100vw;
-  width: calc(600px + 2rem);
 }
 
 a {
@@ -52,6 +51,10 @@ code {
   padding: 0.2rem 0.4rem;
 }
 
+footer {
+  border-top: 1px solid #ddd;
+}
+
 h1,
 h2,
 h3 {
@@ -70,6 +73,10 @@ h2 {
 
 h3 {
   font-size: 1.25rem;
+}
+
+header {
+  border-bottom: 1px solid #ddd;
 }
 
 hr {
@@ -137,6 +144,12 @@ table th {
   margin-bottom: 2rem;
 }
 
+.content {
+  margin: 0 auto;
+  max-width: 100vw;
+  width: calc(600px + 2rem);
+}
+
 .container {
   margin: 0 1rem;
 }
@@ -153,15 +166,12 @@ table th {
 }
 
 .main {
+  background-color: white;
   min-height: calc(100vh - 3.5rem - 3.2rem - 0.2rem);
 }
 
 
 /* Header, footer and footnotes */
-
-.header {
-  border-bottom: 1px solid #ddd;
-}
 
 .header a {
   border: none;
@@ -177,7 +187,6 @@ table th {
 
 .footer {
   color: #888;
-  border-top: 0.1rem solid #ddd;
   font-size: 80%;
   text-align: center;
 }
