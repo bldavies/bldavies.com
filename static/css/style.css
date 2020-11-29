@@ -219,8 +219,7 @@ table th {
 }
 
 .rounded-link {
-  background-color: #f0f0f0;
-  border: none;
+  border: 1px solid #ddd;
   border-radius: 0.25rem;
   display: inline-block;
   font-size: 80%;
@@ -230,8 +229,7 @@ table th {
 }
 
 .rounded-link:hover {
-  border: none;
-  background-color: #ddd;
+  background-color: #f8f8f8;
   text-decoration: none;
 }
 
