@@ -8,7 +8,8 @@
   {{ if .preprint }}<a class="rounded-link" href="{{ .preprint }}">preprint</a>{{ end }}
   {{ if .dataCode }}<a class="rounded-link" href="{{ .dataCode }}">data/code</a>{{ end }}
   {{ if .abstract }}
-    <a href="javascript:toggle_abstract('{{ .id }}')" id="{{ .id }}-abstract-toggle" class="rounded-link">abstract [+]</a>
+    <a href="javascript:toggle_abstract('{{ .id }}')" id="{{ .id }}-abstract-toggle" class="rounded-link" style="display: none">abstract [+]</a>
+    <script>show_abstract_toggle('{{ .id }}')</script>
     <div id="{{ .id }}-abstract" class="abstract" style="display: none">{{ .abstract }}</div>
   {{ end }}
 </p>
