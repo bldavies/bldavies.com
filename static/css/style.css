@@ -203,6 +203,13 @@ table th {
 
 /* Blog and research pages */
 
+.abstract {
+  background-color: #f8f8f8;
+  border: 1px solid #ddd;
+  font-size: 90%;
+  padding: 0.5rem;
+}
+
 .page-index {
   list-style: none;
   padding: 0;
