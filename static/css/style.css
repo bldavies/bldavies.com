@@ -200,6 +200,15 @@ table th {
   display: none;
 }
 
+/* Home page */
+
+#portrait {
+  border-radius: 1rem;
+  box-shadow: 0 0.25rem 0.25rem 0 #ddd;
+  margin-top: 2rem;
+  width: 240px;
+}
+
 
 /* Blog and research pages */
 
