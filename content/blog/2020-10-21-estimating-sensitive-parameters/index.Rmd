@@ -7,7 +7,7 @@ Suppose some proportion $\theta$ of the population engages in a socially undesir
 We want to estimate $\theta$, but can't ask people directly because they may fear penalities from incriminating themselves.
 
 One solution to this problem is as follows.
-Suppose there is another characteristic that people don't mind reporting and for which we know the population prevalence---say, whether they are right-handed.
+Choose another characteristic that people don't mind reporting and for which we know the population prevalence---say, whether they are right-handed.
 Let $\alpha$ be the (assumedly known) proportion of the population with this characteristic.
 Sample $n$ people, and give them the following instructions:
 
