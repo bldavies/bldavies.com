@@ -1,6 +1,7 @@
 ---
 title: White elephant gift exchanges
 topics: [games]
+loadMathJax: no
 linkSource: yes
 ---
 
@@ -18,18 +19,16 @@ Therefore, any strategy I adopt must account for uncertainty both in wrapped gif
 One strategy could be to always steal the unwrapped gift with the highest subjective value.
 This strategy is risky because my subjective valuations might correlate with those of other players, making it more likely I will become a victim of theft.
 I could hedge this risk by instead always stealing the unwrapped gift with the *second* highest subjective value (unless I'm the last player, in which case I would be better off stealing the most subjectively valuable gift because it can't be re-stolen).
-Alternatively, I could play as a pacifist and never steal.
+Alternatively, I could play as a pacifist and never steal (unless I'm the last player).
 
 I compare these three strategies---greediness, hedged greediness, and pacifism---via simulation.
 I assume gifts' subjective values are determined as the mean of two [standard uniform](https://en.wikipedia.org/wiki/Uniform_distribution_(continuous)#Standard_uniform) random variables: one describing an underlying value common to all players, and one describing an idiosyncratic component unique to each player.
 I simulate 1000 games among 30 players, randomising the strategies adopted by each player in each game.
 
 For each simulated game, I compute the subjective value of the gift in each player's possession when the exchange ends.
-I also use the [Gale-Shapley algorithm](https://en.wikipedia.org/wiki/Gale%E2%80%93Shapley_algorithm) to identify the equilibrium allocation that maximises aggregate (i.e., the sum of) subjective values.[^gale-shapley]
-I refer to the subjective values of the final gift allocations in this equilibrium as the "Gale-Shapley baseline", which I use to compare strategies' tendencies to deliver socially optimal allocations.
+I also compute the allocation that maximises aggregate (i.e., the sum of) subjective values.
+I refer to the subjective values in this allocation as "efficiency baselines," and use them to compare strategies' tendencies to deliver socially optimal allocations.
 I summarise my simulation results in the plot below.
-
-[^gale-shapley]: Under this allocation, every gift goes to the player who subjectively values that gift the most, provided there are no other gifts to which that player ascribes a higher subjective value.
 
 ![](figures/plot-1.svg)
 
@@ -45,20 +44,18 @@ This adjustment shifts the disadvantage to the second player, who, in the game's
 Giving more players a second turn could improve the final gift allocation by giving early players a larger choice set.
 
 The table below shows how the efficiency and equity of the final gift allocation varies with the number of early players given a second turn.
-I measure efficiency by the ratio of aggregate subjective values to aggregate Gale-Shapley baselines.
+I measure efficiency by the ratio of aggregate subjective values to aggregate efficiency baselines.
 I define equity as one minus the [Gini coefficient](https://en.wikipedia.org/wiki/Gini_coefficient) for the distribution of subjective values.
-The table reports 95% confidence intervals across 1000 simulated games.[^riskless]
-
-[^riskless]: I assume that, in the last round, all players---even pacifists---always steal the most subjectively valuable gift possible because there is no risk of that gift being re-stolen.
+The table reports 95% confidence intervals across 1000 simulated games.
 
 | Players given second turn | Efficiency (%) | Equity (%) |
 |:-------------------------:|:--------------:|:----------:|
-|             0             |   86.6 ± 0.2   | 80.3 ± 0.2 |
-|             1             |   91.6 ± 0.2   | 83.0 ± 0.2 |
-|             2             |   91.5 ± 0.2   | 82.8 ± 0.2 |
-|             3             |   91.4 ± 0.2   | 82.7 ± 0.2 |
-|             4             |   91.4 ± 0.2   | 82.6 ± 0.2 |
-|             5             |   91.1 ± 0.2   | 82.4 ± 0.2 |
+|             0             |   83.9 ± 0.2   | 80.3 ± 0.2 |
+|             1             |   88.8 ± 0.2   | 83.0 ± 0.2 |
+|             2             |   88.7 ± 0.2   | 82.8 ± 0.2 |
+|             3             |   88.6 ± 0.2   | 82.7 ± 0.2 |
+|             4             |   88.6 ± 0.2   | 82.6 ± 0.2 |
+|             5             |   88.3 ± 0.2   | 82.4 ± 0.2 |
 
 Giving the first player a second turn makes the final allocation more efficient and more equitable.
 That player gets a chance to improve upon their initial endowment, and subsequent victims get a chance to reconsider their choices with more information about the distribution of gifts' subjective values.
