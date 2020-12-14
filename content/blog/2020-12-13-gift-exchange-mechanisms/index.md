@@ -25,7 +25,7 @@ Third, it is [core-stable](https://en.wikipedia.org/wiki/Core_(game_theory)): no
 However, the TTC algorithm may not deliver the allocation that maximizes the sum of gifts' subjective values.
 This allocation corresponds to a [maximum-weight matching](https://en.wikipedia.org/wiki/Maximum_weight_matching) in the bipartite graph connecting people to gifts, with each edge's weight equal to the incident player's subjective value of the incident gift.[^practice]
 
-[^practice]: The maximum-weight matching is hard to find in practice because it requires complete information about peoples' preferences. In contrast, white elephant games and the TTC algorithm illicit peoples' preferences by asking them to choose explicitly which gifts they want.
+[^practice]: The maximum-weight matching is hard to find in practice because it requires complete information about peoples' preferences. In contrast, white elephant games and the TTC algorithm elicit peoples' preferences by asking them to choose explicitly which gifts they want.
 
 The chart below compares the mean subjective value of the gifts allocated using a game of white elephant, using the TTC algorithm, and by finding a maximum-weight matching.
 I compute these allocations as follows.
