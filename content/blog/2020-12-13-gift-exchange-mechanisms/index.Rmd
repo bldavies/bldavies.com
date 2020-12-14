@@ -1,0 +1,359 @@
+---
+title: Gift exchange mechanisms
+topics: [games, matching]
+---
+
+```{r setup, echo = F, message = F, warning = F}
+library(dplyr)
+library(ggplot2)
+library(igraph)
+library(knitr)
+library(purrr)
+library(tidyr)
+
+opts_chunk$set(echo = F, message = F, warning = F,
+               fig.width = 6, fig.height = 3, dpi = 100,
+               dev = 'svg', fig.ext = 'svg')
+
+bldr::set_ggtheme()
+```
+
+```{r get_n}
+get_n = function(V) {
+  if (!is.matrix(V) | dim(V)[1] != dim(V)[2]) {
+    stop('V must be a square matrix')
+  }
+  dim(V)[1]
+}
+```
+
+```{r get_rejections}
+get_rejections = function(rej_list) {
+  n = length(rej_list)
+  map(1:n, ~colSums(pmin(rej_list[[.]], 1))) %>%
+    unlist() %>%
+    matrix(nrow = n, byrow = T) %>%  # = How many gifts does person i reveal are better than gift j?
+    colSums()
+}
+```
+
+```{r get_we_results}
+get_we_results = function(V, max_steals = NULL) {
+  
+  # Initialize output
+  n = get_n(V)
+  if (is.null(max_steals)) max_steals = n
+  allocs = rep(0, n)
+  rej_list = map(1:n, ~matrix(rep(0, n ^ 2), n))
+  
+  # Iterate until all gifts allocated
+  steals = rep(0, n)
+  allocs[1] = 1
+  k = 2
+  while (k <= n) {
+    
+    # Identify player and available gifts
+    p = k
+    avail = which(steals[1:(k-1)] < max_steals)
+    
+    # Iterate until someone unwraps a new gift
+    while (max(allocs) < k) {
+      if (length(avail) > 0) {  # Must be something available to steal
+        
+        # Select most valuable unwrapped gift
+        target = avail[which.max(V[p, avail])]
+        
+        # Implement rational greedy strategy
+        if (V[p, target] > 0.5) {
+          
+          # Update rejection counts
+          rej_list[[p]][target, ] = rej_list[[p]][target, ] + 1 * (1:n %in% avail & 1:n != target)
+          
+          # Process theft
+          steals[target] = steals[target] + 1
+          victim = which(allocs == target)
+          allocs[p] = target
+          avail = avail[-which(avail == target)]  # Target can't be stolen again this round
+          allocs[victim] = 0
+          p = victim
+        } else {
+          allocs[p] = k
+        }
+      } else {
+        allocs[p] = k
+      }
+    }
+    
+    # Increment player index
+    k = k + 1
+  }
+  
+  # Return results
+  list(allocations = allocs, rejections = get_rejections(rej_list))
+}
+```
+
+```{r get_ttc_results}
+get_ttc_results = function(V) {
+  
+  # Initialize output
+  n = get_n(V)
+  allocs = rep(0, n)
+  rej_list = map(1:n, ~matrix(rep(0, n ^ 2), n))
+  
+  # Iterate until all agents allocated
+  EV = V  # "Effective" valuations
+  while (sum(allocs == 0) > 0) {
+    
+    # Determine choices
+    choices = apply(EV, 1, which.max)
+    choices[allocs] = NA
+    
+    # Update rejection counts
+    for (p in which(allocs == 0)) {
+      rej_list[[p]][choices[p], ] = rej_list[[p]][choices[p], ] + + 1 * (!1:n %in% allocs & 1:n != choices[p])
+    }
+    
+    # Identify and process cycles (orbits of period k = 1:n)
+    k = 1
+    xk = choices
+    while (k <= n & sum(!is.na(xk)) >= k) {
+      
+      # Find orbits with period k
+      orbit_starts = which(xk == 1:n)
+      
+      # Iterate over orbits
+      while (sum(!orbit_starts %in% allocs) > 0) {
+        
+        # Identify agents in orbit
+        tmp = orbit_starts[1]
+        orbit = vector('integer', k)
+        for (i in 1:k) {
+          orbit[i] = tmp
+          tmp = choices[tmp]
+        }
+        
+        # Process allocations
+        allocs[orbit] = choices[orbit]
+        choices[orbit] = NA
+        
+        # Remove allocated agents from orbit start set
+        orbit_starts = orbit_starts[-which(orbit_starts %in% allocs)]
+      }
+      
+      # Identify agents who cannot be in an orbit
+      choices[which(choices %in% allocs)] = NA
+      
+      # Increment orbit length
+      k = k + 1
+      xk = choices[xk]
+    }
+    
+    # Update valuation matrix to remove allocated items
+    EV[allocs,] = -1
+    EV[,allocs] = -1
+  }
+  
+  # Return results
+  list(allocations = allocs, rejections = get_rejections(rej_list))
+}
+```
+
+```{r get_mbm_results}
+get_mbm_results = function(V) {
+  n = get_n(V)
+  G = igraph::graph_from_incidence_matrix(V, weighted = T)
+  m = igraph::max_bipartite_match(G, rep(c(T, F), each = n))
+  list(allocations = m$matching[1:n] - n)
+}
+```
+
+```{r get_valuation_matrix}
+get_valuation_matrix = function(rho, n = 10) {
+  V_common = matrix(rep(runif(n), each = n), ncol = n)
+  V_subj = matrix(runif(n ^ 2), ncol = n)
+  rho * V_common + (1 - rho) * V_subj  # Rows = people, cols = items
+}
+```
+
+```{r get_values}
+get_values = function(V, allocs) {
+  n = get_n(V)
+  purrr::map_dbl(1:n, ~V[., allocs[.]])
+}
+```
+
+```{r mechanisms}
+mechanisms = c('White elephant', 'Top trading cycles', 'Maximum-weight match')
+```
+
+```{r get_data}
+get_data = function(rho, n = 10) {
+  V = get_valuation_matrix(rho, n)
+  we = get_we_results(V)
+  ttc = get_ttc_results(V)
+  mbm = get_mbm_results(V)
+  tibble::tibble(
+    person = 1:n,
+    allocation.1 = we$allocations,
+    subj_value.1 = get_values(V, we$allocations),
+    n_rejections.1 = we$rejections[we$allocations],
+    allocation.2 = ttc$allocations,
+    subj_value.2 = get_values(V, ttc$allocations),
+    n_rejections.2 = ttc$rejections[ttc$allocations],
+    allocation.3 = mbm$allocations,
+    subj_value.3 = get_values(V, mbm$allocations)
+  ) %>%
+    gather(key, value, -person) %>%
+    separate(key, c('key', 'Mechanism'), sep = '[.]') %>%
+    spread(key, value) %>%
+    mutate(Mechanism = mechanisms[as.integer(Mechanism)])
+}
+```
+
+```{r nN}
+n = 30
+N = 100
+```
+
+```{r corr_inv}
+corr = function(x) 1 / (1 + ((1 - x) / x) ^ 2)
+
+corr_inv = function(x, tol = 1e-4) {
+  sapply(x, function(y) {
+    if (abs(y) < tol) {
+      0
+    } else {
+       1 / (1 + sqrt((1 - y) / y))
+    }
+  })
+}
+```
+
+```{r df, eval = F}
+rho_values = corr_inv(seq(corr(0), corr(1), length.out = 21))
+
+set.seed(0)
+df = crossing(realization = 1:N, rho = rho_values) %>%
+  mutate(df = map(rho, ~get_data(., n = n))) %>%
+  unnest('df')
+```
+
+```{r df-cache}
+cache_path = 'data/df.rds'
+# save(df, file = cache_path)
+load(cache_path)
+```
+
+Last December [I compared strategies for playing white elephant](/blog/white-elephant-gift-exchanges/), a game in which people take turns either unwrapping a gift or stealing a previously unwrapped gift.
+It turned out that players' best strategy was to be "greedy" by stealing the most subjectively valuable unwrapped gift.
+Intuitively, this strategy helps players obtain the gift they want most, provided no other players also want that gift and steal it later in the game.
+
+White elephant exchanges are a fun, but not necessarily optimal, way to match people with gifts.
+Another way is to use the [top trading cycle](https://en.wikipedia.org/wiki/Top_trading_cycle) (TTC) algorithm:
+
+1. Give everyone a random unwrapped gift.
+2. Ask everyone to point at the most subjectively valuable gift (which may be their own).
+3. If there is a closed cycle of people pointing at each others' gifts, give everyone in that cycle the gift at which they're pointing, and remove those people and gifts from consideration.
+4. If there are no gifts remaining then stop. Otherwise, return to step 2.
+
+The allocation delivered by this algorithm has several desirable properties.
+First, it is [Pareto-efficient](https://en.wikipedia.org/wiki/Pareto_efficiency): every cycle identifies a mutually beneficial exchange, and the algorithm stops when no such exchanges remain.
+Second, it is [strategy-proof](https://en.wikipedia.org/wiki/Strategyproofness): people cannot get better gifts by lying about their preferences (see [Roth, 1982](https://doi.org/10.1016/0165-1765(82)90003-9)).
+Third, it is [core-stable](https://en.wikipedia.org/wiki/Core_(game_theory)): no group of people can cooperate to improve their allocations, for otherwise they would have formed a cycle before the algorithm stopped.
+
+However, the TTC algorithm may not deliver the allocation that maximizes the sum of gifts' subjective values.
+This allocation corresponds to a [maximum-weight matching](https://en.wikipedia.org/wiki/Maximum_weight_matching) in the bipartite graph connecting people to gifts, with each edge's weight equal to the incident player's subjective value of the incident gift.[^practice]
+
+[^practice]: The maximum-weight matching is hard to find in practice because it requires complete information about peoples' preferences. In contrast, white elephant games and the TTC algorithm illicit peoples' preferences by asking them to choose explicitly which gifts they want.
+
+The chart below compares the mean subjective value of the gifts allocated using a game of white elephant, using the TTC algorithm, and by finding a maximum-weight matching.
+I compute these allocations as follows.
+First, I define person $i$'s subjective value of gift $j$ as
+$$V_{ij}=\rho X_j+(1-\rho)Y_{ij},$$
+where $X_i$ and $Y_{ij}$ are iid uniformly distributed on the unit interval.
+The parameter $\rho$ determines the correlation of gifts' subjective values across people: if $\rho=0$ then everyone's valuations are independent, whereas if $\rho=1$ then everyone has the same valuation of each gift.
+For a range of $\rho$ values, I simulate `r N` valuation sets $\{V_{ij}:i,j\in\{1,2,\ldots,`r n`\}\}$, and apply each gift exchange mechanism to each set.
+In the white elephant games, I assume all players adopt the greedy strategy described above unless the best unwrapped gift has subjective value less than $\mathrm{E}[V_{ij}]=0.5$, in which case players unwrap a new gift.
+
+```{r sums}
+df %>%
+  count(realization, rho, Mechanism, wt = subj_value / n) %>%
+  mutate(Mechanism = factor(Mechanism, mechanisms)) %>%
+  group_by(rho, Mechanism) %>%
+  summarise(mean = mean(n),
+            sd = sd(n),
+            n = n()) %>%
+  ungroup() %>%
+  mutate(ci_radius = qt(1 - 0.05 / 2, n - 1) * sd / sqrt(n)) %>%
+  ggplot(aes(corr(rho))) +
+  geom_ribbon(aes(ymin = mean - ci_radius, ymax = mean + ci_radius, fill = Mechanism), alpha = 0.5) +
+  geom_line(aes(y = mean, col = Mechanism)) +
+  labs(x = 'Correlation of gifts\' subjective values across people',
+       y = 'Mean subjective value',
+       title = 'Mean subjective value of allocated gifts',
+       subtitle = paste('Means and 95% CIs across', N, 'simulated exchanges with', n, 'people')) +
+  guides(fill = guide_legend(title.hjust = 1, label.position = 'left')) +
+  coord_cartesian(clip = 'off') +
+  scale_x_continuous(expand = c(0, 0), limits = c(0, 1), labels = c(0, 0.25, 0.5, 0.75, 1)) +
+  scale_y_continuous(expand = c(0, 0)) +
+  scale_fill_brewer(palette = 'Set1') +
+  scale_colour_brewer(palette = 'Set1') +
+  theme(legend.justification = c(1, 1),
+        legend.position = c(1, 1))
+```
+
+All three gift exchange mechanisms get worse as gifts' subjective values become more correlated.
+Intuitively, as the correlation increases, there are fewer Pareto-improving trades and so people get stuck with their random endowments.[^random]
+The allocations delivered via white elephant games and the TTC algorithm have similar allocative efficiencies, even though white elephant players can't assign subjective values to gifts until they are unwrapped.
+
+[^random]: In white elephant games, the randomness comes from the order in which people take their turns choosing whether to unwrap or steal.
+
+Yet white elephant games are much more popular at Christmas parties than the TTC algorithm.
+One explanation could be that the algorithm tends to reveal a lot of information about peoples' preferences and, in particular, may make people more upset about contributing a gift no-one wants.
+I justify this claim in the following chart, which plots the number of times someone rejects each gift for another in my simulated exchanges.
+For example, I add one to gift A's rejection count if
+
+1. a white elephant player could steal gift A but instead steals gift B, or
+2. I'm running the TTC algorithm and someone could point at gift A but instead points at gift B.
+
+Intuitively, these rejection events reveal that gift A has subjectively lower value than other gifts, and the more often this happens the more likely is the person who contributed gift A to feel bad about their contribution.
+
+```{r rejections}
+df %>%
+  filter(Mechanism != mechanisms[3]) %>%
+  count(realization, rho, Mechanism, wt = n_rejections / n) %>%
+  group_by(rho, Mechanism) %>%
+  summarise(mean = mean(n),
+            sd = sd(n),
+            n = n()) %>%
+  ungroup() %>%
+  mutate(ci_radius = qt(1 - 0.05 / 2, n - 1) * sd / sqrt(n)) %>%
+  ggplot(aes(corr(rho), mean)) +
+  geom_ribbon(aes(ymin = mean - ci_radius, ymax = mean + ci_radius, fill = Mechanism), alpha = 0.5) +
+  geom_line(aes(col = Mechanism)) +
+  labs(x = 'Correlation of gifts\' subjective values across people',
+       y = 'Rejections per gift',
+       title = 'Rejections during gift exchanges',
+       subtitle = paste('Means and 95% CIs across', N, 'simulated exchanges with', n, 'people')) +
+  coord_cartesian(clip = 'off') +
+  scale_x_continuous(expand = c(0, 0), limits = c(0, 1), labels = c(0, 0.25, 0.5, 0.75, 1)) +
+  scale_y_continuous(expand = c(0, 0), limits = c(0, NA)) +
+  scale_fill_brewer(palette = 'Set1') +
+  scale_colour_brewer(palette = 'Set1') +
+  theme(legend.justification = c(0.01, 0.99),
+        legend.position = c(0.01, 0.99))
+```
+
+Most Christmas parties set a target amount to be spent on each gift, so---to the extent that cost correlates positively with value---the empirically relevant region of the chart is where the correlation of subjective values is high.
+In this region, running the TTC algorithm tends to generate many more rejection events than running a game of white elephant.
+Intuitively, if the correlation of subjective values is high then people will tend to all point at the same gifts, there will be fewer cycles, more iterations will be required before the TTC algorithm stops, and hence the algorithm will force people to reveal more about their preferences as the market slowly clears.
+On the other hand, the unobservability of wrapped gifts' subjective values means that white elephant players have fewer opportunities to reveal their preferences, regardless of whether those preferences are shared by other players.
+
+---
+
+*Thanks for Mohamad Adhami, Nick Cao, and Spencer Pantoja for commenting on a draft version of this post.*
+
+```{r session-info, echo = F}
+bldr::save_session_info()
+```
