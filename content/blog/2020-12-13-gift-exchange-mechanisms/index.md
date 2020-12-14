@@ -36,7 +36,7 @@ The parameter `\(\rho\)` determines the correlation of gifts' subjective values 
 For a range of `\(\rho\)` values, I simulate 100 valuation sets `\(\{V_{ij}:i,j\in\{1,2,\ldots,30\}\}\)`, and apply each gift exchange mechanism to each set.
 In the white elephant games, I assume all players adopt the greedy strategy described above unless the best unwrapped gift has subjective value less than `\(\mathrm{E}[V_{ij}]=0.5\)`, in which case players unwrap a new gift.
 
-![](figures/sums-1.svg)
+![](figures/means-1.svg)
 
 All three gift exchange mechanisms get worse as gifts' subjective values become more correlated.
 Intuitively, as the correlation increases, there are fewer Pareto-improving trades and so people get stuck with their random endowments.[^random]

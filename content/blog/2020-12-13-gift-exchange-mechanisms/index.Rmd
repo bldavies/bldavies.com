@@ -276,7 +276,7 @@ The parameter $\rho$ determines the correlation of gifts' subjective values acro
 For a range of $\rho$ values, I simulate `r N` valuation sets $\{V_{ij}:i,j\in\{1,2,\ldots,`r n`\}\}$, and apply each gift exchange mechanism to each set.
 In the white elephant games, I assume all players adopt the greedy strategy described above unless the best unwrapped gift has subjective value less than $\mathrm{E}[V_{ij}]=0.5$, in which case players unwrap a new gift.
 
-```{r sums}
+```{r means}
 df %>%
   count(realization, rho, Mechanism, wt = subj_value / n) %>%
   mutate(Mechanism = factor(Mechanism, mechanisms)) %>%
