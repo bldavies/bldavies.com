@@ -18,7 +18,7 @@ Another way is to use the [top trading cycle](https://en.wikipedia.org/wiki/Top_
 4. If there are no gifts remaining then stop. Otherwise, return to step 2.
 
 The allocation delivered by this algorithm has several desirable properties.
-First, it is [Pareto-efficient](https://en.wikipedia.org/wiki/Pareto_efficiency): every cycle identifies a mutually beneficial exchange, and the algorithm stops when no such exchanges remain.
+First, it is [Pareto efficient](https://en.wikipedia.org/wiki/Pareto_efficiency): every cycle identifies a mutually beneficial exchange, and the algorithm stops when no such exchanges remain.
 Second, it is [strategy-proof](https://en.wikipedia.org/wiki/Strategyproofness): people cannot get better gifts by lying about their preferences (see [Roth, 1982](https://doi.org/10.1016/0165-1765(82)90003-9)).
 Third, it is [core-stable](https://en.wikipedia.org/wiki/Core_(game_theory)): no group of people can cooperate to improve their allocations, for otherwise they would have formed a cycle before the algorithm stopped.
 
@@ -63,5 +63,5 @@ On the other hand, the unobservability of wrapped gifts' subjective values means
 
 ---
 
-*Thanks for Mohamad Adhami, Nick Cao, and Spencer Pantoja for commenting on a draft version of this post.*
+*Thanks to Mohamad Adhami, Nick Cao, and Spencer Pantoja for commenting on a draft version of this post.*
 
