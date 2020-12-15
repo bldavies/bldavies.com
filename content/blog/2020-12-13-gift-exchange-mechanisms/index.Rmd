@@ -322,6 +322,7 @@ Intuitively, these rejection events reveal that gift A has subjectively lower va
 ```{r rejections}
 df %>%
   filter(Mechanism != mechanisms[3]) %>%
+  mutate(Mechanism = factor(Mechanism, mechanisms)) %>%
   count(realization, rho, Mechanism, wt = n_rejections / n) %>%
   group_by(rho, Mechanism) %>%
   summarise(mean = mean(n),
