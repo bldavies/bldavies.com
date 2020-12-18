@@ -1,0 +1,144 @@
+---
+title: Auctioning vaccines
+topics: [networks]
+loadMathJax: no
+---
+
+```{r setup, echo = F, message = F, warning = F}
+library(bldr)
+library(dplyr)
+library(ggraph)
+library(igraph)
+library(knitr)
+library(tidygraph)
+
+opts_chunk$set(echo = F, message = F, warning = F,
+               fig.width = 6, fig.height = 3, fig.ext = 'svg', dev = 'svg')
+
+bldr::set_ggtheme()
+```
+
+[Pancs (2020)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3746231) proposes an auction for vaccines in which people can bid on others' behalf.
+This format allows people to internalize the externalities they enjoy from their peers being vaccinated.
+
+For example, suppose there are two vaccines to be allocated among agents A--H, who are connected socially via the network shown below.
+
+```{r main}
+# Define network
+A = matrix(c(0, 1, 0, 0, 0, 0, 0, 0,
+             1, 0, 1, 1, 1, 0, 0, 0,
+             0, 1, 0, 0, 1, 0, 0, 0,
+             0, 1, 0, 0, 1, 0, 0, 0,
+             0, 1, 1, 1, 0, 1, 0, 0,
+             0, 0, 0, 0, 1, 0, 1, 1,
+             0, 0, 0, 0, 0, 1, 0, 0,
+             0, 0, 0, 0, 0, 1, 0, 0), ncol = 8)
+n = dim(A)[1]
+G = graph_from_adjacency_matrix(A, mode = 'undirected') %>%
+  as_tbl_graph() %>%
+  mutate(agent = LETTERS[1:n])
+
+# Compute bids
+B = A + diag(1, n, n)
+B = 60 * B / rowSums(B)
+
+# Initialize vaccine count
+K = 2
+
+# Define function for computing allocation matrix
+get_X = function(B, K) {
+  n = dim(B)[1]
+  X = matrix(0, n, K)
+  y = colSums(B)
+  for (k in 1:K) {
+    r = which.max(y)  # r for recipient
+    X[r, k] = 1
+    y[r] = -1
+  }
+  X
+}
+
+# Compute allocation matrix
+X = get_X(B, K)
+
+# Who gets vaccines?
+recipients = LETTERS[apply(X, 2, which.max)]
+
+# Compute payments
+a = rep(1, K)
+p = rep(0, n)
+for (i in 1:n) {
+  Bi = B
+  Bi[i, ] = 0
+  Xi = get_X(Bi, K)
+  for (k in 1:K) {
+    for (j in 1:n) {
+      p[i] = p[i] + (Xi[j, k] - X[j, k]) * a[k] * (sum(B[, j]) - B[i, j])
+    }
+  }
+}
+
+# Compute surpluses
+surplus = -p
+for (i in 1:n) {
+  for (j in 1:n) {
+    for (k in 1:K) {
+      surplus[i] = surplus[i] + X[j, k] * a[k] * B[i, j]
+    }
+  }
+}
+
+# Prepare table data
+df = tibble(
+  Agent = LETTERS[1:n],
+  `Aggregate bid (\\$)` = colSums(B),
+  `Payment (\\$)` = p,
+  `Surplus (\\$)` = surplus
+)
+```
+
+```{r network}
+set.seed(0)
+G %>%
+  create_layout('stress') %>%
+  mutate(x = -x,
+         y = -y) %>%
+  ggraph() +
+  geom_edge_link0(colour = 'gray') +
+  geom_node_label(aes(label = agent)) +
+  labs(title = 'Social network among agents A\u2013H',
+       subtitle = 'Edges represent peer connections') +
+  coord_cartesian(clip = 'off')
+```
+
+Everyone submits bids totaling \$60, spread evenly among themselves and their peers.
+For example, agent A bids \$30 towards vaccinating themself and agent B, while agent B bids \$15 towards vaccinating themself and agents A, C, and D.
+Intuitively, agent A values vaccinating B highly because it protects A fully from viruses transmitted among agents C--H.
+In contrast, B has more peers and so values vaccinating any one of those peers less because it doesn't protect B fully from the rest of the network.
+
+The "aggregate bid" for each agent equals the sum of bids submitted towards that agent's vaccination.
+The agents with the highest aggregate bids receive the vaccines.
+In this example, agents B and F receive the vaccine, with aggregate bids equal to \$94 and \$87.
+
+Each agent receives surplus equal to their subjective valuation of the vaccine allocation minus their payment towards that allocation's provision.
+This payment equals the increase in aggregate surplus that other agents would receive if the agent's bids were ignored.
+Thus, the vaccine auction is a type of [Vickrey-Clarke-Groves (VCG) auction](https://en.wikipedia.org/wiki/Vickrey–Clarke–Groves_auction) in which each agent pays the harm they inflict on other agents.
+Consequently, the vaccine auction inherits the properties of VCG auctions; in particular, bids equal subjective valuations.
+This property makes it easy to compute pre-payment surpluses: simply sum each agent's bids towards vaccinated agents.
+
+The table below presents the aggregate bid for, payment made by, and surplus delivered to each agent under the optimal vaccine allocation.
+Agents B and F don't have to pay for the vaccines they receive because others are willing to pay on their behalf.
+Agent A pays \$15 because their bid towards vaccinating B shifts the optimal allocation away from E, which lowers F's surplus by \$15.
+Likewise, agents G and H pay because their preference to vaccinate F, rather than E, makes B--D worse off.
+
+```{r table}
+kable(df, align = 'c')
+```
+
+In this example, every agent wants to be vaccinated.
+But this common desire may not hold in reality: some people may prefer not to be vaccinated because they fear potential side-effects.
+Such people may refuse to participate in the auction, reducing social welfare by preventing some externalities from being internalized.
+
+```{r session-info}
+bldr::save_session_info()
+```
