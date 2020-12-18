@@ -135,8 +135,13 @@ Likewise, agents G and H pay because their preference to vaccinate F, rather tha
 kable(df, align = 'c')
 ```
 
-In this example, every agent wants to be vaccinated.
-But this common desire may not hold in reality: some people may prefer not to be vaccinated because they fear potential side-effects.
+This example departs from reality in two important ways.
+First, I assume each agent's bids sum to a constant (\$60).
+This assumption is obviously unrealistic: wealth inequality means some people can afford to submit higher bids than others, which may lead to inequitible vaccine allocations.
+Moreover, people may vary in their willingness to pay for vaccines independently of the variation in their wealths.
+
+Second, I assume every agent wants to be vaccinated.
+This common desire may not hold in reality: some people may prefer not to be vaccinated because they fear potential side-effects.
 Such people may refuse to participate in the auction, reducing social welfare by preventing some externalities from being internalized.
 
 ```{r session-info}
