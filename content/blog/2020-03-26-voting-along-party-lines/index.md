@@ -1,6 +1,6 @@
 ---
 title: Voting along party lines
-topics: [decision-making, politics]
+topics: [politics]
 linkSource: yes
 ---
 

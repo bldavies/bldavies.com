@@ -1,6 +1,6 @@
 ---
 title: "Aggregating preferences: Bird of the Year edition"
-topics: [decision-making]
+topics: [politics]
 loadMathJax: no
 ---
 

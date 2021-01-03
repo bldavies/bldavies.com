@@ -1,6 +1,6 @@
 ---
 title: Birds, voting, and Russian interference
-topics: [decision-making]
+topics: [politics]
 linkSource: yes
 ---
 
