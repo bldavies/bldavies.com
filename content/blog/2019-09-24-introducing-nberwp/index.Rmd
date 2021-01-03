@@ -1,6 +1,6 @@
 ---
 title: Introducing nberwp
-topics: [research, text mining]
+topics: [research]
 ---
 
 ```{r setup, echo = F, message = F}
