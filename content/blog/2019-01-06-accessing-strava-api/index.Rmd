@@ -1,6 +1,5 @@
 ---
 title: Accessing the Strava API with R
-topics: [sports]
 ---
 
 ```{r setup, include = FALSE}
