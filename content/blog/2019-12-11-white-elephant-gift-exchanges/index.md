@@ -1,6 +1,6 @@
 ---
 title: White elephant gift exchanges
-topics: [games]
+topics: [economics]
 loadMathJax: no
 linkSource: yes
 ---

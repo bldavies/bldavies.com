@@ -1,6 +1,6 @@
 ---
 title: COVID-19, lockdown and two-sided uncertainty
-topics: [decision-making, politics]
+topics: [decision-making, economics, politics]
 linkSource: yes
 ---
 

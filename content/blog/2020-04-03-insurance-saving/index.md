@@ -1,6 +1,6 @@
 ---
 title: Insurance and saving
-topics: [microeconomics]
+topics: [economics]
 loadMathJax: yes
 ---
 

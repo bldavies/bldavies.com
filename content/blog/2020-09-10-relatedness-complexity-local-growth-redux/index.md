@@ -1,6 +1,6 @@
 ---
 title: Relatedness, complexity and local growth redux
-topics: [labour markets]
+topics: [economics]
 ---
 
 "Relatedness, Complexity and Local Growth," co-authored with [Dave Maré](https://motu.nz/about-us/people/dave-mare/) while I worked at [Motu](https://motu.nz), has undergone peer review.

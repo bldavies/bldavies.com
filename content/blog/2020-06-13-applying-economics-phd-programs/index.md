@@ -1,6 +1,6 @@
 ---
 title: Applying to economics PhD programs
-topics: [education, research]
+topics: [economics, education, research]
 ---
 
 Last year I applied to several economics PhD programs at elite universities and business schools.

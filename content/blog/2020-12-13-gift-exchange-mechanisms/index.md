@@ -1,6 +1,6 @@
 ---
 title: Gift exchange mechanisms
-topics: [games, matching]
+topics: [economics]
 linkSource: yes
 loadMathJax: yes
 ---

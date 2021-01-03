@@ -1,6 +1,6 @@
 ---
 title: Policymaking under uncertainty
-topics: [decision-making, politics]
+topics: [decision-making, economics, politics]
 ---
 
 [The COVID-19 pandemic](https://en.wikipedia.org/wiki/COVID-19_pandemic) exposes policymakers to several sources of uncertainty:

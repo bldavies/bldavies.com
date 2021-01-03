@@ -1,6 +1,6 @@
 ---
 title: Gift exchange mechanisms
-topics: [games, matching]
+topics: [economics]
 ---
 
 ```{r setup, echo = F, message = F, warning = F}

@@ -1,6 +1,6 @@
 ---
 title: Auctioning vaccines
-topics: [networks]
+topics: [economics, networks]
 loadMathJax: no
 ---
 
