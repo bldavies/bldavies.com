@@ -1,6 +1,6 @@
 ---
 title: Estimating sensitive parameters
-topics: [probability, statistics]
+topics: [statistics]
 ---
 
 Suppose some proportion $\theta$ of the population engages in a socially undesirable activity---say, evading taxes.

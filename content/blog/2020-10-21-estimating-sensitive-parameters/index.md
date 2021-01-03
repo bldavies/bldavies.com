@@ -1,6 +1,6 @@
 ---
 title: Estimating sensitive parameters
-topics: [probability, statistics]
+topics: [statistics]
 loadMathJax: yes
 ---
 

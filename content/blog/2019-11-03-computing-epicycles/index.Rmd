@@ -1,6 +1,6 @@
 ---
 title: Computing epicycles
-topics: [approximation]
+topics: [mathematics]
 ---
 
 ```{r setup, echo = FALSE, message = F, warning = F}

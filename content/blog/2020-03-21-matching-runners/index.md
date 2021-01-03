@@ -1,6 +1,6 @@
 ---
 title: Matching runners
-topics: [matching, optimisation, running]
+topics: [matching, running]
 loadMathJax: yes
 ---
 
