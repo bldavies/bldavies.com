@@ -1,0 +1,149 @@
+---
+title: Ordinary and total least squares
+topics: [statistics]
+---
+
+```{r setup, echo = F, message = F, warning = F}
+library(bldr)
+library(dplyr)
+library(ggplot2)
+library(knitr)
+library(purrr)
+library(tidyr)
+
+opts_chunk$set(echo = F, message = F, warning = F,
+               fig.width = 6, fig.height = 4, dpi = 100,
+               fig.ext = 'svg', dev = 'svg')
+
+set_ggtheme()
+```
+
+Suppose $X$ and $Y$ are random variables with
+$$\DeclareMathOperator{\E}{E}
+\DeclareMathOperator{\Cov}{Cov}
+\DeclareMathOperator{\Var}{Var}
+\newcommand{\abs}[1]{\lvert#1\rvert}
+Y=\beta X+u,$$
+where $u$ has zero mean and zero correlation with $X$.
+The coefficient $\beta$ can be estimated by collecting data $(Y_i,X_i)_{i=1}^n$ and regressing the $Y_i$ on the $X_i$.
+Now suppose our data collection procedure is flawed: instead of observing $X_i$, we observe $Z_i=X_i+v_i$, where the $v_i$ are iid with zero mean and zero correlation with the $X_i$.
+Then the ordinary least squares (OLS) estimate $\hat\beta_{\text{OLS}}$ of $\beta$ obtained by regressing the $Y_i$ on the $Z_i$ suffers from [attenuation bias](https://en.wikipedia.org/wiki/Regression_dilution):
+$$\begin{align*}
+\DeclareMathOperator*{\plim}{plim}
+\plim_{n\to\infty}\hat\beta_{\text{OLS}}
+&=\frac{\Cov(Y,Z)}{\Var(Z)} \\
+&=\frac{\Cov(\beta X+u,X+v)}{\Var(X+v)} \\
+&= \frac{\beta\Var(X)}{\Var(X)+\Var(v)} \\
+&= \frac{\beta}{1+\Var(v)/\Var(X)}
+\end{align*}$$
+and so $\abs{\hat\beta_{\text{OLS}}}<\abs{\beta}$ asympotically whenever $\Var(v)>0$.
+Intuitively, the measurement errors $v_i$ spread out the independent variable, flattening the fitted regression line.
+
+```{r example-data}
+n = 12
+set.seed(0)
+x = runif(n, -1, 1)
+u = rnorm(n)
+v = rnorm(n)
+y = x + u
+z = x + v
+
+pca = prcomp(cbind(z, y))$rotation
+b = as.numeric(pca[2, 1] / pca[1, 1])
+a = mean(y) - b * mean(z)
+```
+
+One way to reduce attenuation bias is to replace OLS with total least squares (TLS), which accounts for noise in the dependent *and* independent variables.
+As a demonstration, the chart below compares the OLS and TLS lines of best fit through some randomly generated data $(Y_i,Z_i)_{i=1}^n$ with $\beta=1$.
+The OLS estimate $\hat\beta_{\text{OLS}}=`r round(cov(z, y) / var(z), 2)`$ minimizes the sum of squared *vertical* deviations of the data from the fitted line.
+In contrast, the TLS estimate $\hat\beta_{\text{TLS}}=`r round(b, 2)`$ minimizes the sum of squared *perpendicular* deviations of the data from the fitted line.
+For these data, the TLS estimate is unbiased because $u$ and $v$ have the same variance.
+
+```{r example}
+tibble(Y = y, Z = z) %>%
+  mutate(obs = row_number(),
+         OLS.Zfit = Z,
+         OLS.Yfit = fitted.values(lm(y ~ z)),
+         TLS.Zfit = (z + b * y - b * a) / (1 + b ^ 2),
+         TLS.Yfit = a + b * TLS.Zfit) %>%
+  gather(key, value, -Z, -Y, -obs) %>%
+  separate(key, c('Method', 'key'), sep = '[.]') %>%
+  spread(key, value) %>%
+  ggplot(aes(Z, Y)) +
+  geom_segment(aes(x = Z, y = Y, xend = Zfit, yend = Yfit, col = Method), linetype = 'dotted') +
+  geom_line(aes(x = Zfit, y = Yfit, col = Method)) +
+  geom_point() +
+  coord_fixed() +
+  labs(title = 'TLS can lower attenuation bias',
+       subtitle = 'Dotted lines represent deviations') +
+  theme(legend.justification = c(0, 1),
+        legend.position = c(0, 1))
+```
+
+```{r comparison-data}
+simulate = function(sigma_u = 1, sigma_v = 1, n = 1000) {
+  
+  # Generate data
+  x = rnorm(n, 0, 1)
+  u = rnorm(n, sd = sigma_u)
+  v = rnorm(n, sd = sigma_v)
+  y = x + u
+  z = x + v
+  
+  # Compute coefficient estimates
+  pca = prcomp(cbind(z, y))$rotation
+  tibble(
+    OLS = cov(y, z) / var(z),
+    TLS = as.numeric(pca[2, 1] / pca[1, 1])
+  )
+}
+
+N = 100
+set.seed(0)
+sims = crossing(sigma_u = sqrt(c(0.5, 1)), sigma_v = sqrt(0.2 * (0:10)), realization = 1:N) %>%
+  mutate(res = pmap(list(sigma_u = sigma_u, sigma_v = sigma_v), simulate)) %>%
+  unnest('res')
+```
+
+However, if $u$ and $v$ have different variances then the TLS estimate of $\beta$ is biased.
+I demonstrate this phenomenon in the chart below, which compares the OLS and TLS estimates of $\beta=1$ for varying $\Var(u)$ and $\Var(v)$ when $X$ is standard normal.
+I plot the bias $\E[\hat\beta-\beta]$ and mean squared error $\E[(\hat\beta-\beta)^2]$ of each estimate $\hat\beta\in\{\hat\beta_{\text{OLS}},\hat\beta_{\text{TLS}}\}$, obtained by simulating the data-generating process `r N` times for each $(\Var(u),\Var(v))$ pair.
+
+```{r comparison}
+sims %>%
+  gather(Method, est, OLS, TLS) %>%
+  group_by(Method, sigma_u, sigma_v) %>%
+  summarise(Bias = mean(est - 1),
+            `Mean squared error` = mean((est - 1) ^ 2)) %>%
+  ungroup() %>%
+  gather(key, value, -Method, -sigma_u, -sigma_v) %>%
+  mutate(key = factor(key, c('Bias', 'Mean squared error'))) %>%
+  ggplot(aes(sigma_v ^ 2, value)) +
+  geom_line(aes(col = Method, lty = factor(sigma_u ^ 2))) +
+  facet_wrap(~key, scales = 'free') +
+  labs(x = 'Var(v)',
+       y = NULL,
+       title = 'TLS does not always outperform OLS',
+       subtitle = 'Bias and mean squared error of OLS and TLS estimates',
+       lty = 'Var(u)') +
+  coord_cartesian(clip = 'off') +
+  scale_x_continuous(expand = c(0, 0), labels = c(0, 0.5, 1, 1.5, 2)) +
+  scale_y_continuous(expand = c(0, 0)) +
+  theme(legend.position = 'bottom')
+```
+
+If $\Var(u)>\Var(v)$ then the TLS estimate $\hat\beta_{\text{TLS}}$ is biased upward because the data are relatively stretched vertically; if $\Var(u)<\Var(v)$ then $\hat\beta_{\text{TLS}}$ is biased downward because the data are relatively stretched horizontally.
+The OLS estimate is biased downward whenever $\Var(u)>0$ due to attenuation.
+The TLS estimate is less biased and has smaller mean squared error than the OLS estimate when $\Var(u)<\Var(v)$, suggesting that TLS generates "better" estimates than OLS when the measurement errors $v_i$ are relatively large.
+
+One problem with TLS estimates is that they depend on the units in which variables are measured.
+For example, suppose $Y_i$ is person $i$'s weight and $Z_i$ is their height.
+If I measure $Y_i$ in pounds, generate a TLS estimate $\hat\beta_{\text{TLS}}$, use this estimate to predict the weight in pounds of someone six feet tall, and then convert my prediction to kilograms, I get a different result than if I had measured $Y_i$ in kilograms initially.
+This unit-dependence arises because rescaling the dependent variable affects each perpendicular deviation differently.
+
+In contrast, OLS-based predictions do not depend on the units in which I measure $Y_i$.
+Rescaling the dependent variable multiplies each vertical deviation by the same constant, leaving the squared deviation-minimizing coefficient unchanged.
+
+```{r session-info}
+save_session_info()
+```
