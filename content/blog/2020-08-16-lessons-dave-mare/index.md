@@ -1,6 +1,6 @@
 ---
 title: Lessons from Dave Maré
-topics: [research, statistics]
+topics: [economics, research, statistics]
 ---
 
 Last week I finished up at [Motu](https://motu.nz), an economic research institute where I worked for two and half years.
