@@ -29,7 +29,7 @@ Pairs were more likely to co-author in a given year if
 * their prior publications attracted more citations, or
 * their prior citation histories differed.
 
-The fifth bullet implies negative [assortative mixing](https://en.wikipedia.org/wiki/Assortative_mixing) among the researchers in our data, which we suspect arises due to inter-generational collaboration (e.g., professors working with graduate students and post-docs).
+The fifth bullet implies negative [assortative mixing](/blog/assortative-mixing/) among the researchers in our data, which we suspect arises due to inter-generational collaboration (e.g., professors working with graduate students and post-docs).
 
 On average, pairs were 13.8 percentage points more likely to co-author in a given year if they co-submitted Marsden Fund proposals during the previous ten years than if they did not.
 This co-authorship rate was not significantly larger among pairs who received funding.
