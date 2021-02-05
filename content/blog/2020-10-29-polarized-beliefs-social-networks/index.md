@@ -25,12 +25,10 @@ The figure shows how people grow increasingly connected to others with the same 
 
 The social learning and peer selection processes can lead to polarization both together and separately.
 I justify this claim in the figure below.
-The left-hand panel plots the network's "assortativity coefficient," which measures the overall correlation among friends' beliefs.[^newman-2003]
+The left-hand panel plots the network's [assortativity coefficient](/blog/assortative-mixing/), which measures the overall correlation among friends' beliefs.
 This coefficient equals one when all neighbours share the same beliefs (complete polarization) and equals zero when edges are "as random."
 The right-hand panel plots the proportion of people in the network who update their belief at each time step.
 Both panels present means and 95% confidence intervals across 30 simulated networks, each with randomized initial beliefs.
-
-[^newman-2003]: See [Newman (2003)](https://arxiv.org/abs/cond-mat/0209450v2) for a definition and discussion of the assortativity coefficient.
 
 ![](figures/network-attributes-1.svg)
 
