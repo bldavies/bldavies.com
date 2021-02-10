@@ -10,6 +10,7 @@
   {{ end }}
 </p>
 
-{{ partial "page-index.html" . }}
+{{ $posts := where .Pages "Params.hidden" "!=" true }}
+{{ partial "page-index.html" (dict "context" . "posts" $posts) }}
 
 {{ partial "footer.html" . }}
