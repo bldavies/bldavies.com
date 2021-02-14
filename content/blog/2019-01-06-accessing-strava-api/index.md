@@ -1,13 +1,11 @@
 ---
 title: Accessing the Strava API with R
-linkSource: yes
 ---
 
 [Strava](https://www.strava.com/) is an online platform for storing and sharing fitness data.
 Strava [provides an API](https://developers.strava.com) for accessing such data at the activity (e.g., run or cycle) level.
-In this post, I explain how to extract data from the Strava API using R, and I analyse my running and cycling data from 2018.
-
-*Note: I implement the process described in this post in the R package [stravadata](https://github.com/bldavies/stravadata).*
+This post explains how I [authenticate](#setup-and-authentication) with, and [extract data](#extracting-the-data) from, the Strava API using R.
+I implement my method in the R package [stravadata](https://github.com/bldavies/stravadata).
 
 ## Setup and authentication
 
@@ -56,14 +54,14 @@ Doing so redirects me to the callback domain ("localhost") and prints a confirma
 
 ## Extracting the data
 
-After authenticating with Strava, I use a sequence of HTTP requests to extract activity data from the API.
+After authenticating with Strava, I use HTTP requests to extract activity data from the API.
 The API returns multiple pages of data, each containing up to 200 activities.
 I use a while loop to iterate over pages, using the `fromJSON` function from [`jsonlite`](https://cran.r-project.org/package=jsonlite) to parse the extracted data:
 
 ```r
 library(jsonlite)
 
-data_list <- list()
+df_list <- list()
 i <- 1
 done <- FALSE
 while (!done) {
@@ -72,7 +70,7 @@ while (!done) {
     config = token,
     query = list(per_page = 200, page = i)
   )
-  data_list[[i]] <- fromJSON(content(req, as = "text"), flatten = TRUE)
+  df_list[[i]] <- fromJSON(content(req, as = "text"), flatten = TRUE)
   if (length(content(req)) < 200) {
     done <- TRUE
   } else {
@@ -84,44 +82,5 @@ while (!done) {
 Finally, I use the `rbind_pages` function from `jsonlite` to collate the activity data into a single data frame:
 
 ```r
-data <- rbind_pages(data_list)
+df <- rbind_pages(df_list)
 ```
-
-## Analysing the data
-
-The Strava API provides a wealth of data to analyse.
-Running
-
-```r
-names(data)
-```
-
-prints the variables included in `data`, such as distance, moving time, elevation gain, and starting latitude and longitude coordinates.
-These data reveal patterns of fitness effort.
-For example, the bar chart below plots my total distance run and cycled during each month of 2018.
-I ran less during New Zealand's winter months: June--August.
-With more years of data, I could quantify my sensitivity to cold temperatures by identifying the seasonal component of my monthly distance series.
-
-![](figures/monthly-distances-1.svg)
-
-The temporal data provided by the API indicate the times of day at which athletes are most active.
-For example, the density plots below show the distribution of my running activity for each weekday during 2018.
-I ran mostly during lunch breaks or in the evenings on work days, and around midday on weekends.
-
-![](figures/active-time-1.svg)
-
-The Strava API also provides spatial data on running and cycling routes.
-Each activity is associated with an [encoded polyline](https://developers.google.com/maps/documentation/utilities/polylinealgorithm), which stores the geographic coordinates of points along each route.
-Plotting these polylines reveals a map of where athletes travel during their runs and cycles.
-For example, the image below maps my Wellington running routes from 2018.
-These routes include coastal areas, such as Petone Beach in the northeast, and inland areas, such as the Zealandia fenceline in the southwest.
-
-![](figures/wellington-routes-1.svg)
-
-## Acknowledgements
-
-This post is informed by several online resources.
-[Mark Aberdour's blog post](http://www.open-thoughts.com/2017/01/the-quantified-cyclist-analysing-strava-data-using-r/) helped me understand the process for authenticating with Strava.
-Reading [the `rStrava` package's source code](https://github.com/fawda123/rStrava) helped me understand how to extract data from the Strava API.
-I got the idea for plotting active running time distributions from [this GitHub repository](https://github.com/marcusvolz/strava).
-
