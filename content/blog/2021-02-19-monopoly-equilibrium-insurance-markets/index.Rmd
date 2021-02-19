@@ -1,0 +1,226 @@
+---
+title: Monopoly equilibrium in insurance markets
+topics: [economics]
+summary: |
+  I show how monopoly insurance pricing can lead to inefficient risk sharing.
+  At the monopoly equilibrium price, risk averse consumers buy partial coverage only, which is allocatively inefficient if the insurer is risk neutral.
+---
+
+```{r setup, echo = F, message = F, warning = F}
+library(bldr)
+library(dplyr)
+library(ggplot2)
+library(knitr)
+library(purrr)
+library(tidyr)
+
+opts_chunk$set(echo = F, message = F, warning = F,
+               fig.width = 6, fig.height = 3, fig.ext = 'svg', dev = 'svg')
+
+set_ggtheme()
+```
+
+This post shows how monopoly insurance pricing can lead to inefficient risk sharing.
+I describe [a mathematical model](#model) of the monopoly equilibrium, present [a numerical example](#numerical-example), and discuss [some limitations](#limitations) of my analysis.
+
+## Model
+
+Suppose I have initial wealth $w_0$ and suffer a loss of size $L$ with probability $p$.
+I can buy $c\in[0,L]$ units of insurance coverage at per-unit price $\lambda p$, where $\lambda\ge1$ is a loading factor set by my insurer.
+I choose the amount of coverage $c^*$ that maximizes my expected utility
+$$EU(c)\equiv(1-p)u(w_0-\lambda p c)+pu(w_0-\lambda pc-L+c),$$
+where
+$$u(w)\equiv-\frac{1}{a}\exp(-aw)$$
+is my utility function and $a>0$ is my [coefficient of absolute risk aversion](https://en.wikipedia.org/wiki/Risk_aversion#Absolute_risk_aversion).
+Solving the first-order condition for $c^*$ gives
+$$c^*=L-\frac{1}{a}\log\left(\frac{\lambda(1-p)}{1-\lambda p}\right),$$
+which equals $L$ when $\lambda=1$ (i.e, the premium is actuarially fair) and equals zero when $\lambda$ equals
+$$\lambda_{\text{max}}=\frac{1}{p+(1-p)\exp(-aL)}.$$
+This limiting value of $\lambda$ approaches one as $aL$ approaches zero---I won't buy insurance if I am risk neutral or face no risk---and is always less than $1/p$.
+For $\lambda\in(1,\lambda_{\text{max}})$, the slope
+$$\newcommand{\parfrac}[2]{\frac{\partial #1}{\partial #2}}
+\parfrac{c^*}{\lambda}=-\frac{1}{a\lambda(1-\lambda p)}$$
+of my inverse demand curve is strictly decreasing, implying that I view insurance as an ordinary good.
+
+Now suppose my insurer knows my demand for coverage $c^*\equiv C(\lambda)$ given the loading factor $\lambda$, as well as the other parameters in my choice environment.
+Then they can choose $\lambda$ to maximize their expected profit
+$$\pi(\lambda)\equiv(\lambda-1)pC(\lambda),$$
+which equals the premium I pay minus the expected cost of indemnifying me.
+If $L>0$ then the profit-maximizing loading factor $\lambda^*$ is strictly between one and $\lambda_{\text{max}}$, and setting $\lambda=\lambda^*$ gives my insurer positive expected profit.
+But then I demand partial coverage $C(\lambda^*)<L$, which is allocatively inefficient because I am risk averse but my insurer is risk neutral: having the insurer bear more of my risk would make me better off but my insurer no worse off.
+Consequently, we suffer a deadweight loss relative to the equilibrium in which my insurer sets $\lambda=1$, I demand full coverage, and my insurer bears all of my risk.
+
+## Numerical example
+
+```{r compute-example}
+get_coverage = function(lambda, w0, L, p, a) {
+  L - log(lambda * (1 - p) / (1 - lambda * p)) / a
+}
+
+get_profit = function(lambda, w0, L, p, a) {
+  coverage = get_coverage(lambda, w0, L, p, a)
+  (lambda - 1) * p * coverage
+}
+
+get_consumer_surplus = function(lambda_min, lambda_max, w0, L, p, a) {
+  func = function(x) get_coverage(x, w0, L, p, a)
+  p * integrate(func, lambda_min, lambda_max)$value
+}
+
+get_certainty_equivalent = function(lambda, w0, L, p, a) {
+  coverage = get_coverage(lambda, w0, L, p, a)
+  u = function(x) -exp(-a * x) / a
+  u_inv = function(x) -log(-a * x) / a
+  prem = lambda * p * coverage
+  ind_u = (1 - p) * u(w0 - prem) + p * u(w0 - prem - L + coverage)
+  u_inv(ind_u)
+}
+
+w0 = 100
+L = 20
+p = 0.2
+a = 0.2
+
+lambda_max = 1 / (p + (1 - p) * exp(-a * L))
+func = function(x) get_profit(x, w0, L, p, a)
+res = optimize(func, c(1, lambda_max), maximum = T)
+lambda_opt = res$maximum
+price_opt = lambda_opt * p
+profit = res$objective
+coverage_opt = get_coverage(lambda_opt, w0, L, p, a)
+consumer_surplus = get_consumer_surplus(lambda_opt, lambda_max, w0, L, p, a)
+deadweight_loss = get_consumer_surplus(1, lambda_max, w0, L, p, a) - consumer_surplus - profit
+```
+
+The figure below describes the monopoly equilibrium when $w_0=`r w0`$, $L=`r L`$, $p=`r p`$, and $a=`r a`$.
+My insurer best-responds to my demand schedule (the downward-sloping curve) by setting the loading factor equal to $\lambda^*=`r round(lambda_opt, 2)`$, which earns them expected profit $\pi=`r round(profit, 2)`$.
+At the price $\lambda^* p=`r round(price_opt, 2)`$, I buy $c^*=`r round(coverage_opt, 2)`$ units of coverage and enjoy
+$$p\int_{\lambda^*}^{\lambda_{\text{max}}}C(\lambda)\,\mathrm{d}\lambda=`r round(consumer_surplus, 2)`$$
+
+units of consumer surplus.
+In contrast, at the actuarially fair price $p$ I would have bought full coverage, and although my insurer would have made zero expected profit we would have avoided the deadweight loss of `r round(deadweight_loss, 2)` generated by our inefficient risk-sharing arrangement at the monopoly equilibrium.
+
+```{r example}
+plot_df = tibble(lambda = c(lambda_opt, seq(1, lambda_max, length.out = 101))) %>%
+  mutate(coverage = get_coverage(lambda, w0, L, p, a),
+         price = lambda * p)
+
+keys = c('Consumer surplus', 'Insurer\'s expected profit', 'Deadweight loss')
+
+plot_df %>%  
+  ggplot(aes(coverage, price)) +
+  geom_line() +
+  geom_ribbon(data = filter(plot_df, coverage <= coverage_opt), aes(x = coverage, ymin = price_opt, ymax = price, fill = keys[1]), alpha = 0.33) +
+  geom_ribbon(data = filter(plot_df, coverage < coverage_opt), aes(x = coverage, ymin = price_opt, ymax = p, fill = keys[2]), alpha = 0.33) +
+  geom_ribbon(data = filter(plot_df, coverage >= coverage_opt), aes(x = coverage, ymin = p, ymax = price, fill = keys[3]), alpha = 0.33) +
+  geom_segment(x = 0, xend = coverage_opt, y = price_opt, yend = price_opt, lwd = 0.2, linetype = 'dashed') +
+  geom_segment(x = coverage_opt, xend = coverage_opt, y = 0, yend = price_opt, lwd = 0.2, linetype = 'dashed') +
+  labs(x = 'Coverage',
+       y = 'Price of coverage',
+       title = 'Monopoly pricing leads to inefficient risk sharing',
+       subtitle = 'Dashed lines indicate monopoly equilibrium with exponential utility',
+       fill = NULL) +
+  coord_cartesian(clip = 'off') +
+  guides(fill = guide_legend(label.position = 'left')) +
+  scale_x_continuous(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0), limits = c(0, NA)) +
+  scale_fill_discrete(breaks = keys) +
+  theme(legend.justification = c(1, 1),
+        legend.position = c(1, 1))
+```
+
+```{r certainty-equivalents}
+ce_none = get_certainty_equivalent(lambda_max, w0, L, p, a)
+ce_opt = get_certainty_equivalent(lambda_opt, w0, L, p, a)
+ce_pc = get_certainty_equivalent(1, w0, L, p, a)
+```
+
+One way to make sense of these numbers is to compute the certainty-equivalent wealth
+$$CE(\lambda)=u^{-1}(EU(C(\lambda)))$$
+that, if held with certainty, would give me as much utility as I expect to enjoy if I buy $C(\lambda)$ units of coverage at per-unit price $\lambda p$.
+Buying insurance at the monopoly equilibrium price raises my certainty equivalent wealth by $CE(\lambda^*)-CE(\lambda_{\text{max}})=`r round(ce_opt - ce_none, 2)`$, the consumer surplus I enjoy at that equilibrium.
+Making the premium actuarially fair would further raise my certainty-equivalent wealth by $CE(1)-CE(\lambda^*)=`r round(ce_pc - ce_opt, 2)`$ but lower my insurer's expected profit by $\pi(\lambda^*)=`r round(profit, 2)`$; the sum of our surpluses would rise by $`r round(ce_pc - ce_opt, 2)`-`r round(profit, 2)`=`r round(ce_pc - ce_opt - profit, 2)`$, the deadweight loss at the monopoly equilibrium.
+
+The chart below presents some comparative statics of the monopoly equilibrium.
+I maintain the parameters $w_0=`r w0`$ and $L=`r L`$ from above, but vary my risk aversion coefficient $a$ and the probability $p$ with which I incur the loss.
+
+```{r equilibria, fig.height = 4}
+get_equilibrium = function(w0, L, p, a) {
+  
+  lambda_max = 1 / (p + (1 - p) * exp(-a * L))
+  func = function(x) get_profit(x, w0, L, p, a)
+  res = optimize(func, c(1, lambda_max), maximum = T)
+  lambda_opt = res$maximum
+  profit_opt = res$objective
+  coverage_opt = get_coverage(lambda_opt, w0, L, p, a)
+  
+  cs_opt = get_consumer_surplus(res$maximum, lambda_max, w0, L, p, a)
+  cs_pc = get_consumer_surplus(1, lambda_max, w0, L, p, a)
+  
+  tibble(
+    lambda_opt = res$maximum,
+    profit = res$objective,
+    coverage = get_coverage(res$maximum, w0, L, p, a),
+    consumer_surplus = cs_opt,
+    deadweight_loss = cs_pc - cs_opt - profit
+  )
+}
+
+res = crossing(w0 = w0, L = L, p = 0.2 * (1:3), a = 0.02 * (1:30)) %>%
+  mutate(eq = pmap(list(w0 = w0, L = L, p = p, a = a), get_equilibrium)) %>%
+  unnest('eq')
+
+descriptions = tibble(
+  key = c('lambda_opt', 'profit', 'coverage', 'deadweight_loss'),
+  desc = c('Loading factor', 'Insurer\'s expected profit', 'Coverage', 'Deadweight loss')
+)
+
+res %>%
+  select(-w0, -L, -consumer_surplus) %>%
+  gather(key, value, -p, -a) %>%
+  left_join(descriptions) %>%
+  mutate(desc = factor(desc, descriptions$desc)) %>%
+  ggplot(aes(a, value)) +
+  geom_line(aes(col = factor(p))) +
+  facet_wrap(~desc, scales = 'free_y') +
+  labs(x = 'Risk aversion coefficient',
+       y = NULL,
+       title = 'Risk aversion strengthens monopoly power',
+       subtitle = 'Monopoly equilibrium outcomes with exponential utility',
+       col = 'Loss probability') +
+  coord_cartesian(clip = 'off') +
+  scale_x_continuous(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) +
+  theme(legend.position = 'bottom')
+```
+
+My insurer sets a higher loading factor and earns more profit when my risk aversion rises.
+This is because the mixed partial derivative
+$$\parfrac{^2c^*}{\lambda\partial a}=\frac{1}{a^2\lambda(1-\lambda p)}$$
+is strictly positive, which means that my demand is less sensitive to price changes when $a$ is high.
+My insurer exploits this lower sensitivity by charging me higher prices.
+When $a$ is small, this exploitation moves us away from the actuarially fair equilibrium and so raises the deadweight loss; when $a$ is large, I want to buy a lot of insurance despite its high price, and so the deadweight loss is small because having the insurer bear my risk is allocatively efficient.
+
+On the other hand, my insurer sets a lower loading factor when the probability of loss rises.
+This is because the mixed partial derivative
+$$\parfrac{^2c^*}{\lambda\partial p}=-\frac{\lambda}{\alpha(1-\lambda p)^2}$$
+is strictly negative, which means that my demand is more sensitive to price changes when $p$ is high.
+My insurer responds to this sensitivity by forfeiting some of its monopoly power, moving us closer to the actuarially fair equilibrium and lowering the deadweight loss.
+
+## Limitations
+
+One issue with my analysis is the assumption that I have exponential utility, which implies that my tolerance for, and demand for insurance against, additive risks does not depend on how rich I am.
+Under this assumption, I am equally willing to pay for insurance to avoid a \$10 loss when I have \$10 as I am when I have \$10 million, which seems implausible.
+I could instead assume that I have [isoelastic utility](https://en.wikipedia.org/wiki/Isoelastic_utility)
+$$u(w)\equiv\frac{w^{1-r}-1}{1-r}$$
+for some $r>0$, which would imply that my willingness to pay for insurance falls as I become richer.
+However, replacing exponential with isoelastic utility in the plots above delivers qualitatively identical patterns.
+
+Another issue is the supposition that the insurer knows my demand schedule.
+In reality, my insurer would have imperfect information about my utility function and the parameters of my choice environment, and so would not know my inverse demand function $C(\lambda)$.
+But they could estimate $C(\lambda)$ by, for example, asking how much insurance I would buy at a range of prices.
+They would have to be clever to prevent me from over-reporting my price-sensitivity in an attempt to get cheaper coverage, but I'm sure real-world insurers have solved this problem (at least approximately) given their financial incentives.
+
+```{r session-info}
+save_session_info()
+```
