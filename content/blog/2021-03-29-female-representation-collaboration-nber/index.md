@@ -5,7 +5,7 @@ linkSource: yes
 loadMathJax: yes
 ---
 
-This post analyzes the [representation](#representation-across-research-programs) of, and [collaboration](#co-authorship-patterns) among, female authors of [NBER working papers](/blog/introducing-nberwp) over the last four decades.
+This post analyzes the [representation](#representation-across-research-programs) of, and [collaboration](#co-authorship-patterns) among, female authors of [NBER working papers](https://www.nber.org/papers) over the last four decades.
 My analysis uses paper-author correspondences provided by the R package [nberwp](https://github.com/bldavies/nberwp).
 
 ## Estimating sexes
@@ -69,8 +69,8 @@ I order programs by percentage of female authorship and color them according to 
 
 ![](figures/female-authorships-1.svg)
 
-Overall, females wrote 20.8% of the working papers published during the 2010s.
-These papers were relatively concentrated in programs focused on applied microeconomics rather than macroeconomics or finance.
+Overall, females wrote about 21% of the working papers published during the 2010s.
+These papers were relatively concentrated among programs focused on applied microeconomics rather than on macroeconomics or finance.
 These patterns echo those presented by Chari and Goldsmith-Pinkham (2017), and could reflect differences in academic culture between different branches of economics (see, e.g., [Dupas et al., 2021](https://www.nber.org/papers/w28494)).
 
 ## Co-authorship patterns
@@ -101,7 +101,7 @@ Therefore, rather than report point estimates for each property, I report 95% co
 3. Repeat the preceding two steps 1,000 times to obtain bootstrap distributions of each property.
 4. Use the 2.5% and 97.5% quantiles of the bootstrap distributions as the lower and upper confidence bounds.
 
-The first property I examine is the [clustering coefficient](https://en.wikipedia.org/wiki/Clustering_coefficient): the probability that two researchers were co-authors given that they shared a common co-author.
+The first property I examine is the [clustering coefficient](https://en.wikipedia.org/wiki/Clustering_coefficient): the probability that two authors were co-authors given that they shared a common co-author.
 The table below compares the clustering coefficient of the full co-authorship network in each decade with the clustering coefficient of the sub-networks [induced](https://en.wikipedia.org/wiki/Induced_subgraph) by the sets of authors whom I estimate to be female and male.
 
 |Clustering coefficient |    1980s     |    1990s     |    2000s     |    2010s     |
@@ -112,8 +112,7 @@ The table below compares the clustering coefficient of the full co-authorship ne
 
 The female sub-networks were much more clustered than the full and male networks.
 Such clustering suggests a stronger tendency among females to [close triads](/blog/triadic-closure-nber) by collaborating with other females with whom they share a common (female) co-author.
-The decline in clustering among females over time could reflect the rise in between-sex co-authorship.
-About 16% of co-authored papers from the 1980s had at least one author of each sex on their byline; this percentage rose to 25%, 35%, and 42% in the subsequent three decades.
+The decline in clustering among females over time could reflect the rise in between-sex co-authorship: the percentage of co-authored papers with at least one author of each sex was about 16% in the 1980s, and rose to 25%, 35%, and 42% in the subsequent three decades.
 
 The next property I examine is the [assortativity coefficient](/blog/assortative-mixing), which measures the extent to which authors tended to co-author with members of the same sex.
 The coefficient equals 1 when there is perfect sorting (i.e., no between-sex edges), &minus;1 when there is perfect dis-sorting (i.e., no within-sex edges), and 0 when there is no sorting (i.e., the network is "as random").
