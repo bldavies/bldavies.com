@@ -1,0 +1,446 @@
+---
+title: Female representation and collaboration at the NBER
+topics: [economics, networks, research]
+---
+
+```{r setup, echo = F, message = F, warning = F}
+library(bldr)
+library(dplyr)
+library(gender)
+library(ggplot2)
+library(igraph)
+library(knitr)
+library(nberwp)
+library(purrr)
+library(tidygraph)
+library(tidyr)
+
+opts_chunk$set(echo = F, message = F, warning = F,
+               fig.width = 6, fig.height = 4, fig.ext = 'svg', dev = 'svg')
+
+set_ggtheme()
+
+decades = c(1980, 1990, 2000, 2010)
+```
+
+This post analyzes the [representation](#representation-across-research-programs) of, and [collaboration](#co-authorship-patterns) among, female authors of [NBER working papers](/blog/introducing-nberwp) over the last four decades.
+My analysis uses paper-author correspondences provided by the R package [nberwp](https://github.com/bldavies/nberwp).
+
+## Estimating sexes
+
+I estimate authors' sexes using the R package [gender](https://cran.r-project.org/package=gender), which provides access to historical baby name data from the US Social Security Administration.
+I focus on baby names between 1940 and 1995 because these roughly correspond to (what I expect are) the birth years of authors who published NBER working papers during the 1980s through 2010s.
+
+Comparing authors' first names to the frequency of female and male baby names allows me to estimate the probability that each author is female.
+For example, 3% of babies named Alex between 1940 and 1995 were female, so the estimated probability that an author named Alex is female is 0.03.
+Rounding each probability to the nearest integer estimates the binary indicator variable for whether each author is female.
+
+```{r df-save, eval = F}
+tmp = papers %>%
+  mutate(decade = floor(year / 10) * 10) %>%
+  select(paper, decade) %>%
+  filter(decade %in% decades) %>%
+  left_join(authors) %>%
+  mutate(name = case_when(grepl('^[A-Za-z]{2}', author) ~ sub('^([A-Za-z-]+) .*', '\\1', author),
+                          grepl('^[A-Z] .* .*', author) ~ sub('^[A-Z] ([A-Za-z]+) .*', '\\1', author),
+                          T ~ ''),
+         has_first_name = name != '')
+
+df = tmp %>%
+  filter(has_first_name) %>%
+  left_join(gender(.$name, years = c(1940, 1995))) %>%
+  select(paper, decade, author, p_female = proportion_female) %>%
+  distinct() %>%
+  drop_na() %>%
+  {left_join(tmp, .)}
+
+save(df, file = 'data/df.rda')
+```
+
+```{r df-load}
+load('data/df.rda')
+```
+
+The table below reports the number of NBER working papers and authors during the 1980s, 1990s, 2000s, and 2010s.
+It also reports the percentage of those authors whom I estimate to be female, as well as the percentage of authors whose sexes I can estimate.
+The number of authors roughly doubled each decade, and the percentage of those authors whom I estimate to be female almost doubled between the 1980s and 2010s.
+
+```{r decade-counts}
+df %>%
+  group_by(Decade = paste0(decade, 's')) %>%
+  mutate(Papers = n_distinct(paper),
+         Authors = n_distinct(author)) %>%
+  drop_na() %>%
+  select(-paper) %>%
+  distinct() %>%
+  group_by(Decade, Papers, Authors) %>%
+  summarise(tmp = n(),
+            `% authors female` = 100 * mean(round(p_female))) %>%
+  ungroup() %>%
+  mutate(`% authors with estimable sex` = 100 * tmp / Authors) %>%
+  select(c(1:3, 5:6)) %>%
+  kable(align = 'c', digits = 1, format.args = list(big.mark = ','))
+```
+
+The percentage of authors with estimable sex is less than 100% because some authors (i) never listed their first names on their papers' bylines (e.g., always published as "J. Smith") or (ii) have first names that do not appear in the baby name data.
+Throughout this post, I assume that conditions (i) and (ii) occur at the same rate for both sexes.
+Almost all (`r sprintf('%.1f', 100 * mean(filter(df, is.na(p_female))$has_first_name))`%) of the authors satisfying either condition satisfy (ii) because they have foreign names.
+The decrease in sex estimability over time reflects the increase in (co-)authorship of NBER working papers by researchers born outside the United States.
+
+## Representation across research programs
+
+The NBER organizes its research into [programs](https://www.nber.org/programs-projects/programs-working-groups), each of which "corresponds loosely to a traditional field of study within economics."
+I count the papers associated with each program in [the appendix below](#appendix).
+The largest programs are Labor Studies, Economic Fluctuations and Growth, and Public Economics, reflecting the NBER's focus on policy-relevant economic research.
+
+The table below reports the percentage of authors whom I estimate to be female in each of the NBER's ten largest research programs.
+I pool the remaining eleven programs into an "Other" program and report separate percentages for each decade.
+The percentage of female authors grew over time, both overall and within each of the tabulated programs, and was larger in programs that are relatively focused on individual-level outcomes (e.g., Labor Studies and Health Economics).
+I omit the percentages for Asset Pricing and Corporate Finance in the 1980s because there was only one paper associated with those programs during that decade.
+
+```{r program-percentages}
+program_counts = df %>%
+  left_join(programs) %>%
+  distinct(program, paper) %>%
+  add_count(paper) %>%
+  count(program, wt = 1 / n, sort = T) %>%
+  mutate(program_adj = ifelse(dense_rank(-n) <= 10, program, 'Other'))
+
+program_adj_counts = program_counts %>%
+  count(program_adj, wt = n) %>%
+  arrange(program_adj == 'Other', -n)
+
+df %>%
+  left_join(programs) %>%
+  left_join(program_counts) %>%
+  {bind_rows(., mutate(., program_adj = 'All'))} %>%
+  distinct(program_adj, decade, author, p_female) %>%
+  mutate(program_adj = factor(program_adj, c(program_adj_counts$program_adj, 'All'))) %>%
+  group_by(decade = paste0(decade, 's'), program = program_adj) %>%
+  summarise(p_female = sprintf('%.1f', 100 * mean(round(p_female), na.rm = T))) %>%
+  spread(decade, p_female, fill = '-') %>%
+  mutate(`1980s` = ifelse(program == 'CF', '-', `1980s`)) %>%  # Only one paper
+  left_join(program_descriptions) %>%
+  mutate(Program = ifelse(!is.na(program_desc), paste0(program_desc, ' (', program, ')'), program)) %>%
+  select(Program, 2:5) %>%
+  kable(align = 'lrrrr')
+```
+
+Another way to analyze female representation is to compare the density of female-authored working papers across programs.
+I present this comparison in the chart below, focusing on papers published during the 2010s.
+The horizontal axis measures the percentage of working papers published by female authors in each program.
+I compute these percentages by counting papers "fractionally" so that, for example, papers with two authors and three associated programs contribute a sixth of a paper to the count for each author-program pair.
+This method avoids double-counting papers across programs and sexes.
+Aggregating fractional counts by program and sex allows me to estimate the percentage of working papers published in each program by female authors.
+I order programs by percentage of female authorship and color them according to a categorization based on that used by [Chari and Goldsmith-Pinkham (2017)](https://www.nber.org/papers/w23953).
+
+```{r female-authorships, fig.height = 6}
+plot_df = df %>%
+  filter(decade == max(decades)) %>%
+  mutate(female = p_female > 0.5) %>%
+  add_count(paper, name = 'n_authors') %>%
+  filter(!is.na(female)) %>%
+  select(paper, n_authors, author, female) %>%
+  left_join(programs) %>%
+  {bind_rows(., mutate(., program = 'All'))} %>%
+  distinct() %>%
+  filter(!is.na(program)) %>%
+  add_count(paper, author, name = 'n_programs') %>%
+  mutate(wt = 1 / (n_authors * n_programs)) %>%
+  count(female, program, wt = wt) %>%
+  group_by(program) %>%
+  summarise(p = 100 * sum(female * n) / sum(n)) %>%
+  ungroup() %>%
+  left_join(program_descriptions)
+
+plot_df %>%
+  filter(program != 'All') %>%
+  mutate(pos = dense_rank(p)) %>%
+  ggplot(aes(pos, p)) +
+  geom_hline(yintercept = filter(plot_df, program == 'All')$p, lty = 'dashed') +
+  geom_col(aes(fill = program_category), alpha = 0.33) +
+  geom_text(aes(y = p / 2, label = program_desc), size = 3) +
+  coord_flip(clip = 'off') +
+  labs(x = NULL,
+       y = '% of (fractionally counted) papers by female authors',
+       title = 'NBER working papers authored by females during the 2010s,\nby research program',
+       subtitle = 'Dashed line represents publications across all programs',
+       fill = 'Category') +
+  guides(fill = guide_legend(label.position = 'left', title.hjust = 1)) +
+  scale_fill_discrete(breaks = sort(unique(program_descriptions$program_category))) +
+  scale_x_discrete(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) +
+  theme(legend.justification = c(1, 0),
+        legend.position = c(1, 0))
+ggsave('_media/female-authorships.png', width = 6, height = 6, dpi = 300)
+```
+
+Overall, females wrote `r sprintf('%.1f', filter(plot_df, program == 'All')$p)`% of the working papers published during the 2010s.
+These papers were relatively concentrated in programs focused on applied microeconomics rather than macroeconomics or finance.
+These patterns echo those presented by Chari and Goldsmith-Pinkham (2017), and could reflect differences in academic culture between different branches of economics (see, e.g., [Dupas et al., 2021](https://www.nber.org/papers/w28494)).
+
+## Co-authorship patterns
+
+```{r nets_df-save, eval = F}
+nodes_df = df %>%
+  left_join(programs) %>%
+  {bind_rows(., mutate(., program = 'All'))} %>%
+  filter(!is.na(program)) %>%
+  select(-paper) %>%
+  distinct() %>%
+  group_by(decade, program) %>%
+  nest() %>%
+  ungroup() %>%
+  rename(nodes = data)
+
+edges_df = df %>%
+  select(-p_female) %>%
+  {left_join(., ., by = c('paper', 'decade'))} %>%
+  filter(author.x < author.y) %>%
+  left_join(programs) %>%
+  {bind_rows(., mutate(., program = 'All'))} %>%
+  filter(!is.na(program)) %>%
+  distinct(decade, program, author.x, author.y) %>%
+  group_by(decade, program) %>%
+  nest() %>%
+  ungroup() %>%
+  rename(edges = data)
+
+func = function(x, y) {
+  x %>%
+    graph_from_data_frame(directed = F, vertices = y$author) %>%
+    as_tbl_graph() %>%
+    left_join(y, by = c('name' = 'author'))
+}
+
+nets_df = nodes_df %>%
+  inner_join(edges_df) %>%
+  mutate(net = pmap(list(edges, nodes), func),
+         decade = paste0(decade, 's'))
+
+save('nets_df', file = 'data/nets_df.rda')
+```
+
+```{r nets_df-load}
+load('data/nets_df.rda')
+```
+
+I infer the collaboration patterns among NBER authors from the working paper co-authorship network for each decade.
+In each network, nodes correspond to authors who published at least one working paper during that decade, and edges join authors who co-authored at least one working paper during that decade.
+The table below summarizes each network.
+The networks grew larger and less dense over time, while the rise in mean degree---that is, the mean number of co-authors---reflects the rise in co-authorship among economists documented in other studies (e.g., [Rath and Wohlrabe, 2017](https://doi.org/10.1080/13504851.2015.1119783)).
+
+```{r network-summaries}
+get_network_properties = function(G) {
+  tibble(
+    Nodes = gorder(G),
+    Edges = gsize(G),
+    `Edge density (%)` = 100 * graph.density(G),
+    `Mean degree` = mean(degree(G))
+  )
+}
+
+nets_df %>%
+  filter(program == 'All') %>%
+  mutate(res = map(net, get_network_properties)) %>%
+  select(Decade = decade, res) %>%
+  unnest('res') %>%
+  kable(align = 'c', digits = 2, format.args = list(big.mark = ','))
+```
+
+```{r mean-degrees}
+plot_df = nets_df %>%
+  filter(program == 'All') %>%
+  mutate(order = map(net, gorder),
+         res = map(net, ~tibble(deg = degree(.)))) %>%
+  select(decade, nodes, res) %>%
+  unnest(c('nodes', 'res')) %>%
+  add_count(decade, name = 'order') %>%
+  filter(!is.na(p_female)) %>%
+  mutate(female = ifelse(p_female > 0.5, 'Females', 'Males'))
+
+mean_degrees = plot_df %>%
+  group_by(decade, female) %>%
+  summarise(mean = mean(deg)) %>%
+  ungroup() %>%
+  spread(female, mean) %>%
+  mutate(diff = Males - Females) %>%
+  mutate_if(is.numeric, ~sprintf('%.2f', .))
+```
+
+The figure below compares the co-authorship network degree distributions for each sex.
+Females tended to have fewer co-authors than males, but the mean difference was small and fell over time (from `r filter(mean_degrees, decade == '1980s')$diff` during the 1980s to `r filter(mean_degrees, decade == '2010s')$diff` during the 2010s).
+
+```{r degree-distributions}
+plot_df %>%
+  mutate(deg = pmin(deg, 10)) %>%
+  count(decade, order, deg, female) %>%
+  complete(nesting(decade, order), deg, female, fill = list(n = 0)) %>%
+  drop_na() %>%
+  group_by(decade, female) %>%
+  arrange(deg) %>%
+  mutate(p = n / sum(n)) %>%
+  ungroup() %>%
+  ggplot(aes(deg, p)) +
+  geom_col(aes(fill = female), position = 'dodge') +
+  facet_wrap(~decade) +
+  labs(x = 'Co-authors during decade',
+       y = 'Relative frequency',
+       title = 'Co-authorship degree distributions by decade',
+       subtitle = 'Females had slightly fewer co-authors than males',
+       fill = NULL) +
+  coord_cartesian(clip = 'off') +
+  guides(fill = guide_legend(label.position = 'left')) +
+  scale_x_continuous(expand = c(0, 0), breaks = 2 * (0:5), labels = c(2 * (0:4), '10+')) +
+  scale_y_continuous(expand = c(0, 0)) +
+  theme(legend.justification = c(1, 1),
+        legend.position = c(1, 1),
+        panel.grid.major.x = element_blank(),
+        panel.spacing.x = unit(1, 'line'))
+```
+
+The next three tables describe structural properties of each decade's co-authorship network based on authors' estimated sexes.
+These properties may be sensitive to estimation errors.
+Therefore, rather than report point estimates for each property, I report 95% confidence intervals obtained using the following bootstrap procedure:
+
+1. Randomly assign each author to be female according to the probabilities obtained from the baby name data.
+2. Compute each structural property under the randomized assignment.
+3. Repeat the preceding two steps 1,000 times to obtain bootstrap distributions of each property.
+4. Use the 2.5% and 97.5% quantiles of the bootstrap distributions as the lower and upper confidence bounds.
+
+The first property I examine is the [clustering coefficient](https://en.wikipedia.org/wiki/Clustering_coefficient): the probability that two researchers were co-authors given that they shared a common co-author.
+The table below compares the clustering coefficient of the full co-authorship network in each decade with the clustering coefficient of the sub-networks [induced](https://en.wikipedia.org/wiki/Induced_subgraph) by the sets of authors whom I estimate to be female and male.
+
+```{r structural-properties}
+get_structural_properties = function(G, random = F) {
+  G = induced_subgraph(G, !is.na(V(G)$p_female))
+  n = gorder(G)
+  if (random) {
+    t = runif(n)
+  } else {
+    t = rep(0.5, n)
+  }
+  Hf = induced_subgraph(G, t < V(G)$p_female)
+  Hn = induced_subgraph(G, t >= V(G)$p_female)
+  tibble(
+    clust_coeff_f = transitivity(Hf),
+    clust_coeff_nf = transitivity(Hn),
+    assort_coeff = assortativity(G, t < V(G)$p_female)
+  )
+}
+
+get_structural_property_confidence_intervals = function(G, n_reps = 1000, coverage = 0.95) {
+  lapply(1:n_reps, function(x) get_structural_properties(G, random = T)) %>%
+    bind_rows() %>%
+    gather(key, x) %>%
+    group_by(key) %>%
+    summarise(lb = quantile(x, (1 - coverage) / 2, na.rm = T),
+              ub = quantile(x, (1 + coverage) / 2, na.rm = T)) %>%
+    ungroup() %>%
+    mutate(ci = sprintf('(%.2f, %.2f)', lb, ub)) %>%
+    select(key, ci) %>%
+    spread(key, ci)
+}
+```
+
+```{r spci-save, eval = F}
+set.seed(0)
+
+spci = nets_df %>%
+  filter(program %in% c(program_adj_counts$program_adj, 'All')) %>%
+  mutate(program = factor(program, c(program_adj_counts$program_adj, 'All')),
+         clust_coeff = map_dbl(net, transitivity),
+         spci = map(net, get_structural_property_confidence_intervals)) %>%
+  select(-nodes, -edges, -net) %>%
+  unnest('spci')
+
+save(spci, file = 'data/spci.rda')
+```
+
+```{r spci-load}
+load('data/spci.rda')
+```
+
+```{r clustering}
+tmp = df %>%
+  filter(!is.na(p_female)) %>%
+  mutate(female = p_female > 0.5) %>%
+  add_count(paper) %>%
+  filter(n > 1) %>%
+  group_by(decade, paper) %>%
+  summarise(x = sd(female) > 0) %>%
+  group_by(decade) %>%
+  summarise(x = round(100 * mean(x)))
+
+spci %>%
+  filter(program == 'All') %>%
+  mutate_if(is.numeric, ~sprintf('%.2f', .)) %>%
+  select(decade, starts_with('clust')) %>%
+  gather(key, value, -decade) %>%
+  spread(decade, value) %>%
+  mutate(key = c('Overall', 'Among females (95% CI)', 'Among males (95% CI)')) %>%
+  rename(`Clustering coefficient` = key) %>%
+  kable(align = 'lcccc')
+```
+
+The female sub-networks were much more clustered than the full and male networks.
+Such clustering suggests a stronger tendency among females to [close triads](/blog/triadic-closure-nber) by collaborating with other females with whom they share a common (female) co-author.
+The decline in clustering among females over time could reflect the rise in between-sex co-authorship.
+About `r filter(tmp, decade == 1980)$x`% of co-authored papers from the 1980s had at least one author of each sex on their byline; this percentage rose to `r filter(tmp, decade == 1990)$x`%, `r filter(tmp, decade == 2000)$x`%, and `r filter(tmp, decade == 2010)$x`% in the subsequent three decades.
+
+The next property I examine is the [assortativity coefficient](/blog/assortative-mixing), which measures the extent to which authors tended to co-author with members of the same sex.
+The coefficient equals 1 when there is perfect sorting (i.e., no between-sex edges), &minus;1 when there is perfect dis-sorting (i.e., no within-sex edges), and 0 when there is no sorting (i.e., the network is "as random").
+The table below shows that each network's assortativity coefficient was positive, implying that within-sex co-authorship was more common than we would expect if co-authorships were random.
+
+```{r assortativity}
+spci %>%
+  filter(program == 'All') %>%
+  select(Decade = decade, 4) %>%
+  kable(align = 'c', col.names = c('Decade', 'Assort. coeff. (95% CI)'))
+```
+
+Computing assortativity coefficients across all programs may mask program-specific patterns.
+I explore these patterns in my final table below, which reports 95% confidence intervals for the assortativity coefficient of the co-authorship network within each of the NBER's ten largest research programs.
+I label programs by their abbreviations so that the table is not too wide.
+
+```{r program-assortativity}
+spci %>%
+  select(decade, Program = program, assort_coeff) %>%
+  spread(decade, assort_coeff, fill = '-') %>%
+  kable(align = 'c')
+```
+
+The network among authors in the Labor Studies (LS) program became less sorted over time, whereas the network among authors in the Health Economics (HE) program became more sorted over time.
+But the representation of women in both of those programs grew over time, suggesting that the mechanisms promoting female representation were different than the mechanisms promoting female collaboration.
+It would be interesting to explore these mechanisms further, but I'll leave that for a future post.
+
+## Acknowledgements
+
+Thanks to Mohamad Adhami, Florencia Hnilo and Akhila Kovvuri for reading draft versions of this post.
+
+## Appendix
+
+The table below (fractionally) counts working papers by program and decade.
+I present programs in decreasing order of associated papers across all four decades.
+
+```{r program-counts}
+df %>%
+  mutate(decade = paste0(decade, 's')) %>%
+  distinct(decade, paper) %>%
+  left_join(programs) %>%
+  mutate(program = ifelse(is.na(program), 'None', program)) %>%
+  add_count(paper) %>%
+  mutate(wt = 1 / n) %>%
+  {bind_rows(., mutate(., program = 'Total'))} %>%
+  mutate(program = factor(program, c(program_counts$program, 'None', 'Total'))) %>%
+  count(decade, program, wt = wt) %>%
+  spread(decade, n, fill = 0) %>%
+  left_join(program_descriptions) %>%
+  mutate(Program = ifelse(!is.na(program_desc), paste0(program_desc, ' (', program, ')'), program)) %>%
+  select(Program, 2:5) %>%
+  kable(digits = 0, format.args = list(big.mark = ','))
+```
+
+```{r session-info}
+save_session_info()
+```
