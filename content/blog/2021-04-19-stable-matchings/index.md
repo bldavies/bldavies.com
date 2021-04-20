@@ -70,7 +70,7 @@ The chart below shows how the number of proposals required by the GS algorithm c
 On average, more proposals are required when preferences are more homogeneous.
 Intuitively, increasing `\(\rho\)` makes it more likely that an early tentative acceptance will become a rejection, forcing the rejected person to make another proposal.
 If `\(\rho=1\)` then the GS algorithm always requires
-`$$S_n=\sum_{x=1}^nx$$`
+`$$\sum_{x=1}^nx=\frac{n(n+1)}{2}$$`
 proposals.
 To see why, notice that if `\(\rho=1\)` then everyone in `\(A\)` has the same preferences over everyone in `\(B\)` and vice versa.
 Consequently, the person in `\(A\)` most preferred by the people in `\(B\)` always gets their first choice, the person in `\(A\)` second-most preferred by the people in `\(B\)` always gets their second choice, and so on.
