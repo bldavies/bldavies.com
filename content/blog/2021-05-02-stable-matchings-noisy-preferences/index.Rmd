@@ -1,0 +1,185 @@
+---
+title: Stable matchings with noisy preferences
+topics: [economics]
+---
+
+```{r setup, echo = F, message = F}
+# Load packages
+library(bldr)
+library(dplyr)
+library(ggplot2)
+library(knitr)
+library(matchingR)
+library(purrr)
+library(tidyr)
+
+# Set knitr options
+opts_chunk$set(echo = F, message = F,
+               fig.width = 6, fig.height = 4, fig.ext = 'svg', dev = 'svg')
+
+# Set ggplot theme
+set_ggtheme()
+```
+
+My [previous post](/blog/stable-matchings/) described [Gale and Shapley's (1962)](https://doi.org/10.2307/2312726) algorithm for solving [the stable matching problem](https://en.wikipedia.org/wiki/Stable_marriage_problem).
+The algorithm delivers a matching between two sets $A$ and $B$ of $n$ people with preferences over matches in the other set.
+
+The Gale-Shapley (GS) algorithm works by letting people in $A$ make proposals to people in $B$, who "tentatively accept" or reject proposals until the matching market clears.
+Consequently, if one side of the market is more informed about match qualities than the other side then the algorithm could generate different levels of welfare depending on which side makes proposals.
+
+For example, suppose $a\in A$ and $b\in B$ generate surplus $S_{ab}$ from being matched.
+This surplus has a monetary value (representing, e.g., the price $a$ and $b$ would pay to be matched) so can be aggregated across pairs meaningfully.
+Both $a$ and $b$ want the match that gives them the greatest surplus.
+However, they perceive match surpluses noisily: person $a$ thinks their surplus from matching with $b$ is
+$$S_{ab}^A=S_{ab}+\epsilon_{ab}^A,$$
+while $b$ thinks their surplus from matching with $a$ is
+$$S_{ab}^B=S_{ab}+\epsilon_{ab}^B.$$
+The $S_{ab}$ are iid standard normal, the $\epsilon_{ab}^A$ are iid normal with mean zero and variance $\sigma_A^2$, and the $\epsilon_{ab}^B$ are iid normal with mean zero and variance $\sigma_B^2$.
+Increasing $\sigma_A$ and $\sigma_B$ increases the errors in perceived surpluses.
+These errors disappear when the matching is made and the "true" surpluses $S_{ab}$ (representing peoples' true preferences) are realized.
+
+```{r simulation-parameters}
+n = 20
+N = 1e3
+sigma_A_vals = c(0, 1, 5)
+sigma_B_vals = c(0, 1, 5)
+```
+
+```{r simulations-save, eval = F}
+# Define function for computing total surpluses under GS allocation
+get_gs_total_surplus = function(S, m) {
+  n = length(m$proposals)
+  sum(sapply(1:n, function(i) S[i, m$proposals[i]]),
+      sapply(1:n, function(j) S[m$engagements[j], j]))
+}
+
+# Define function for computing total surplus under MBM allocation
+get_mbm_total_surplus = function(S, m) {
+  n = m$matching_size
+  sum(sapply(1:n, function(i) S[i, m$matching[i] - n]),
+      sapply(1:n, function(j) S[m$matching[j + n], j]))
+}
+
+# Define function for simulating total allocation surplus with random match surpluses
+simulate_surplus = function(sigma_A = 1, sigma_B = 1, n = 10) {
+  
+  # Generate match surpluses and signal noises
+  S = matrix(rnorm(n ^ 2), ncol = n)
+  eps_A = matrix(rnorm(n ^ 2, 0, sigma_A), ncol = n)
+  eps_B = matrix(rnorm(n ^ 2, 0, sigma_B), ncol = n)
+  
+  # Apply A-optimal and B-optimal GS algorithms
+  gs_A = matchingR::galeShapley.marriageMarket(t(S + eps_A), t(t(S) + eps_B))
+  gs_B = matchingR::galeShapley.marriageMarket(t(S) + eps_B, S + eps_A)
+  
+  # Determine maximum-weight bipartite matching using true match surpluses
+  B1 = igraph::graph_from_incidence_matrix(S - min(S) + 1, weighted = T)  # S - min(S) + 1 > 0, so all nodes matched
+  mbm1 = igraph::max_bipartite_match(B1, rep(c(T, F), each = n))
+  
+  # Determine MBM using precision-weighted mean of noisy signals
+  if (sigma_A == 0 | sigma_B == 0) {
+    if (sigma_A > 0) {
+      eps = eps_B
+    } else {
+      eps = eps_A
+    }
+  } else {
+    eps = (eps_A / sigma_A ^ 2 + eps_B / sigma_B ^ 2) / (1 / sigma_A ^ 2 + 1 / sigma_B ^ 2)
+  }
+  S_hat = S + eps - min(S + eps) + 1  # S_hat > 0 so all nodes matched
+  B2 = igraph::graph_from_incidence_matrix(S_hat, weighted = T)
+  mbm2 = igraph::max_bipartite_match(B2, rep(c(T, F), each = n))
+  
+  # Return total surpluses
+  tibble(
+    gs_A = get_gs_total_surplus(S, gs_A),
+    gs_B = get_gs_total_surplus(S, gs_B),
+    mbm1  = get_mbm_total_surplus(S, mbm1),
+    mbm2  = get_mbm_total_surplus(S, mbm2)
+  )
+  
+}
+
+# Do simulations
+set.seed(0)
+sims = crossing(realization = 1:N, sigma_A = sigma_A_vals, sigma_B = sigma_B_vals) %>%
+  mutate(res = map2(sigma_A, sigma_B, simulate_surplus, n = n)) %>%
+  unnest('res')
+
+# Save to cache
+save(sims, file = 'data/sims.rda')
+```
+
+```{r simulations-load}
+load('data/sims.rda')
+```
+
+I compare the distribution of mean match surpluses delivered by four matching procedures:
+
+1. *MBM*: the [maximum-weight bipartite matching](https://en.wikipedia.org/wiki/Maximum_weight_matching) based on the true match surpluses $S_{ab}$;
+2. *GS-A*: the GS algorithm with people in $A$ proposing based on their perceived match surpluses $S_{ab}^A$;
+3. *GS-B*: the GS algorithm with people in $B$ proposing based on their perceived match surpluses $S_{ab}^B$;
+4. *Feasible MBM*: the maximum-weight bipartite matching based on the precision-weighted mean perceived match surpluses
+  $$\hat{S}_{ab}=\begin{cases}
+  S_{ab} & \text{if}\ \sigma_A=0\ \text{or}\ \sigma_B=0 \\
+  \lambda S_{ab}^A+(1-\lambda)S_{ab}^B & \text{otherwise},
+  \end{cases}$$
+  where
+  $$\lambda=\frac{1/\sigma_A^2}{1/\sigma_A^2+1/\sigma_B^2}$$
+  is the relative precision of $A$ members' perceptions when $\min\{\sigma_A,\sigma_B\}>0$.
+  *Feasible MBM* replicates *MBM* when $\min\{\sigma_A,\sigma_B\}=0$.
+
+The *MBM* procedure maximizes the sum of true match surpluses, while the *Feasible MBM* procedure maximizes the sum of the best match surplus estimates that people in $A$ and $B$ could obtain by communicating.
+The *GS-A* and *GS-B* procedures do not allow such communication, but guarantee that the ultimate matching is stable.
+I run all four procedures `r format(N, big.mark = ',')` times for $\sigma_A\in\{`r paste(sigma_A_vals, collapse = ',')`\}$ and $\sigma_B\in\{`r paste(sigma_B_vals, collapse = ',')`\}$, and summarize my results in the figure below.
+All four procedures deliver mean match surpluses greater than zero, implying that people tend to do better by following the procedures than by forming matches randomly.
+
+```{r summary}
+# Define matching procedure key-name pairs
+matchings = tribble(
+  ~key, ~Procedure,
+  'mbm1', 'MBM',
+  'gs_A', 'GS-A',
+  'gs_B', 'GS-B',
+  'mbm2', 'Feasible MBM'
+)
+
+# Generate plot
+sims %>%
+  gather(key, value, -realization, -sigma_A, -sigma_B) %>%
+  left_join(matchings) %>%
+  mutate(Procedure = factor(Procedure, matchings$Procedure)) %>%
+  ggplot(aes(value / n)) +
+  geom_density(aes(col = Procedure, fill = Procedure), alpha = 0.25) +
+  facet_grid(sigma_A ~ sigma_B, switch = 'y', labeller = label_bquote(rows = sigma[A] == .(sigma_A), cols = sigma[B] == .(sigma_B))) +
+  labs(x = 'Mean match surplus',
+       y = 'Probability density',
+       title = 'Distributions of mean match surpluses',
+       subtitle = paste('Based on', format(N, big.mark = ','), 'simulated matching markets with n =', n)) +
+  coord_cartesian(clip = 'off') +
+  scale_x_continuous(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) +
+  theme(axis.text.y = element_blank(),
+        legend.position = 'bottom',
+        panel.grid.major.y = element_blank(),
+        strip.text = element_text(hjust = 0.5))
+```
+
+The mean match surpluses delivered by the *GS-A*, *GS-B*, and *Feasible MBM* procedures fall as $\sigma_A$ and $\sigma_B$ rise.
+Intuitively, these three procedures rely on preferences reported by the people in $A$ and $B$, and if those preferences become noisier then the procedures become worse at finding good matches.
+
+*Feasible MBM* tends to outperform *GS-A* and *GS-B* when $\sigma_A$ or $\sigma_B$ are small.
+However, the performance gain is neglible when $\sigma_A$ and $\sigma_B$ are large.
+Intuitively, if perceived match surpluses are mostly noise then sharing that noise doesn't help with finding better matches.
+
+The GS algorithm tends to find better matches when the people making proposals are the ones with less noisy preferences.
+Both sides of the matching market provide information that determines the ultimate matching: the proposing side provides information *actively* through proposals, whereas the non-proposing side provides information *passively* through proposal acceptances and rejections.
+Letting the more-informed side make proposals allows more information to feed into the matching process, leading to better matches on average.
+
+---
+
+*Thanks to Spencer Pantoja for inspiring this post and to [Al Roth](https://web.stanford.edu/~alroth/) for his comments.*
+
+```{r session-info}
+save_session_info()
+```
