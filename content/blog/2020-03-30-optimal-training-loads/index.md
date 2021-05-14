@@ -1,5 +1,6 @@
 ---
 title: Optimal training loads
+topics: [running]
 loadMathJax: yes
 ---
 

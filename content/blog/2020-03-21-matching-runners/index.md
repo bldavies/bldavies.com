@@ -1,6 +1,6 @@
 ---
 title: Matching runners
-topics: [economics]
+topics: [economics, running]
 loadMathJax: yes
 ---
 

@@ -1,6 +1,6 @@
 ---
 title: Matching runners
-topics: [economics]
+topics: [economics, running]
 ---
 
 Running in pairs (and, more generally, in groups) can be more rewarding than running alone.
