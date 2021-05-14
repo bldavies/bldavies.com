@@ -71,4 +71,4 @@ Such [bounds](https://en.wikipedia.org/wiki/Bounded_rationality) on the PM's rat
 
 ---
 
-*Thanks to [Arthur Grimes](https://motu.nz/about-us/people/arthur-grimes/) for commenting on a draft version of this post.*
+*Thanks to my dad for inspiring this post and to [Arthur Grimes](https://motu.nz/about-us/people/arthur-grimes/) for his comments.*
