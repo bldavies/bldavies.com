@@ -1,6 +1,7 @@
 ---
 title: Estimating sensitive parameters
 topics: [statistics]
+hidden: true
 loadMathJax: yes
 ---
 

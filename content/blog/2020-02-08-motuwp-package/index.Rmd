@@ -1,6 +1,7 @@
 ---
 title: motuwp is now an R package
 topics: [networks]
+hidden: true
 ---
 
 My current project at Motu involves analysing co-authorship networks.

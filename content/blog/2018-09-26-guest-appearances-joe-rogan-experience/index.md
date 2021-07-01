@@ -1,6 +1,7 @@
 ---
 title: Guest appearances on *The Joe Rogan Experience*
 topics: [statistics]
+hidden: true
 linkSource: yes
 ---
 
