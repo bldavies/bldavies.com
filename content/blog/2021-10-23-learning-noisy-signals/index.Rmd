@@ -37,11 +37,11 @@ N_plot = min(10, N)
 n_max = 100
 w = 1
 pi = 0.5
-alpha_vals = c(0.2, 0.4, 0.6, 0.8)
-beta = 0.4
+alpha = 0.4
+beta_vals = c(0.2, 0.4, 0.6, 0.8)
 
 # Define function for simulating belief sequence
-get_belief_seq = function(w, n_max, pi, alpha, beta, gamma = 1, delta = 1) {
+get_belief_seq = function(w, n_max, pi, alpha, beta) {
   
   # Construct signal sequence
   if (w == 0) {
@@ -50,21 +50,13 @@ get_belief_seq = function(w, n_max, pi, alpha, beta, gamma = 1, delta = 1) {
     signal_seq = sample(c(0, 1), n_max, replace = T, prob = c(beta, 1 - beta))
   }
   
-  # Compute probabilities
-  p00 = (1 - alpha) ^ gamma
-  p10 = alpha ^ gamma
-  p01 = beta ^ gamma
-  p11 = (1 - beta) ^ gamma
-  
   # Construct belief sequence
   res = c(pi, rep(0, n_max))
   for (n in seq_len(n_max)) {
-    q1 = res[n] ^ delta
-    q0 = (1 - res[n]) ^ delta
     if (signal_seq[n] == 0) {
-      res[n + 1] = p01 * q1 / (p01 * q1 + p00 * q0)
+      res[n + 1] = beta * res[n] / (beta * res[n] + (1 - alpha) * (1 - res[n]))
     } else {
-      res[n + 1] = p11 * q1 / (p11 * q1 + p10 * q0)
+      res[n + 1] = (1 - beta) * res[n] / ((1 - beta) * res[n] + alpha * (1 - res[n]))
     }
   }
   
@@ -74,53 +66,53 @@ get_belief_seq = function(w, n_max, pi, alpha, beta, gamma = 1, delta = 1) {
 }
 
 # Do simulations
-func = function(alpha) get_belief_seq(w, n_max, pi, alpha, beta)
+func = function(beta) get_belief_seq(w, n_max, pi, alpha, beta)
 set.seed(0)
-sims = crossing(alpha = alpha_vals, realization = 1:N) %>%
-  mutate(res = map(alpha, ~tibble(n = 0:n_max, belief = func(.)))) %>%
+sims = crossing(beta = beta_vals, realization = 1:N) %>%
+  mutate(res = map(beta, ~tibble(n = 0:n_max, belief = func(.)))) %>%
   unnest('res')
 ```
 
 The chart below shows how my belief $\pi_n$ changes with $n$.
 Each path in the chart corresponds to the sequence of beliefs $(\pi_0,\pi_1,\ldots,\pi_{`r n_max`})$ obtained by updating my initial belief $\pi_0=`r pi`$ in response to a signal sequence $(s_1,s_2,\ldots,s_{`r n_max`})$.
-I simulate `r N_plot` such sequences, fixing $\omega=1$ and $\beta=`r beta`$ but varying $\alpha\in\{`r paste(alpha_vals, collapse = ',')`\}$.
+I simulate `r N_plot` such sequences, fixing $\omega=1$ and $\alpha=`r alpha`$ but varying $\beta\in\{`r paste(beta_vals, collapse = ',')`\}$.
 
 ```{r paths, fig.height = 4}
 sims %>%
   filter(realization <= N_plot) %>%
   ggplot(aes(n, belief, group = realization)) +
-  geom_line(aes(col = factor(alpha)), alpha = 1/3, show.legend = F) +
+  geom_line(aes(col = factor(beta)), alpha = 1/3, show.legend = F) +
   labs(x = 'Signals received',
        y = 'Belief that \u03c9 = 1',
        title = 'Learning from noisy signals',
-       subtitle = sprintf('Simulated belief trajectories with \u03b2 = %.1f', beta)) +
-  facet_wrap(~paste('\u03b1 =', alpha)) +
+       subtitle = sprintf('Simulated belief trajectories with \u03b1 = %.1f', alpha)) +
+  facet_wrap(~paste('\u03b2 =', beta)) +
   scale_x_continuous(expand = c(0, 1)) +
   scale_y_continuous(expand = c(0, 0), limits = c(0, 1)) +
   scale_color_brewer(palette = 'Set1') +
   theme(panel.spacing.x = unit(1, 'lines'))
 ```
 
-If $\alpha\not=0.6$ then my belief converges to $\pi_n=1$ as $n$ grows.
-However, if $\alpha=0.6$ then $\pi_n=\pi_0$ for each $n$; that is, I never update my beliefs regardless of the signals I observe.
+If $\beta\not=0.6$ then my belief converges to $\pi_n=1$ as $n$ grows.
+However, if $\beta=0.6$ then $\pi_n=\pi_0$ for each $n$; that is, I never update my beliefs regardless of the signals I observe.
 This is because if $\alpha+\beta=1$ then $\Pr(s_n=s\cap\omega=1)=\Pr(s_n=s)$ for each $s\in\{0,1\}$, and so signals are uninformative because they are independent of $\omega$.
 
 The chart below plots the mean of my beliefs $\pi_n$ across `r format(N, big.mark = ',')` realizations of the signals simulated above.
-Again, I fix $\omega=1$ and the false negative rate $\beta=`r beta`$ but vary the false positive rate $\alpha\in\{`r paste(alpha_vals, collapse = ',')`\}$.
-Higher values of $\alpha$ are not always worse: my belief converges to the truth faster when $\alpha=0.8$ than when $\alpha=0.4$.
-Intuitively, if I know the false positive rate is close to 100% then observing a signal $s_n=1$ gives me strong evidence that $\omega=0$.
+Again, I fix $\omega=1$ and the false positive rate $\alpha=`r alpha`$ but vary the false negative rate $\beta\in\{`r paste(beta_vals, collapse = ',')`\}$.
+Higher values of $\beta$ are not always worse: my belief converges to the truth faster when $\beta=0.8$ than when $\beta=0.4$.
+Intuitively, if I know the false negative rate is close to 100% then observing a signal $s_n=0$ gives me strong evidence that $\omega=1$.
 
 ```{r means}
 sims %>%
-  group_by(n, alpha) %>%
+  group_by(n, beta) %>%
   summarise(mean = mean(belief)) %>%
   ungroup() %>%
-  ggplot(aes(n, mean, group = alpha)) +
-  geom_line(aes(col = paste('\u03b1 =', alpha))) +
+  ggplot(aes(n, mean, group = beta)) +
+  geom_line(aes(col = paste('\u03b2 =', beta))) +
   labs(x = 'Signals received',
        y = 'Mean belief that \u03c9 = 1',
-       title = 'Higher false positive rates are not always worse',
-       subtitle = sprintf('Mean belief trajectory for \u03b2 = %.1f and varying \u03b1', beta),
+       title = 'Higher false negative rates are not always worse',
+       subtitle = sprintf('Mean belief trajectory for \u03b1 = %.1f and varying \u03b2', alpha),
        col = NULL) +
   coord_cartesian(clip = 'off') +
   guides(col = guide_legend(title.hjust = 1, label.position = 'left')) +
