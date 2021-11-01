@@ -1,15 +1,18 @@
 - id: DGHJ1
   title: Research Funding and Collaboration
   coauthors: Jason Gush, Shaun C. Hendy, and Adam B. Jaffe
-  date: 2020-10-12
-  type: wp
-  url: https://www.nber.org/papers/w27916
+  outlet: "*Research Policy*"
+  forthcoming: true
+  date: 2021-11-01
+  type: pub
   abstract: |
-    We analyse whether research funding contests promote co-authorship.
-    Our analysis combines Scopus publication records with data on applications to the Marsden Fund, the premier source of funding for basic research in New Zealand.
-    On average, and after controlling for observable and unobservable heterogeneity, applicant pairs were 13.8 percentage points more likely to co-author in a given year if they co-proposed during the previous ten years than if they did not.
+    We analyze whether research funding contests promote co-authorship.
+    Our analysis combines Scopus publication records with data on the Marsden Fund, the premier source of funding for basic research in New Zealand.
+    We use fixed-effect models to analyze within-researcher-pair variation in co-authorship.
+    Among pairs who ever co-authored or co-proposed, co-authorship was 13.8 percentage points more likely in a given year if they had co-proposed during the previous ten years than if they had not.
     This co-authorship rate was not significantly higher among funded pairs.
     However, when we increase post-proposal publication lags towards the length of a typical award, we find that funding, rather than participation, promotes co-authorship.
+  preprint: https://www.nber.org/papers/w27916
   dataCode: https://github.com/moturesearch/marsden-networks
 - id: DM2
   title: Delineating Functional Labour Market Areas with Estimable Classification Stabilities
