@@ -19,6 +19,14 @@
 {{ partial "publication.html" . }}
 {{ end }}
 
+{{ $oldList := where .Site.Data.research "type" "old" }}
+{{ if $oldList }}
+<h2>Dormant working papers</h2>
+{{ range sort $oldList "date" "desc" }}
+{{ partial "publication.html" . }}
+{{ end }}
+{{ end }}
+
 {{ $othList := where .Site.Data.research "type" nil  }}
 {{ if $othList }}
 <h2>Other writing</h2>
