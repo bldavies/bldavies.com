@@ -1,0 +1,128 @@
+---
+title: Stable matchings with correlated preferences
+topics: [economics]
+---
+
+```{r setup, echo = F, message = F}
+library(bldr)
+library(dplyr)
+library(ggplot2)
+library(knitr)
+library(tidyr)
+
+opts_chunk$set(echo = F, message = F,
+               fig.width = 6, fig.height = 3, fig.ext = 'svg', dev = 'svg')
+
+set_ggtheme()
+```
+
+```{r functions}
+get_gs_payoffs = function(w, x, y, z, a, b) {
+  
+  nP = dim(x)[2]
+  nR = dim(x)[1]
+  
+  u = a * w + (1 - a) * x
+  v = b * y + (1 - b) * z
+  
+  gs = matchingR::galeShapley.marriageMarket(u, v)
+  
+  data.frame(
+    a = a,
+    b = b,
+    u = sapply(1:nP, function(i) u[gs$proposals[i], i]),
+    v = sapply(1:nR, function(j) v[gs$engagements[j], j])
+  )
+  
+}
+
+simulate_one = function(a_vals, b_vals, n = 10) {
+  
+  w = matrix(rep(rnorm(n), n), ncol = n)
+  x = matrix(rnorm(n * n), ncol = n)
+  y = matrix(rep(rnorm(n), n), ncol = n)
+  z = matrix(rnorm(n * n), ncol = n)
+  
+  res = vector('list', length(a_vals) * length(b_vals))
+  i = 1
+  for (a in a_vals) {
+    for (b in b_vals) {
+      res[[i]] = get_gs_payoffs(w, x, y, z, a, b)
+      i = i + 1
+    }
+  }
+  
+  bind_rows(res)
+  
+}
+
+simulate_many = function(N, a_vals, b_vals, n = 10) {
+  
+  res = lapply(1:N, function(i) {
+    sim = simulate_one(a_vals, b_vals, n)
+    sim$realization = i
+    sim
+  })
+  
+  bind_rows(res)
+  
+}
+```
+
+```{r sims}
+N = 200
+n = 50
+a_vals = seq(0, 1, length.out = 21)
+b_vals = c(0.1, 0.5, 0.9)
+
+set.seed(0)
+sims = simulate_many(N, a_vals, b_vals, n)
+```
+
+Suppose I use the [Gale-Shapley (GS) algorithm](https://en.wikipedia.org/wiki/Gale–Shapley_algorithm) to find a [stable matching](/blog/stable-matchings/) between two sets $P$ and $R$ of size $n$.
+Proposer $p\in P$ gets utility
+$$u_{rp}=\alpha w_r+(1-\alpha)x_{rp}$$
+from being matched with reviewer $r\in R$, where $w_r$ is common to all proposers, $x_{rp}$ is specific to proposer $p$, and $\alpha\in[0,1]$ controls the correlation in utilities across proposers.[^correl]
+Likewise, reviewer $r$ gets utility
+$$v_{pr}=\beta y_p+(1-\beta)z_{pr}$$
+from being matched with proposer $p$, where $y_p$ is common to all reviewers, $z_{pr}$ is specific to reviewer $r$, and $\beta\in[0,1]$ controls the correlation in utilities across reviewers.
+The $w_r$, $x_{rp}$, $y_p$, and $z_{pr}$ are iid standard normal.
+I run the GS algorithm `r N` times, each time (i) simulating new utility realizations and (ii) computing the means
+$$U\equiv\frac{1}{n}\sum_{p\in P}u_{rp}$$
+and
+$$V\equiv\frac{1}{n}\sum_{r\in R}v_{pr}$$
+of utilities under the resulting matching.
+I then compute the [grand means](https://en.wikipedia.org/wiki/Grand_mean) of $U$ and $V$ across all `r N` simulations.
+The chart below shows how these grand means vary with $\alpha$ and $\beta$ when $n=`r n`$.
+
+[^correl]: If $\mathrm{Var}(w_r)=\sigma_w^2$ and $\mathrm{Var}(x_{rp})=\sigma_x^2$ then $\mathrm{Corr}(u_{rp},u_{rq})=[1+(1-\alpha)^2\sigma_x^2/\alpha^2\sigma_w^2]^{-1}$ increases with $\alpha$.
+
+
+```{r plot}
+sims %>%
+  rename(U = u, V = v) %>%
+  gather(key, value, U, V) %>%
+  group_by(a, b, key) %>%
+  summarise(`Grand mean` = mean(value)) %>%
+  ggplot(aes(a, `Grand mean`)) +
+  geom_line(aes(col = key)) +
+  facet_wrap(~paste('\u03b2 =', b)) +
+  labs(x = '\u03b1',
+       title = 'Grand means of U and V across stable matchings',
+       subtitle = 'Proposers and reviewers tend to be better off with lower same-side correlations\nin match utilities and higher other-side correlations',
+       col = NULL) +
+  coord_cartesian(clip = 'off') +
+  scale_x_continuous(expand = c(0, 0), labels = c(0, 0.25, 0.5, 0.75, 1)) +
+  scale_y_continuous(expand = c(0, 0)) +
+  theme(legend.justification = c(0, 0),
+        legend.position = c(0, 0),
+        panel.spacing = unit(1, 'lines'))
+```
+
+Proposers and reviewers tend to be better off when (i) utilities on their side of the market are *less* correlated and (ii) utilities on the *other* side of the market are *more* correlated.
+Intuitively, same-side correlations induce competition that makes the most desirable people on that side better off but the rest much worse off.
+This competition benefits the other side of the market because it gives people on that side more power to choose "winners" according to their preferences.
+
+```{r session-info}
+save_session_info()
+```
