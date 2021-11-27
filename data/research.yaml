@@ -1,10 +1,10 @@
 - id: DGHJ1
   title: Research Funding and Collaboration
   coauthors: Jason Gush, Shaun C. Hendy, and Adam B. Jaffe
-  outlet: "*Research Policy*"
-  forthcoming: true
-  date: 2021-11-01
+  outlet: "*Research Policy*, 51(2):104421"
+  date: 2022-03-01
   type: pub
+  url: https://doi.org/10.1016/j.respol.2021.104421
   abstract: |
     We analyze whether research funding contests promote co-authorship.
     Our analysis combines Scopus publication records with data on the Marsden Fund, the premier source of funding for basic research in New Zealand.
