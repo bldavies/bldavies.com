@@ -4,7 +4,7 @@
 {{ range .Pages }}
   <li>
     <a href="{{ .Permalink }}">{{ .Title | markdownify }}</a>
-    <span class="page-index-date">({{ .Date.Format "Jan 02" }})</span>
+    <span class="page-index-date">({{ .Date.Format "Jan 2" }})</span>
   </li>
 {{ end }}
 </ul>

@@ -3,7 +3,7 @@
 <div class="banner">
   <h1>{{ .Title | markdownify }}</h1>
   <p>
-    {{ .Date.Format "January 02, 2006" }}
+    {{ .Date.Format "January 2, 2006" }}
     {{ if .Params.linkSource }}
     (<a href="{{ .Site.Params.githubContentURL }}{{ .File.Dir }}">source</a>)
     {{ end }}
