@@ -1,7 +1,5 @@
 ---
 title: Guest appearances on *The Joe Rogan Experience*
-topics: [statistics]
-hidden: true
 ---
 
 ```{r setup, echo = F, message = F, warning = F}
@@ -318,7 +316,7 @@ The negative relationship between detection rate and `lag` (with `threshold` hel
 In general, appearing on the *The Joe Rogan Experience* seems to coincide with a spike in popularity as measured by web search interest.
 This result is robust to varying the definition of "spike," at least along the dimensions of the `lag` and `threshold` parameters used by the real-time detection algorithm.
 
-While suggestive, my analysis does not identify causality because I do not compare my results with the counterfactual scenario in which treatments (i.e., *JRE* appearances) do not occur.
+While suggestive, my analysis is not causal because I do not compare my results with the counterfactual scenario in which treatments (i.e., *JRE* appearances) do not occur.
 The false positives identified by the real-time algorithm are reminders that my results may be driven by other confounding factors.
 
 It would be useful to compare guests' popularity dynamics near *JRE* appearances with those near appearances on other fora.
