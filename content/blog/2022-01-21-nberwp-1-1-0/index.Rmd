@@ -1,0 +1,98 @@
+---
+title: nberwp 1.1.0
+topics: [economics, research]
+loadMathJax: no
+---
+
+```{r setup, echo = F, message = F, warning = F}
+library(bldr)
+library(dplyr)
+library(ggplot2)
+library(knitr)
+library(nberwp)
+
+opts_chunk$set(echo = F, message = F, warning = F,
+               fig.width = 6, fig.height = 3, fig.ext = 'svg', dev = 'svg')
+
+set_ggtheme()
+```
+
+A new version of [nberwp](https://github.com/bldavies/nberwp), an R package containing data on [NBER working papers](https://www.nber.org/papers), is [available on CRAN](https://cran.r-project.org/package=nberwp).
+This version adds information about (i) papers published in July--December 2021 and (ii) author sexes.
+
+## Papers from late 2021
+
+```{r new-authors}
+# Second half of 2021
+new_papers = papers %>%
+  filter(year == 2021 & month >= 7)
+n_new_paper_authors = new_papers %>%
+  left_join(paper_authors) %>%
+  {n_distinct(.$author)}
+new_authors = authors %>%
+  mutate(paper = sub('(.*)[.].*', '\\1', author)) %>%
+  semi_join(new_papers)
+
+# Second half of 2020
+new_papers_lag = papers %>%
+  filter(year == 2020 & month >= 7)
+n_new_paper_authors_lag = new_papers_lag %>%
+  left_join(paper_authors) %>%
+  {n_distinct(.$author)}
+new_authors_lag = authors %>%
+  mutate(paper = sub('(.*)[.].*', '\\1', author)) %>%
+  semi_join(new_papers_lag)
+```
+
+The second half of 2021 saw `r nrow(new_papers)` new NBER working papers by `r format(n_new_paper_authors, big.mark = ',')` unique authors, `r nrow(new_authors)` of whom had not published in the series previously.
+Those counts were down (from `r nrow(new_papers_lag)`, `r format(n_new_paper_authors_lag, big.mark = ',')`, and `r nrow(new_authors_lag)`, respectively) from the second half of 2020, but roughly in-line with pre-pandemic trends:
+
+```{r monthly-papers}
+papers %>%
+  filter(year %in% 2017:2021) %>%
+  count(Month = as.Date(paste(year, month, 1, sep = '-')), name = 'New papers') %>%
+  ggplot(aes(Month, `New papers`)) +
+  geom_line() +
+  labs(title = 'The pandemic publication boom appears to have ended',
+       subtitle = 'New NBER working papers, by month',) +
+  coord_cartesian(clip = 'off') +
+  scale_x_date(expand = c(0, 0), date_labels = '%b \'%y') +
+  scale_y_continuous(expand = c(0, 0))
+```
+
+```{r old-authors}
+n_old_authors = nrow(authors) - nrow(new_authors)
+n_old_authors_prev = 15437
+n_old_authors_delta = n_old_authors - n_old_authors_prev
+```
+
+nberwp 1.1.0 also corrects some [false merges and splits](/blog/nber-co-authorships/) among authors who published *before* July 2021.
+These corrections `r ifelse(n_old_authors_delta > 0, 'raised', 'lowered')` the number of such authors from `r format(n_old_authors_prev, big.mark = ',')` in version 1.0.0 to `r format(n_old_authors, big.mark = ',')` in version 1.1.0.
+
+## Author sexes
+
+nberwp 1.1.0 adds information about author sexes, allowing one to, e.g., visualize the growing [female representation](/blog/female-representation-collaboration-nber/) among NBER working paper authors:
+
+```{r female-representation}
+papers %>%
+  left_join(paper_authors) %>%
+  distinct(year, author) %>%
+  left_join(authors) %>%
+  group_by(year) %>%
+  summarise(p = 100 * mean(female[female >= 0])) %>%
+  ggplot(aes(year, p)) +
+  geom_line() +
+  labs(x = 'Publication year',
+       y = '% authors who were female',
+       title = 'Growing female representation at the NBER',
+       subtitle = 'Share of NBER working paper authors who were female, by publication year') +
+  scale_x_continuous(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0), limits = c(0, NA))
+```
+
+I obtain sex information by matching authors' names with baby name and Facebook data, and through manual identification.
+I document my matching and manual procedures in "[Sex-based sorting among economists: Evidence from the NBER](https://doi.org/10.31235/osf.io/zeb7a)," a new paper comparing males' and females' co-authorship patterns.
+
+```{r session-info}
+save_session_info()
+```
