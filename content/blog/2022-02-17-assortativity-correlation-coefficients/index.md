@@ -1,0 +1,140 @@
+---
+title: Assortativity and correlation coefficients
+topics: [networks]
+linkSource: no
+loadMathJax: yes
+---
+
+This is a technical follow-up to a previous post on [assortative mixing in networks](/blog/assortative-mixing/).
+In a [footnote](/blog/assortative-mixing/#fn:1), I claimed that [Newman's (2003)](https://doi.org/10.1103/PhysRevE.67.026126) assortativity coefficient equals the Pearson correlation coefficient when there are two possible node types.
+This post proves that claim.
+
+## Notation
+
+Consider an undirected network `\(N\)` in which each node has a type belonging to a (finite) set `\(T\)`.
+The assortativity coefficient is defined as
+`$$r=\frac{\sum_{t\in T}x_{tt}-\sum_{t\in T}y_t^2}{1-\sum_{t\in T}y_t^2},$$`
+where `\(x_{st}\)` is the proportion of edges joining nodes of type `\(s\)` to nodes of type `\(t\)`, and where
+`$$y_t=\sum_{s\in T}x_{st}$$`
+is the proportion of edges incident with nodes of type `\(t\)`.
+The Pearson correlation of adjacent nodes' types is given by
+`$$\DeclareMathOperator{\Cov}{Cov}
+\DeclareMathOperator{\Var}{Var}
+\rho=\frac{\Cov(t_i,t_j)}{\sqrt{\Var(t_i)\Var(t_j)}},$$`
+where `\(t_i\in T\)` and `\(t_j\in T\)` are the types of nodes `\(i\)` and `\(j\)`, and where (co)variances are computed with respect to the frequency at which nodes of type `\(t_i\)` and `\(t_j\)` are adjacent in `\(N\)`.
+
+## Proof
+
+Let `\(T=\{a,b\}\subset\mathbb{R}\)` with `\(a\not=b\)`.
+I show that the correlation coefficient `\(\rho\)` and assortativity coefficient `\(r\)` can be expressed as the same function of `\(y_a\)` and `\(x_{ab}\)`, implying `\(\rho=r\)`.
+
+Consider `\(\rho\)`.
+It can be understood by presenting the [mixing matrix](#appendix-constructing-the-mixing-matrix) `\(X=(x_{st})\)` in tabular form:
+
+`\(t_i\)` | `\(t_j\)` | `\(x_{t_it_j}\)`
+--- | --- | ---
+`\(a\)` | `\(a\)` | `\(x_{aa}\)`
+`\(a\)` | `\(b\)` | `\(x_{ab}\)`
+`\(b\)` | `\(a\)` | `\(x_{ba}\)`
+`\(b\)` | `\(b\)` | `\(x_{bb}\)`
+
+The first two columns enumerate the possible type pairs `\((t_i,t_j)\)` and the third column stores the proportion of adjacent node pairs `\((i,j)\)` with each type pair.
+This third column defines the joint distribution of types across adjacent nodes.
+Thus `\(\rho\)` equals the correlation of the first two columns, weighted by the third column.
+(Here `\(x_{ab}=x_{ba}\)` since `\(N\)` is undirected.)
+Now `\(t_i\)` has mean
+`$$\DeclareMathOperator{\E}{E}
+\begin{aligned}
+\E[t_i]
+&= x_{aa}a+x_{ab}a+x_{ba}b+x_{bb}b \\
+&= y_aa+y_bb
+\end{aligned}$$`
+and second moment
+`$$\begin{aligned}
+\E[t_i^2]
+&= x_{aa}a^2+x_{ab}a^2+x_{ba}b^2+x_{bb}b^2 \\
+&= y_aa^2+y_bb^2,
+\end{aligned}$$`
+and similar calculations reveal `\(\E[t_j]=\E[t_i]\)` and `\(\E[t_j^2]=\E[t_i^2]\)`.
+Thus `\(t_i\)` has variance
+`$$\begin{aligned}
+\Var(t_i)
+&= \E[t_i^2]-\E[t_i]^2 \\
+&= y_aa^2+y_bb^2-(y_aa+y_bb)^2 \\
+&= y_a(1-y_a)a^2+y_b(1-y_b)b^2-2y_ay_bab
+\end{aligned}$$`
+and similarly `\(\Var(t_j)=\Var(t_i)\)`.
+We can simplify this expression for the variance by noticing that 
+`$$x_{aa}+x_{ab}+x_{ba}+x_{bb}=1,$$`
+which implies
+`$$\begin{aligned}
+y_b
+&= x_{ab}+x_{bb} \\
+&= 1-x_{aa}-x_{ba} \\
+&= 1-y_a
+\end{aligned}$$`
+and therefore
+`$$\begin{aligned}
+\Var(t_i)
+&= y_a(1-y_a)a^2+(1-y_a)y_ab^2-2y_a(1-y_a)ab \\
+&= y_a(1-y_a)(a-b)^2.
+\end{aligned}$$`
+We next express the covariance `\(\Cov(t_i,t_j)=\E[t_it_j]-\E[t_i]\E[t_j]\)` in terms of `\(y_a\)` and `\(x_{ab}\)`.
+Now
+`$$\begin{aligned}
+\E[t_it_j]
+&= x_{aa}a^2+x_{ab}ab+x_{ba}ab+x_{bb}b^2 \\
+&= (y_a-x_{ab})a^2+2x_{ab}ab+(y_b-x_{ab})b^2 \\
+&= y_aa^2+y_bb^2-x_{ab}(a-b)^2
+\end{aligned}$$`
+because `\(x_{ab}=x_{ba}\)`.
+It follows that
+`$$\begin{aligned}
+\Cov(t_i,t_j)
+&= y_aa^2+y_bb^2-x_{ab}(a-b)^2-(y_aa+y_bb)^2 \\
+&= y_a(1-y_a)a^2+y_b(1-y_b)b^2-2y_ay_bab-x_{ab}(a-b)^2 \\
+&= y_a(1-y_a)(a-b)^2-x_{ab}(a-b)^2,
+\end{aligned}$$`
+where the last line uses the fact that `\(y_b=1-y_a\)`.
+Putting everything together, we have
+`$$\begin{aligned}
+\rho
+&= \frac{\Cov(t_i,t_j)}{\sqrt{\Var(t_i)\Var(t_j)}} \\
+&= \frac{y_a(1-y_a)-x_{ab}}{y_a(1-y_a)},
+\end{aligned}$$`
+a function of `\(y_a\)` and `\(x_{ab}\)`.
+
+Now consider `\(r\)`.
+Its numerator equals
+`$$\begin{aligned}
+\sum_{t\in T}x_{tt}-\sum_{t\in T}y_t^2
+&= x_{aa}+x_{bb}-y_a^2-y_b^2 \\
+&= (y_a-x_{ab})+(y_b-x_{ab})-y_a^2-y_b^2 \\
+&= y_a(1-y_a)+y_b(1-y_b)-2x_{ab} \\
+&\overset{\star}{=} 2y_a(1-y_a)-2x_{ab}
+\end{aligned}$$`
+and its denominator equals
+`$$\begin{aligned}
+1-\sum_{t\in T}y_t^2
+&= 1-y_a^2-y_b^2 \\
+&\overset{\star\star}{=} 1-y_a^2-(1-y_a)^2 \\
+&= 2y_a(1-y_a),
+\end{aligned}$$`
+where `\(\star\)` and `\(\star\star\)` both use the fact that `\(y_b=1-y_a\)`.
+Thus
+`$$r=\frac{y_a(1-y_a)-x_{ab}}{y_a(1-y_a)},$$`
+the same function of `\(y_a\)` and `\(x_{ab}\)`, and so `\(\rho=r\)` as claimed.
+
+Writing `\(\rho=r\)` in terms of `\(y_a\)` and `\(x_{ab}\)` makes it easy to check the boundary cases:
+if there are no within-type edges then `\(y_a=x_{ab}=1/2\)` and so `\(\rho=r=-1\)`;
+if there are no between-type edges then `\(x_{ab}=0\)` and so `\(\rho=r=1\)`.
+
+## Appendix: Constructing the mixing matrix
+
+The proof relies on noticing that `\(x_{ab}=x_{ba}\)`, which comes from undirectedness of the network `\(N\)` and from how the mixing matrix `\(X\)` is constructed.
+I often forget this construction, so here's a simple algorithm:
+Consider some type pair `\((s,t)\)`.
+Look at the edges beginning at type `\(s\)` nodes and count how many end at type `\(t\)` nodes.
+Call this count `\(m_{st}\)`.
+Do the same for all type pairs to obtain a matrix `\(M=(m_{st})\)` of edge counts.
+Divide the entries in `\(M\)` by their sum to obtain `\(X\)`.

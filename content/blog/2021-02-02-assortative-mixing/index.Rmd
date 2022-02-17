@@ -131,7 +131,7 @@ t^TWt
 \end{align*}$$
 and so $\rho=1$---that is, if all adjacent nodes have the same scalar type then the coefficient $\rho$ obtains its maximum value of unity.
 
-[^equal]: Numerical experimentation suggests $r=\rho$ whenever $\lvert T\rvert=2$, but I haven't proved this yet...
+[^equal]: Numerical experimentation suggests $r=\rho$ whenever $\lvert T\rvert=2$, which I prove [here](/blog/assortativity-correlation-coefficients/).
 
 One common use of the correlation coefficient $\rho$ is to measure assortativity with respect to nodes' degrees (see, e.g., [Newman, 2002](https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.89.208701)).
 For example, the left-hand network in the figure above has $\rho=`r round(assortativity_degree(Gp, directed = F), 2)`$: although nodes are sorted strongly by color, they are approximately unsorted by degree because the planted partition model from which the network is generated has no mechanism for connecting high-degree nodes.
