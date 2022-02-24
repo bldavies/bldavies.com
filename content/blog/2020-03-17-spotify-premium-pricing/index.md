@@ -1,6 +1,6 @@
 ---
 title: Spotify Premium pricing
-topics: [economics]
+topics: [economics, media]
 loadMathJax: yes
 ---
 

@@ -1,5 +1,6 @@
 ---
 title: Guest appearances on *The Joe Rogan Experience*
+topics: [media]
 linkSource: yes
 ---
 
