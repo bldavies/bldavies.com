@@ -1,6 +1,6 @@
 ---
 title: Introducing nberwp
-topics: [economics, research]
+topics: [data, research]
 linkSource: yes
 ---
 

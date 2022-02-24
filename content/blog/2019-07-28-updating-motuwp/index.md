@@ -1,6 +1,6 @@
 ---
 title: Updating motuwp
-topics: [research]
+topics: [data, research]
 linkSource: yes
 ---
 

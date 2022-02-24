@@ -1,6 +1,6 @@
 ---
 title: nberwp is now on CRAN
-topics: [research]
+topics: [data, research]
 loadMathJax: no
 ---
 
