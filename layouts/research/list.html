@@ -21,7 +21,7 @@
 
 {{ $oldList := where .Site.Data.research "type" "old" }}
 {{ if $oldList }}
-<h2>Dormant working papers</h2>
+<h2>Dormant papers</h2>
 {{ range sort $oldList "date" "desc" }}
 {{ partial "publication.html" . }}
 {{ end }}
