@@ -75,6 +75,6 @@ These disagreements lead to speculation: people buy assets hoping to cash-in on 
 Speculation raises asset prices.
 Eventually, disagreements over credibility disappear, investors wise up, and prices come crashing down.
 
-Cheng and Hsiaw treat credibility as something the agent *learns*.
-Alternatively, one could treat credibility as something the agent *chooses*.
-[Gentzkow, Wong and Zhang (2021)](https://web.stanford.edu/~gentzkow/research/trust.pdf) explore this alternative---I'll discuss their findings in my next post.
+Cheng and Hsiaw argue that disagreement comes from people not being Bayesian.
+In contrast, [Gentzkow, Wong and Zhang (2021)](https://web.stanford.edu/~gentzkow/research/trust.pdf) argue that disagreement can arise even if people *are* Bayesian.
+I summarize their argument [here](/blog/ideological-bias-trust-information-sources).
