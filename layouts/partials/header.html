@@ -5,11 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="author" content="{{ .Site.Params.author }}">
   <link rel="stylesheet" href="{{ "css/style.css" | relURL }}">
+  <meta name="twitter:card" content="summary"/>
+  <meta name="twitter:creator" content="@bnldvs"/>
+  <meta name="twitter:site" content="@bnldvs"/>
   {{ if eq .RelPermalink "/" }}
     <title>{{ .Site.Title }}</title>
-    <meta name="description" content="{{ .Site.Params.description }}">
+    <meta name="description" content="{{ .Site.Params.description }}"/>
+    <meta name="twitter:title" content="{{- .Site.Title -}}"/>
+    <meta name="twitter:description" content="{{- .Site.Params.description -}}"/>
   {{ else }}
     <title>{{ replace .Title "*" "" }} - {{ .Site.Title }}</title>
+    <meta name="description" content="{{ .Summary -}}"/>
+    <meta name="twitter:title" content="{{- replace .Title "*" "" -}}"/>
+    <meta name="twitter:description" content="{{- .Summary -}}"/>
   {{ end }}
 </head>
 
