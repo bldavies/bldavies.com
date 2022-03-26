@@ -1,5 +1,6 @@
 ---
 title: Blog
+summary: List of Ben Davies' blog posts.
 ---
 
 My blog posts are released under a [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) license.
