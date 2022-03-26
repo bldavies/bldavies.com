@@ -1,6 +1,9 @@
 ---
 title: DeGroot learning in social networks
 topics: [networks]
+summary: |
+  Demonstration of DeGroot's (1974) learning model.
+image: "figures/example.jpg"
 ---
 
 ```{r setup, echo = F, message = F, warning = F}
@@ -88,6 +91,7 @@ rep(net, n_rounds) %>%
   scale_fill_gradient2(low = 'purple', high = 'orange') +
   theme(axis.text = element_blank(),
         panel.grid = element_blank())
+ggsave('figures/example.jpg')
 ```
 
 People with more friends have more influence on the consensus estimate because they have more avenues through which to spread information.
