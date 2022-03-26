@@ -15,12 +15,14 @@
     <meta name="description" content="{{ .Site.Params.description }}"/>
     <meta property="og:title" content="{{- .Site.Title -}}"/>
     <meta property="og:description" content="{{- .Site.Params.description -}}"/>
-    <meta property="og:image" content="{{ .Site.BaseURL }}square.jpeg"/>
   {{ else }}
     <title>{{ replace .Title "*" "" }} - {{ .Site.Title }}</title>
     <meta name="description" content="{{ .Summary -}}"/>
     <meta property="og:title" content="{{- replace .Title "*" "" -}}"/>
     <meta property="og:description" content="{{- .Summary -}}"/>
+  {{ end }}
+  {{ if or .IsHome .IsSection }}
+    <meta property="og:image" content="{{ .Site.BaseURL }}square.jpeg"/>
   {{ end }}
 </head>
 
