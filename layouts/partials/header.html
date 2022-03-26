@@ -10,7 +10,7 @@
   <meta name="twitter:site" content="@bnldvs"/>
   <meta property="og:type" content="website"/>
   <meta property="og:url" content="{{ .Permalink }}"/>
-  {{ if eq .RelPermalink "/" }}
+  {{ if .IsHome }}
     <title>{{ .Site.Title }}</title>
     <meta name="description" content="{{ .Site.Params.description }}"/>
     <meta property="og:title" content="{{- .Site.Title -}}"/>
