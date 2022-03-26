@@ -26,7 +26,7 @@ Nodes represent people, and are coloured according to the deviation of peoples' 
 Edges represent mutual friendships.
 Over time, the information embedded in peoples' initial beliefs diffuses throughout the network and the variation in beliefs around $\hat\theta$ collapses to zero.
 
-```{r example, fig.width = 6, fig.height = 4, dpi = 100, dev = 'svg', fig.ext = 'svg'}
+```{r example, fig.width = 6, fig.height = 4, dev = 'svg', fig.ext = 'svg'}
 library(dplyr)
 library(ggraph)
 library(igraph)
@@ -91,7 +91,7 @@ rep(net, n_rounds) %>%
   scale_fill_gradient2(low = 'purple', high = 'orange') +
   theme(axis.text = element_blank(),
         panel.grid = element_blank())
-ggsave('figures/example.jpg')
+ggsave('figures/example.jpg', width = 1200, height = 630, units = 'px', dpi = 200)
 ```
 
 People with more friends have more influence on the consensus estimate because they have more avenues through which to spread information.

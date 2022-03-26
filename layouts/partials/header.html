@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="author" content="{{ .Site.Params.author }}">
   <link rel="stylesheet" href="{{ "css/style.css" | relURL }}">
-  <meta name="twitter:card" content="summary"/>
   <meta name="twitter:creator" content="@bnldvs"/>
   <meta name="twitter:site" content="@bnldvs"/>
   <meta property="og:type" content="website"/>
@@ -22,9 +21,13 @@
     <meta property="og:description" content="{{- .Summary -}}"/>
   {{ end }}
   {{ if or .IsHome .IsSection }}
+    <meta name="twitter:card" content="summary"/>
     <meta property="og:image" content="{{ .Site.BaseURL }}square.jpeg"/>
   {{ else if .Params.image }}
+    <meta name="twitter:card" content="summary_large_image"/>
     <meta property="og:image" content="{{ .Permalink }}{{ .Params.image }}"/>
+  {{ else }}
+    <meta name="twitter:card" content="summary"/>
   {{ end }}
 </head>
 
