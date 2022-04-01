@@ -1,7 +1,7 @@
 ---
 title: Tolerance and compromise in social networks
 topics: [networks, politics]
-summary: Summary of Genicot's (2022) paper in the Journal of Political Economy.
+summary: Summary of Genicot (2022).
 ---
 
 Everyone has beliefs about how they should behave.
