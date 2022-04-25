@@ -135,5 +135,5 @@ Instead, we may use the [Heckman correction](https://en.wikipedia.org/wiki/Heckm
 In empirical settings, selecting observations with `\(x_i\ge0\)` may lead to biased estimates when (i) there is heterogeneity in the relationship between `\(y_i\)` and `\(x_i\)` across observations `\(i\)`, and (ii) OLS is used to estimate an [average treatment effect](https://en.wikipedia.org/wiki/Average_treatment_effect).[^shakked]
 In particular, if the `\(x_i\)` are correlated with the observation-specific treatment effects then restricting to observations with `\(x_i\ge0\)` changes the distribution, and hence the mean, of those effects non-randomly.
 
-[^shakked]: Thanks to [Shakked](https://motu.nz/about-us/people/shakked-noy/) for pointing this out.
+[^shakked]: Thanks to [Shakked](http://shakkednoy.com) for pointing this out.
 
