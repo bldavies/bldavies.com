@@ -1,0 +1,212 @@
+---
+title: Publication outcomes of NBER working papers
+topics: [economics, research]
+summary: |
+  Women wrote an increasing share of NBER working papers during the 1970s through 2010s.
+  But the growth was slower among papers appearing in "Top Five" journals.
+image: "figures/female-representation.jpg"
+---
+
+```{r setup, echo = F, message = F}
+library(bldr)
+library(dplyr)
+library(ggplot2)
+library(knitr)
+library(nberwp)
+library(tidyr)
+
+opts_chunk$set(echo = F, message = F,
+               fig.width = 6, fig.height = 3.14, fig.ext = 'svg', dev = 'svg')
+
+set_ggtheme()
+```
+
+The latest version of [nberwp](https://github.com/bldavies/nberwp) (1.2.0) contains information on where NBER working papers are published:
+
+```{r outlet-shares}
+outlet_shares = papers %>%
+  count(outlet) %>%
+  mutate(p = 100 * n / sum(n))
+
+outlet_desc = c('Top Five journals', 'Other journals', 'Book/chapters', 'Unpublished')
+
+outlet_shares %>%
+  mutate(Outlet = outlet_desc) %>%
+  select(Outlet, Papers = n, `Share (%)` = p) %>%
+  kable(digits = 1, format.args = list(big.mark = ','))
+```
+
+About `r round(sum(outlet_shares$p[1:2]))`% of working papers are published or forthcoming in peer-reviewed journals.
+One in five of these papers are in the "Top Five:" the [*American Economic Review*](https://www.aeaweb.org/journals/aer), [*Econometrica*](https://www.econometricsociety.org/publications/econometrica/browse), the [*Journal of Political Economy*](https://www.journals.uchicago.edu/loi/jpe), the [*Quarterly Journal of Economics*](https://academic.oup.com/qje/issue), and the [*Review of Economic Studies*](https://academic.oup.com/restud/issue).
+These journals are the tallest peaks in the world of economic research.
+Publishing in them [can be vital for career progression](https://www.aeaweb.org/research/charts/publishing-promotion-economics-top-five).
+
+The chart below counts papers by decade and publication outcome.
+As the number of NBER working papers grew, so did the number appearing in journals and the Top Five.
+Yet the space available in Top Fives was relatively constant between the 1970s and 2010s ([Card and DellaVigna, 2013](https://doi.org/10.1257/jel.51.1.144)).
+NBER working papers occupied an increasing share of that space.
+
+```{r decade-counts}
+papers %>%
+  filter(year %in% 1970:2019) %>%
+  mutate(decade = paste0(10 * floor(year / 10), 's')) %>%
+  group_by(decade) %>%
+  summarise(Total = n(),
+            `Published in journals` = sum(outlet <= 2, na.rm = T),
+            `Published in Top Five` = sum(outlet == 1, na.rm = T)) %>%
+  gather(key, value, -decade, factor_key = T) %>%
+  ggplot(aes(decade, value / 1e3)) +
+  geom_col(aes(fill = key), position = 'dodge') +
+  labs(x = 'Decade paper released',
+       y = 'Papers (000s)',
+       fill = NULL,
+       title = 'Publication outcomes of NBER working papers',
+       subtitle = sprintf('About %.1f%% of papers are in a Top Five journal', outlet_shares$p[1])) +
+  scale_x_discrete(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0), breaks = 2 * (0:5)) +
+  scale_fill_grey(start = 0.5, end = 0.8) +
+  theme(legend.justification = c(0, 1),
+        legend.position = c(0, 1),
+        panel.grid.major.x = element_blank())
+```
+
+Why are so many NBER working papers in the Top Five?
+Here are four possible reasons:
+
+1. The NBER working paper series is among [the most read series](https://logec.repec.org/scripts/seriesstat.pf) in economics.
+  More readers means more feedback, which helps authors improve their papers and make them Top Five-worthy.
+2. Each paper has an NBER-affiliated author.
+  "Affiliates are selected through a rigorous and competitive process" (see [here](https://www.nber.org/affiliated-scholars)).
+  This process may select authors more willing and able to pursue Top Five publications.
+3. NBER working papers tend to apply cutting-edge methods to policy-relevant issues.
+  This makes papers attractive to Top Five editors, who want to publish frontier, impactful research.
+4. Top Five editors tend to be NBER affiliates.
+  Club co-membership might help authors during peer-review.
+
+## Gender differences
+
+```{r gender-weights}
+gender_weights = papers %>%
+  left_join(paper_authors) %>%
+  left_join(authors) %>%
+  add_count(paper, name = 'n_authors') %>%
+  group_by(paper) %>%
+  summarise(wt_male = sum((female == 0) / n_authors),
+            wt_female = sum((female == 1) / n_authors))
+```
+
+```{r female-representation-data}
+female_representation = papers %>%
+  left_join(gender_weights) %>%
+  {bind_rows(
+    mutate(., group = 'All papers'),
+    mutate(filter(., outlet <= 2), group = 'Papers in journals'),
+    mutate(filter(., outlet == 1), group = 'Papers in Top Five'),
+  )} %>%
+  mutate(decade = paste0(10 * floor(year / 10), 's')) %>%
+  {bind_rows(., mutate(., decade = 'Overall'))} %>%
+  filter(decade != '2020s') %>%
+  group_by(decade, group) %>%
+  summarise(rep_female = sum(wt_female) / sum(wt_male + wt_female)) %>%
+  ungroup()
+
+female_representation_all = female_representation %>%
+  filter(decade == 'Overall' & group == 'All papers') %>%
+  pull(rep_female) %>%
+  {round(100 * ., 1)}
+
+female_representation_top5 = female_representation %>%
+  filter(decade == 'Overall' & group == 'Papers in Top Five') %>%
+  pull(rep_female) %>%
+  {round(100 * ., 1)}
+```
+
+nberwp contains information on author genders, so we can compare the representation of women among papers with different publication outcomes.
+Here's one approach:
+
+1. Compute the fraction of authors on each paper who were women.
+2. Sum these fractions across all papers.
+3. Divide by the number of papers.
+
+These three steps deliver an estimate of the share of papers written by women.
+This estimate equals `r female_representation_all`% across all NBER working papers.
+The chart below separates by decade and publication outcome.
+Female representation grew over time, both overall and among papers published in journals.
+But the growth was slower among papers published in the Top Five.
+Women were consistently less represented among papers published in the Top Five than among other papers.
+Overall, only `r female_representation_top5`% of NBER working papers in the Top Five were written by women.
+
+```{r female-representation}
+female_representation %>%
+  ggplot(aes(decade, 100 * rep_female)) +
+  geom_col(aes(fill = group), position = 'dodge') +
+  labs(x = 'Decade paper released',
+       y = '% papers written by women',
+       fill = NULL,
+       title = 'Female representation on NBER working papers',
+       subtitle = sprintf('Women wrote %.1f%% of papers but only %.1f%% of those in Top Fives', female_representation_all, female_representation_top5)) +
+  scale_x_discrete(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) +
+  scale_fill_grey(start = 0.5, end = 0.8) +
+  theme(legend.justification = c(0, 1),
+        legend.position = c(0, 1),
+        panel.grid.major.x = element_blank())
+ggsave('figures/female-representation.jpg')
+```
+
+What explains the relative gender gap for papers in the Top Five?
+Perhaps it reflects what men and women write about.
+One way to explore this is to compare female representation and Top Five publication rates across the NBER's [research programs](https://www.nber.org/programs-projects/programs-working-groups), which "correspond loosely to traditional field[s] of study within economics."
+I present that comparison in the chart below.
+The horizontal axis measures female representation using the estimator defined above; the vertical axis measures the share of papers in each program published in the Top Five.
+
+```{r program-weights}
+program_weights = papers %>%
+  left_join(paper_programs) %>%
+  add_count(paper, name = 'n_programs') %>%
+  mutate(program_wt = 1 / n_programs) %>%
+  select(paper, program, program_wt)
+```
+
+```{r programs, fig.height = 4.71}
+plot_df = papers %>%
+  left_join(program_weights) %>%
+  filter(!is.na(program) & program != 'TWP') %>%
+  left_join(gender_weights) %>%
+  group_by(program) %>%
+  summarise(wt = sum(program_wt),
+            rep_female = sum(program_wt * wt_female) / sum(program_wt * (wt_male + wt_female)),
+            p_journal = sum(program_wt * (outlet <= 2), na.rm = T) / sum(program_wt),
+            p_top5 = sum(program_wt * (outlet == 1), na.rm = T) / sum(program_wt)) %>%
+  mutate(has_label = program %in% c('CH', 'HE', 'EFG', 'ME'))
+
+plot_df %>%
+  ggplot(aes(100 * rep_female, 100 * p_top5)) +
+  geom_point(aes(size = wt), show.legend = F) +
+  geom_text(data = filter(plot_df, has_label), aes(label = program), vjust = 0, nudge_y = 0.75) +
+  geom_vline(xintercept = 100 * with(gender_weights, sum(wt_female) / sum(wt_male + wt_female)), lty = 'dashed', alpha = 0.5) +
+  geom_hline(yintercept = 100 * (sum(papers$outlet == 1, na.rm = T) / nrow(papers)), lty = 'dashed', alpha = 0.5) +
+  labs(x = '% papers written by women',
+       y = '% papers published in Top Five',
+       title = 'Female representation and Top Five publication rates\nacross NBER research programs',
+       subtitle = 'Larger points represent programs with more papers\nDashed lines indicate base rates across all programs')
+```
+
+Programs with lower female representation tend to have proportionally more papers in the Top Five.
+The Monetary Economics (ME) program, which has the lowest female representation, has more papers in the Top Five than the program on Children (CH), which has the highest female representation.
+Papers in the Economic Fluctuations and Growth (EFG) program tend to focus on "big picture" questions and often land in Top Fives.
+Papers in the Health Economics (HE) program tend to focus on more specific questions, and often land in field or medical journals.
+But papers in the HE program are about three times as likely to be written by women than are papers in the EFG program.
+This difference in likelihoods contributes to lower female representation among NBER working papers published in the Top Five.
+
+But *why* are the likelihoods different?
+Why do proportionally fewer women write papers on growth than on children?
+Perhaps this reflects what men and women enjoy researching.
+But, again, publishing in the Top Five can be vital for career progression.
+So, at the margin, I'd expect researchers to choose topics more likely to land in Top Five journals.
+These choices do not appear in my data.
+I'm interested to learn more---[reach out](mailto:bldavies@stanford.edu) if you are too.
+
+```{r session-info}
+save_session_info()
+```
