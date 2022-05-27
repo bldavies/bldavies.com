@@ -1,13 +1,15 @@
 - id: D1
   title: "Gender Sorting among Economists: Evidence from the NBER"
-  date: 2022-05-20
-  type: wp
-  url: https://doi.org/10.31235/osf.io/zeb7a
+  outlet: "*Economics Letters*"
+  forthcoming: true
+  date: 2022-05-27
+  type: pub
   abstract: |
     I compare the co-authorship patterns of male and female economists, using historical data on National Bureau of Economic Research working papers.
     Men tended to work in smaller teams than women, but co-authored more papers and so had more co-authors overall.
     Both men and women had more same-gender co-authors than we would expect if co-authorships were random.
     This was especially true for men in Macro/Finance.
+  preprint: https://doi.org/10.31235/osf.io/zeb7a
 - id: DGHJ1
   title: Research Funding and Collaboration
   coauthors: Jason Gush, Shaun C. Hendy, and Adam B. Jaffe
