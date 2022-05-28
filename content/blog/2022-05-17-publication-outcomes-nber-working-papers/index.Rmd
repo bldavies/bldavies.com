@@ -157,8 +157,10 @@ ggsave('figures/female-representation.jpg')
 What explains the relative gender gap for papers in the Top Five?
 Perhaps it reflects what men and women write about.
 One way to explore this is to compare female representation and Top Five publication rates across the NBER's [research programs](https://www.nber.org/programs-projects/programs-working-groups), which "correspond loosely to traditional field[s] of study within economics."
-I present that comparison in the chart below.
+I present that comparison in the chart below.[^next-post]
 The horizontal axis measures female representation using the estimator defined above; the vertical axis measures the share of papers in each program published in the Top Five.
+
+[^next-post]: I compare publication rates among men and women *within* each program [here](/blog/gender-differences-publication-rates-nber-programs).
 
 ```{r program-weights}
 program_weights = papers %>%

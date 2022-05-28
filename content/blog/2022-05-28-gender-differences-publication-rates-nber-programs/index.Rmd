@@ -1,0 +1,117 @@
+---
+title: Gender differences in publication rates within NBER programs
+topics: [economics, research]
+loadMathJax: no
+---
+
+```{r setup, echo = F, message = F}
+library(bldr)
+library(dplyr)
+library(ggplot2)
+library(knitr)
+library(nberwp)
+library(tidyr)
+
+opts_chunk$set(echo = F, message = F,
+               fig.width = 6, fig.height = 4, fig.ext = 'svg', dev = 'svg')
+
+set_ggtheme()
+```
+
+```{r plot_df}
+gender_weights = papers %>%
+  left_join(paper_authors) %>%
+  left_join(authors) %>%
+  add_count(paper, name = 'n_authors') %>%
+  group_by(paper) %>%
+  summarise(wt_male = sum((female == 0) / n_authors),
+            wt_female = sum((female == 1) / n_authors))
+
+program_weights = papers %>%
+  left_join(paper_programs) %>%
+  add_count(paper, name = 'n_programs') %>%
+  mutate(program_wt = 1 / n_programs) %>%
+  select(paper, program, program_wt)
+
+plot_df = papers %>%
+  left_join(gender_weights) %>%
+  left_join(program_weights) %>%
+  filter(!is.na(program) & program != 'TWP') %>%
+  group_by(program) %>%
+  summarise(
+    p_journal_male = sum(program_wt * wt_male * (outlet <= 2), na.rm = T) / sum(program_wt * wt_male),
+    p_journal_female = sum(program_wt * wt_female * (outlet <= 2), na.rm = T) / sum(program_wt * wt_female),
+    p_top5_male = sum(program_wt * wt_male * (outlet == 1), na.rm = T) / sum(program_wt * wt_male),
+    p_top5_female = sum(program_wt * wt_female * (outlet == 1), na.rm = T) / sum(program_wt * wt_female),
+  ) %>%
+  mutate_if(is.numeric, ~(. * 100)) %>%
+  left_join(programs) %>%
+  mutate(program_category = ifelse(program_category == 'Micro', 'Micro', 'Macro/Finance'))
+```
+
+My [previous post](/blog/publication-outcomes-nber-working-papers/) showed that NBER research programs with higher female representation tend to have fewer papers published in the "Top Five" economics journals.
+A reader suggested comparing Top Five publication rates among men and women *within* each program.
+This comparison reveals whether men and women publish at different rates despite writing about similar topics.
+Here's the chart:
+
+```{r top-fives}
+plot_df %>%
+  ggplot(aes(p_top5_male, p_top5_female)) +
+  geom_abline(intercept = 0, slope = 1, linetype = 'dashed') +
+  geom_point(aes(col = program_category)) +
+  geom_text(data = filter(plot_df, program %in% c('CF', 'CH', 'DAE', 'HE', 'ME')), aes(label = program), hjust = 0, nudge_x = 0.2) +
+  geom_text(data = filter(plot_df, program == 'EFG'), aes(label = program), hjust = 1, nudge_x = -0.2) +
+  labs(x = '% male-authored papers in Top Five',
+       y = '% female-authored papers in Top Five',
+       title = 'Gender differences in Top Five publication rates\nwithin NBER research programs',
+       subtitle = 'Points below dashed line represent programs in which male-authored papers\nare more likely to be published in the Top Five than female-authored papers',
+       col = 'Subfield') +
+  guides(col = guide_legend(title.hjust = 1, label.position = 'left')) +
+  scale_x_continuous(breaks = c(8, 12, 16, 20)) +
+  theme(legend.justification = c(1, 0),
+        legend.position = c(1, 0))
+```
+
+Most points lie below the dashed diagonal line.
+Such points represent programs in which male-authored papers are more likely to be in Top Fives than female-authored papers.
+This "male premium" in Top Five publication rates doesn't appear to differ between programs in the "Micro" and "Macro/Finance" subfields defined in [Davies (2022)](https://doi.org/10.31235/osf.io/zeb7a).
+The premium is largest for the Corporate Finance (CF) program and most negative for the Development of the American Economy (DAE) program.
+
+How do these patterns compare to publication rates across *all* journals?
+Here's the corresponding chart:
+
+```{r all-journals}
+plot_df %>%
+  ggplot(aes(p_journal_male, p_journal_female)) +
+  geom_abline(intercept = 0, slope = 1, linetype = 'dashed') +
+  geom_point(aes(col = program_category)) +
+  labs(x = '% male-authored papers in journals',
+       y = '% female-authored papers in journals',
+       title = 'Gender differences in journal publication rates\nwithin NBER research programs',
+       subtitle = 'Points below dashed line represent programs in which male-authored papers\nare more likely to be published in a journal than female-authored papers',
+       col = 'Subfield') +
+  guides(col = guide_legend(title.hjust = 1, label.position = 'left')) +
+  scale_x_continuous(breaks = c(50, 55, 60, 65, 70)) +
+  scale_y_continuous(breaks = c(50, 55, 60, 65)) +
+  theme(legend.justification = c(1, 0),
+        legend.position = c(1, 0))
+```
+
+Looking at all journals, rather than only Top Fives, lowers the "male premium" in publication rates.
+It also reveals differences between subfields: some Micro programs have negative premia, but all Macro/Finance programs have positive premia.
+
+What explains these patterns?
+Here are two theories:
+
+1. Women submit papers to Top Fives less often.
+  This would be consistent with evidence that women shy away from competition relative to equally competent men (see, e.g., [Niederle and Vesterlund, 2011](https://doi.org/10.1146/annurev-economics-111809-125122)).
+2. Top Five referees and editors discriminate against women.
+  This would be consistent with evidence that women are held to higher editorial standards ([Card et al., 2020](https://doi.org/10.1093/qje/qjz035); [Hengel, 2017](https://ideas.repec.org/p/cam/camdae/1753.html)).
+
+Unfortunately I can't test these theories with my data.
+I observe publication outcomes, but not journal submissions or referee/editor biases.
+And the two theories aren't mutually exclusive: women may submit less often *because* they anticipate discrimination.
+
+```{r session-info}
+save_session_info()
+```
