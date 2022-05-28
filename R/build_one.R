@@ -3,7 +3,7 @@
 # This script defines the build_one function used in R/build.R.
 #
 # Ben Davies
-# March 2020
+# May 2022
 
 local({
   a <- commandArgs(TRUE)
@@ -25,12 +25,12 @@ local({
     if (sum(grepl("```", y)) > 0 & sum(grepl("linkSource", y)) == 0) {
       x <- blogdown:::append_yaml(x, list(linkSource = TRUE))
     }
-    if (sum(grepl("\\$", y)) > 0 & sum(grepl("loadMathJax", y)) == 0) {
+    x <- xfun::protect_math(x)
+    if (sum(grepl("`(\\$\\$|\\\\\\()", x)) > 0 & sum(grepl("loadMathJax", y)) == 0) {
       x <- blogdown:::append_yaml(x, list(loadMathJax = TRUE))
     }
     x <- gsub("(\\\n){2,}", "\n\n", paste(x, collapse = "\n"))  # Excess \n's 
     x <- gsub("(\\\n)+$", "\n", x)  # EoF
-    x <- xfun::protect_math(x)
     xfun::write_utf8(x, a[2])
   }
 })
