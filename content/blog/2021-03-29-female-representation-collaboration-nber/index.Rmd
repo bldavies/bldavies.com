@@ -1,6 +1,7 @@
 ---
 title: Female representation and collaboration at the NBER
 topics: [economics, networks, research]
+loadMathJax: no
 ---
 
 ```{r setup, echo = F, message = F, warning = F}

@@ -1,8 +1,8 @@
 ---
 title: Female representation and collaboration at the NBER
 topics: [economics, networks, research]
+loadMathJax: no
 linkSource: yes
-loadMathJax: yes
 ---
 
 This post analyzes the [representation](#representation-across-research-programs) of, and [collaboration](#co-authorship-patterns) among, female authors of [NBER working papers](https://www.nber.org/papers) over the last four decades.

@@ -5,8 +5,8 @@ summary: |
   Women wrote an increasing share of NBER working papers during the 1970s through 2010s.
   But the growth was slower among papers appearing in "Top Five" journals.
 image: "figures/female-representation.jpg"
+loadMathJax: no
 linkSource: yes
-loadMathJax: yes
 ---
 
 The latest version of [nberwp](https://github.com/bldavies/nberwp) (1.2.0) contains information on where NBER working papers are published:
