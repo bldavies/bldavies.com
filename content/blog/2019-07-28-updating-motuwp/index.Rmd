@@ -1,6 +1,6 @@
 ---
 title: Updating motuwp
-topics: [data, research]
+topics: [research, software]
 ---
 
 ```{r setup, echo = FALSE}

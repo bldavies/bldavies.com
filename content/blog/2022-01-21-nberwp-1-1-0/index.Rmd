@@ -1,6 +1,6 @@
 ---
 title: nberwp 1.1.0
-topics: [data, research]
+topics: [research, software]
 loadMathJax: no
 ---
 

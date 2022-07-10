@@ -1,6 +1,6 @@
 ---
 title: Accessing the Strava API with R
-topics: [data, running]
+topics: [running, software]
 ---
 
 [Strava](https://www.strava.com/) is an online platform for storing and sharing fitness data.
