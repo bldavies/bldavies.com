@@ -8,6 +8,22 @@
     (<a href="{{ .Site.Params.githubContentURL }}{{ .File.Dir }}">source</a>)
     {{ end }}
   </p>
+  <p>
+    {{ with .Params.topics }}
+      {{ if eq (len .) 1 }}
+      Topic:
+      {{ range . }}
+      <a class="rounded-link" href="{{ $.Site.BaseURL }}topics/{{ . | urlize }}">{{ . }}</a>
+      {{ end }}
+      {{ end }}
+      {{ if ge (len .) 2 }}
+      Topics:
+      {{ range . }}
+      <a class="rounded-link" href="{{ $.Site.BaseURL }}topics/{{ . | urlize }}">{{ . }}</a>
+      {{ end }}
+      {{ end }}
+    {{ end }}
+  </p>
 </div>
 
 {{ .Content }}
