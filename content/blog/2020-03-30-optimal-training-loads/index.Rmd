@@ -1,6 +1,6 @@
 ---
 title: Optimal training loads
-topics: [sports]
+topics: [economics, sports]
 ---
 
 Suppose I'm training for an upcoming race.

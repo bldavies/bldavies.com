@@ -1,6 +1,6 @@
 ---
 title: Introducing nberwp
-topics: [research, software]
+topics: [economics, research, software]
 ---
 
 ```{r setup, echo = F, message = F}

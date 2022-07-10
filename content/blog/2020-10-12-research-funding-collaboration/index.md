@@ -1,6 +1,6 @@
 ---
 title: Research funding and collaboration
-topics: [research, networks]
+topics: [economics, networks, research]
 ---
 
 Research is increasingly conducted by teams.
