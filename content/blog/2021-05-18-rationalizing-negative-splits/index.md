@@ -1,6 +1,6 @@
 ---
 title: Rationalizing negative splits
-topics: [running]
+topics: [sports]
 linkSource: yes
 loadMathJax: yes
 ---
