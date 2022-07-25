@@ -146,7 +146,7 @@ lapply(votes$results, function(x) tibble(accepts = tail(x$accepts, 1))) %>%
 
 The relationship between influence gaps and vote outcomes creates an incentive to [gerrymander](https://en.wikipedia.org/wiki/Gerrymandering) the influence network to make preferred outcomes more likely.
 For example, a subset of committee members wanting to accept the policy could cooperate to gain the trust of specific members so as to construct a positive influence gap.
-In political (e.g., elections) and legal (e.g. jury votes) contexts, bad actors may act on the incentive to gerrymander voters' influences and, in doing so, pervert the democratic process.
+In political and legal contexts (e.g. elections and jury votes), bad actors may act on the incentive to gerrymander voters' influences and, in doing so, pervert the democratic process.
 
 The *Nature* article extends my model in three ways:
 
