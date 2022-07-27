@@ -44,4 +44,4 @@ Intuitively, I learn more about the vaccines' relative effects from people who r
 
 ---
 
-*Thanks to Lautaro Chittaro for inspiring this post and commenting on a draft.*
+*Thanks to [Lautaro Chittaro](https://chittaropeople.sites.stanford.edu) for inspiring this post and commenting on a draft.*
