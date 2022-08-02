@@ -1,3 +1,14 @@
+- id: D2
+  title: Contracting with Persuasive Agents
+  date: 2022-08-02
+  type: old
+  url: /research/D2.pdf
+  abstract: |
+    I study a contracting game played by a recruitment agent and their client.
+    The client pays the agent if they find a match.
+    Search costs depend on market thickness, which the agent observes but the client does not.
+    The agent can persuade the client to pay more by manipulating their beliefs about market thickness and prospective match qualities.
+    Persuasion benefits the agent more when they can shirk than when competition prevents them from shirking.
 - id: D1
   title: "Gender Sorting among Economists: Evidence from the NBER"
   outlet: "*Economics Letters*"
