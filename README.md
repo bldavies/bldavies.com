@@ -15,13 +15,13 @@ I convert such posts to Markdown using `R/build.R`.
 I use a custom [taxonomy](https://gohugo.io/content-management/taxonomies/) to classify my blog posts based on the topics they discuss:
 
 * [culture](https://bldavies.com/topics/culture/)
-* [economics](https://bldavies.com/topics/economics/): markets, resources, strategic interaction, and the academic field
+* [economics](https://bldavies.com/topics/economics/): markets, incentives, and the academic discipline
 * [education](https://bldavies.com/topics/education/)
 * [mathematics](https://bldavies.com/topics/mathematics/)
 * (mass) [media](https://bldavies.com/topics/media/): music, news, and podcasts
 * [networks](https://bldavies.com/topics/networks/)
 * [politics](https://bldavies.com/topics/politics/) and voting
-* [research](https://bldavies.com/topics/research/) practice, publishing, and academia
+* [research](https://bldavies.com/topics/research/), publishing, and academia
 * information about [software](https://bldavies.com/topics/software/) and data I maintain
 * [sports](https://bldavies.com/topics/sports/)
 * [statistics](https://bldavies.com/topics/statistics/): sampling, estimation, and inference
