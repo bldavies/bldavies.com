@@ -5,7 +5,7 @@ topics: [economics, education, research]
 
 I am excited to announce that I will be moving to the United States later this year to pursue a PhD in economics at [Stanford University](https://www.stanford.edu).
 
-[Stanford's economics PhD program](https://economics.stanford.edu/graduate/graduate-degree-programs/phd-degree) ranks among the best in the world.
+[Stanford's economics PhD program](https://economics.stanford.edu/graduate/graduate-degree-programs) ranks among the best in the world.
 It begins with two years of advanced coursework on microeconomics, macroeconomics, econometrics, and field courses relevant to my academic interests.
 This coursework will strengthen my technical and research skills, and prepare me for writing a PhD thesis that contributes substantively to the economic research literature.
 
