@@ -109,7 +109,7 @@ I can go outside to unwind whenever I like.
 If I couldn't then I'd go insane.
 
 But Stanford loses on the "fun place to live" front.
-[Palo Alto is small and suburban](http://localhost:1313/blog/living-america/#its-always-sunny-in-palo-alto).
+[Palo Alto is small and suburban](/blog/living-america/#its-always-sunny-in-palo-alto).
 It lacks the energy and excitement found in big cities.
 San Francisco is an hour away by train, which is fine for days out but a hassle for nights out.
 I prefer running to drinking, so I'm willing to sacrifice bars for sun.
