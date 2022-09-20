@@ -15,5 +15,5 @@
   {{ end }}
   {{ if .dataCode }}<a class="rounded-link" href="{{ .dataCode }}">data/code</a>{{ end }}
   {{ if .preprint }}<a class="rounded-link" href="{{ .preprint }}">preprint</a>{{ end }}
-  {{ if .abstract }}<span id="{{ .id }}-abstract" class="abstract" style="display: none">{{ .abstract }}</span>{{ end }}
+  {{ if .abstract }}<span id="{{ .id }}-abstract" class="abstract" style="display: none">{{ .abstract | markdownify }}</span>{{ end }}
 </p>
