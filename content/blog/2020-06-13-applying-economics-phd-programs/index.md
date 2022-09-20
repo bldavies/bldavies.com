@@ -1,6 +1,7 @@
 ---
 title: Applying to economics PhD programs
 topics: [economics, education, research]
+summary: I describe my experience applying to economics PhD programs and offer advice to future applicants.
 ---
 
 Last year I applied to several economics PhD programs at elite universities and business schools.
