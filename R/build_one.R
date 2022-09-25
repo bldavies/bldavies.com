@@ -3,7 +3,7 @@
 # This script defines the build_one function used in R/build.R.
 #
 # Ben Davies
-# May 2022
+# September 2022
 
 local({
   a <- commandArgs(TRUE)
@@ -11,7 +11,7 @@ local({
   knitr::opts_chunk$set(
     fig.path = "figures/",
     fig.cap = "",  # Remove default alt text
-    cache.path = "cache/"
+    cache.path = sprintf("%s/cache/", d)
   )
   knitr::opts_knit$set(
     base.dir = normalizePath(d, mustWork = TRUE),
