@@ -1,3 +1,15 @@
+- id: D3
+  title: Why Do Experts Give Simple Advice?
+  date: 2022-09-25
+  type: wp
+  url: https://arxiv.org/abs/2209.11710
+  abstract: |
+    An expert tells an advisee whether to take an action that may be good or bad.
+    He may provide a condition under which to take the action.
+    This condition predicts whether the action is good if and only if the expert is competent.
+    Providing the condition exposes the expert to reputational risk by allowing the advisee to learn about his competence.
+    He trades off the accuracy benefit and reputational risk induced by providing the condition.
+    He prefers not to provide it---i.e., to give "simple advice"---when his payoff is sufficiently concave in the posterior belief about his competence.
 - id: D2
   title: Contracting with Persuasive Agents
   date: 2022-08-02
