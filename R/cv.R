@@ -4,7 +4,7 @@
 # summaries in content/research/.
 #
 # Ben Davies
-# August 2020
+# September 2022
 
 
 # Initialisation ----
@@ -25,6 +25,12 @@ md2tex <- function(x) {  # Untested against edge cases
 }
 
 null2na <- function(x) ifelse(is.null(x), NA, x)
+
+get_period <- function(start_date, end_date) {
+  x <- year(start_date)
+  y <- year(end_date)
+  ifelse(is.na(y), paste0(x, "--present"), ifelse(x < y, paste0(x, "--", y - 2000), x))
+}
 
 
 # Header and footer ----
@@ -64,14 +70,14 @@ contact_info <- c(
 
 education <- read_csv(paste0(data_dir, "education.csv")) %>%
   arrange(desc(start_date)) %>%
-  mutate(period = paste0(year(start_date), "--", ifelse(!is.na(end_date), year(end_date) - 2000, "present")),
+  mutate(period = get_period(start_date, end_date),
          text = sprintf("\t\\entry{%s, %s, %s.}", qualification, institution, period)) %>%
   {.$text}
 
 
-# Experience ----
+# Employment ----
 
-experience <- read_csv(paste0(data_dir, "experience.csv")) %>%
+employment <- read_csv(paste0(data_dir, "employment.csv")) %>%
   arrange(desc(start_date)) %>%
   mutate(period = paste0(year(start_date), "--", ifelse(!is.na(end_date), year(end_date) - 2000, "present")),
          text = sprintf("\t\\entry{%s, %s, %s.}", position, employer, period)) %>%
@@ -118,6 +124,15 @@ presentations <- read_csv(paste0(data_dir, "presentations.csv"), col_types = col
   {sprintf("\t\\entry{\\parbox[b]{0.4in}{\\emph{%d}: }%s}", .$year, .$text)}
 
 
+# Teaching ----
+
+teaching <- read_csv(paste0(data_dir, "teaching.csv")) %>%
+  arrange(desc(start_date)) %>%
+  mutate(period = get_period(start_date, end_date),
+         text = sprintf("\t\\entry{%s, %s, %s.}", position, institution, period)) %>%
+  {.$text}
+
+
 # Combine and compile ----
 
 content <- c(
@@ -131,9 +146,9 @@ content <- c(
   "",
   education,
   "",
-  "\\section{Experience}",
+  "\\section{Employment}",
   "",
-  experience,
+  employment,
   "",
   "\\section{Honours}",
   "",
@@ -158,6 +173,10 @@ content <- c(
   "\\section{Seminars and Conference Presentations}",
   "",
   presentations,
+  "",
+  "\\section{Teaching}",
+  "",
+  teaching,
   "\\vskip\\beforesecskip",
   "\\begin{center}",
   "\t\\footnotesize Last updated: \\today",
