@@ -26,7 +26,7 @@ library(readr)
 load('../2019-07-14-college-degrees-similarity-measures/data/workspace.RData')
 ```
 
-In my last [post][prev-post], I compared measures of  similarity among college degree fields.
+In [my last post][prev-post], I compared measures of  similarity among college degree fields.
 My goal in this post is to partition the set of fields such that each field has greater within-part similarities than between-part similarities.
 One approach is to [hierarchically cluster](https://en.wikipedia.org/wiki/Hierarchical_clustering) fields based on their similarities, producing a dendrogram that can be cut at different heights to obtain different partitions.
 Generating the dendrogram restricts my choice set but, ultimately, I still have to choose which partition is "best."

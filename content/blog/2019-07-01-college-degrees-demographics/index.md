@@ -69,7 +69,7 @@ Males pair mathematics with physics about as often as with computer science, whi
 
 Field pair frequencies provide insight into the intellectual connections between fields.
 Such connections may reflect fields using similar techniques (e.g., economics and finance) or providing complementary skills (e.g., mathematics and computer science).
-I plan to explore these connections in future posts.
+I explore those connections [here](/blog/college-degrees-similarity-measures/) and [here](/blog/college-degrees-community-detection/).
 
 [repo-url]: https://github.com/bldavies/college-degrees/
 
