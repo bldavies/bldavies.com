@@ -1,0 +1,186 @@
+---
+title: Estimating treatment effects with OLS
+topics: [statistics]
+summary: |
+  The treatment effects estimated using ordinary least squares depend on how the regression model is specified.
+---
+
+```{r setup, echo = F, message = F}
+library(bldr)
+library(broom)
+library(dplyr)
+library(knitr)
+library(purrr)
+library(tidyr)
+
+opts_chunk$set(echo = F, message = F)
+```
+
+```{r functions}
+get_sample = function(n, rho = 0) {
+  
+  fert = sample(c(0, 1), n, replace = T)
+  soil = sample(c(0, 1), n, replace = T)
+  fert = ifelse(runif(n) < rho, soil, fert)  # Make cor(fert, soil) = rho
+  
+  tibble::tibble(
+    fert  = fert,
+    soil  = soil,
+    yield = round(fert + soil + rnorm(n, 5), 2)
+  )
+  
+}
+
+get_ols_estimates = function(d) {
+  fit_short = lm(yield ~ fert + soil, data = d)
+  fit_long = lm(yield ~ fert * soil, data = d)
+  bind_rows(
+    mutate(tidy(fit_short), model = 'short'),
+    mutate(tidy(fit_long), model = 'long')
+  )
+}
+
+print_estimates = function(x) {
+  x %>%
+    mutate(Coefficient = ifelse(x$model[1] == 'short', 'beta', 'gamma')) %>%
+    slice(-1) %>%
+    select(Coefficient, Estimate = estimate, `Std. error` = std.error) %>%
+    mutate(Coefficient = sprintf('$\\%s_%d$', Coefficient, row_number())) %>%
+    kable(align = 'c', digits = 3)
+}
+
+get_conditional_mean = function(d, f, s) {
+  mean(with(d, yield[fert == f & soil == s]))
+}
+```
+
+A crop farmer wonders if he should use a new fertilizer.
+He asks his peers what fertilizer they use and what are their annual yields.
+He notices that some have different soil.
+"That's annoying," the farmer thinks.
+"If we all had the same soil, then I could estimate the benefit of using the new fertilizer by comparing the mean yields among farmers who do and don't use it.
+But now I have to control for soil too!"
+
+```{r}
+n = 100
+
+set.seed(0)
+d = get_sample(n)
+
+ols_estimates = get_ols_estimates(d)
+```
+
+Thankfully the farmer learned about [ordinary least squares](https://en.wikipedia.org/wiki/Ordinary_least_squares) in his youth.
+He remembers that he can control for variables by including them in a regression equation.
+He posits a linear model
+$$\text{yield}=\beta_1\text{fert}+\beta_2\text{soil}+\epsilon,$$
+where
+
+* $\text{fert}$ indicates using the new fertilizer,
+* $\text{soil}$ indicates having a different soil,
+* $\beta_1$ and $\beta_2$ are the average marginal effects of changing fertilizers and soils, and
+* $\epsilon$ is an iid random error.
+
+The farmer estimates $\beta_1$ and $\beta_2$ using OLS, and gets the following results:
+
+```{r}
+ols_estimates %>%
+  filter(model == 'short') %>%
+  print_estimates()
+```
+
+```{r}
+mu_00 = get_conditional_mean(d, 0, 0)
+mu_01 = get_conditional_mean(d, 0, 1)
+mu_10 = get_conditional_mean(d, 1, 0)
+mu_11 = get_conditional_mean(d, 1, 1)
+p = mean(d$soil)
+```
+
+The farmer's daughter enters his office.
+She looks at his estimates and asks, "why don't you just compare the mean yields among farmers with the same soil as you?
+That seems less complicated than OLS."
+The farmer agrees.
+He computes the conditional means
+$$\mu_{10}\equiv\mathrm{E}[\text{yield}\mid\text{fert}=1\ \text{and}\ \text{soil}=0]$$
+and
+$$\mu_{00}\equiv\mathrm{E}[\text{yield}\mid\text{fert}=0\ \text{and}\ \text{soil}=0]$$
+in his data, and finds that $\mu_{10}-\mu_{00}=`r round(mu_10 - mu_00, 3)`$.
+This surprises the farmer:
+"I thought OLS controlled for variation in soil.
+I expected it to give me the same result as computing the difference in conditional means.
+But it doesn't.
+Why not?"
+
+The farmer has an idea:
+"What if I include an interaction term?"
+He posits an extended model
+$$\text{yield}=\gamma_1\text{fert}+\gamma_2\text{soil}+\gamma_3(\text{fert}\cdot\text{soil})+\epsilon,$$
+estimates it via OLS, and gets the following results:
+
+```{r}
+ols_estimates %>%
+  filter(model == 'long') %>%
+  print_estimates()
+```
+
+"Interesting," he thinks.
+"OLS gives me the difference in conditional means if I include an interaction term, but not if I don't.
+I wonder what's going on?"
+
+What's going on is that $\beta_1$ and $\gamma_1$ measure different things.
+The latter measures the average effect of using the new fertilizer *without changing* soils.
+Thus $\gamma_1=\mu_{10}-\mu_{00}$ by definition.
+Whereas $\beta_1$ measures the average effect of using the new fertilizer *across all* soils.
+Thus
+$$\beta_1=(1-p)\left(\mu_{10}-\mu_{00}\right)+p\left(\mu_{11}-\mu_{01}\right),$$
+where $p=\Pr(\text{soil}=1)$ is the share of the farmer's peers who have a different soil, and
+$$\mu_{fs}\equiv\mathrm{E}[\text{yield}\mid\text{fert}=f\ \text{and}\ \text{soil}=s]$$
+is the mean yield among peers with $\text{fert}=f\in\{0,1\}$ and $\text{soil}=s\in\{0,1\}$.
+The farmer's data has $p=`r p`$ and $\mu_{11}-\mu_{01}=`r round(mu_11 - mu_01, 3)`$, giving
+$$\beta_1=(1-`r p`)\times`r round(mu_10 - mu_00, 3)`+`r p`\times`r round(mu_11 - mu_01, 3)`=`r round((1 - p) * (mu_10 - mu_00) + p * (mu_11 - mu_01), 3)`$$
+as in the first table above.
+
+```{r}
+N = 100
+
+get_diff = function(n) {
+  d = get_sample(n)
+  d %>%
+    get_ols_estimates() %>%
+    filter(term == 'fert') %>%
+    select(model, estimate) %>%
+    spread(model, estimate) %>%
+    mutate(diff = short - long)
+}
+
+set.seed(0)
+sims = crossing(run = 1:N, n = c(1e2, 1e3, 1e4)) %>%
+  mutate(res = map(n, get_diff)) %>%
+  unnest('res')
+```
+
+The OLS estimates of $\beta_1$ and $\gamma_1$ differ whenever the effect of using the new fertilizer varies across soils; that is, whenever $\gamma_3\not=0$ in the true model.
+But they can also differ when $\gamma_3=0$ due to sampling variation.
+For example, suppose the true model is
+$$\text{yield}=\text{fert}+\text{soil}+\epsilon,$$
+where $\text{fert}$ and $\text{soil}$ are independent, and where $\epsilon$ is iid normally distributed.
+The differences $(\mu_{10}-\mu_{00})$ and $(\mu_{11}-\mu_{01})$ in conditional means can differ in small samples because $\text{soil}$ and $\epsilon$ can be correlated by chance.
+But this [spurious correlation](https://en.wikipedia.org/wiki/Spurious_relationship) disappears as the sample grows, making $\beta_1$ and $\gamma_1$ converge.
+I demonstrate this convergence in the table below.
+It shows the mean absolute difference between $\beta_1$ and $\gamma_1$ across many samples of increasing size $n$:
+
+```{r}
+sims %>%
+  group_by(n) %>%
+  summarise(mean = mean(abs(diff))) %>%
+  kable(align = 'c', col.names = c('$n$', '$\\mathrm{E}\\left[\\lvert\\beta_1-\\gamma_1\\rvert\\right]$'), digits = 3, format.args = list(big.mark = ','))
+```
+
+---
+
+*Thanks to Anirudh Sankar for reading a draft version of this post.*
+
+```{r session-info}
+bldr::save_session_info()
+```
