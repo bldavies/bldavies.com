@@ -1,0 +1,156 @@
+---
+title: Binary distributions and risky gambles
+topics: [economics, statistics]
+summary: |
+  Binary random variables can be defined by their mean, variance, and skewness.
+  I use this fact to show that variance does not (always) measure "riskiness."
+---
+
+```{r setup, echo = F, message = F}
+library(bldr)
+library(dplyr)
+library(ggplot2)
+library(knitr)
+library(purrr)
+library(tidyr)
+
+opts_chunk$set(echo = F, message = F,
+               fig.width = 6, fig.height = 3.5, fig.ext = 'svg', dev = 'svg')
+
+set_ggtheme()
+```
+
+```{r functions}
+get_distribution = function(mu, sigma, s) {
+  list(
+    H = mu + sigma * (s + sqrt(s ^ 2 + 4)) / 2,
+    L = mu + sigma * (s - sqrt(s ^ 2 + 4)) / 2,
+    p = 2 / (4 + s * (s + sqrt(s ^ 2 + 4)))
+  )
+}
+
+get_Eu_log = function(d) {
+  d$p * log(d$H) + (1 - d$p) * log(d$L)
+}
+
+get_Eu_sqrt = function(d) {
+  d$p * sqrt(d$H) + (1 - d$p) * sqrt(d$L)
+}
+```
+
+This post shows how binary random variables can be defined by their mean, variance, and skewness.
+I use this fact to explain why variance does not (always) measure "riskiness."
+
+Suppose I'm defining a random variable $X$.
+It takes value $H$ or $L<H$, with $\Pr(X=H)=p$.
+I want $X$ to have mean $\mu$, variance $\sigma^2$, and [skewness coefficient](https://en.wikipedia.org/wiki/Skewness#Fisher's_moment_coefficient_of_skewness)
+$$\DeclareMathOperator{\E}{E}
+s\equiv\E\left[\left(\frac{X-\mu}{\sigma}\right)^3\right].$$
+The target parameters $(\mu,\sigma,s)$ uniquely determine $(H,L,p)$ via
+$$\begin{align}
+H &= \mu+\frac{s+\sqrt{s^2+4}}{2}\sigma \\
+L &= \mu+\frac{s-\sqrt{s^2+4}}{2}\sigma \\
+p &= \frac{2}{4+s\left(s+\sqrt{s^2+4}\right)}.
+\end{align}$$
+
+For example, if I want $X$ to be symmetric (i.e., to have $s=0$) then I have to choose $(H,L,p)=(\mu+\sigma,\mu-\sigma,0.5)$.
+Increasing the target skewness $s$ makes the upside $(H-\mu)$ larger but less likely, and the downside $(\mu-L)$ smaller but more likely:
+
+```{r required-values}
+plot_df = map_df(seq(-10, 10, 0.1), ~{
+  d = get_distribution(0.5, .1, .)
+  d$s = .
+  d
+}) %>%
+  gather(key, value, -s)
+
+plot_df %>%
+  ggplot(aes(s, value, col = key)) +
+  geom_line() +
+  geom_text(data = filter(plot_df, s == max(s)), aes(x = s - 0.25, y = value - 0.1, label = key)) +
+  labs(x = 'Skewness s',
+       y = 'Required value',
+       title = 'Required values of (H, L, p) when (\u03bc, \u03c3) = (0.5, 0.1)',
+       subtitle = 'Changing \u03bc or \u03c3 rescales H and L, but preserves the shape of their\nrelationship with s') +
+  scale_color_brewer(palette = 'Set1') +
+  scale_x_continuous(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0), labels = c(-0.5, 0, 0.5, 1, 1.5)) +
+  theme(legend.position = 'none')
+```
+
+```{r}
+mu = 10
+sigma_A = 6
+sigma_B = 12
+sigma_C = 3
+s_A = 0
+s_B = 5
+s_C = -3
+
+dA = get_distribution(mu, sigma_A, s_A)
+dB = get_distribution(mu, sigma_B, s_B)
+dC = get_distribution(mu, sigma_C, s_C)
+```
+
+This mapping between $(\mu,\sigma,s)$ and $(H,L,p)$ is useful for generating examples of "risky" gambles.
+Intuition suggests that a gamble is less risky if its payoffs have lower variance.
+But [Rothschild and Stiglitz (1970)](https://doi.org/10.1016/0022-0531(70)90038-4) define a gamble $A$ to be less risky than gamble $B$ if every [risk averse](https://en.wikipedia.org/wiki/Risk_aversion) decision-maker (DM) prefers $A$ to $B$.
+These two definitions of "risky" agree when
+
+1. payoffs are normally distributed, or
+2. DMs have quadratic utility functions.
+
+Under those conditions, DMs' expected utility depends only on the payoffs' mean and variance.
+But if neither condition holds then DMs also care about payoffs' skewness.
+We can demonstrate this using binary gambles.
+Consider these three:
+
+* Gamble $A$'s payoffs have mean $\mu_A=`r mu`$, variance $\sigma_A^2=`r sigma_A ^ 2`$, and skewness $s_A=`r s_A`$;
+* Gamble $B$'s payoffs have mean $\mu_B=`r mu`$, variance $\sigma_B^2=`r sigma_B ^ 2`$, and skewness $s_B=`r s_B`$;
+* Gamble $C$'s payoffs have mean $\mu_C=`r mu`$, variance $\sigma_C^2=`r sigma_C ^ 2`$, and skewness $s_C=`r s_C`$.
+
+The means are the same but the distributions are different.
+Gamble $i\in\{A,B,C\}$ gives me a random payoff $X_i$, which equals $H_i$ with probability $p_i$ and $L_i$ otherwise.
+We can compute the $(H_i,L_i,p_i)$ using the target parameters $(\mu_i,\sigma_i,s_i)$ and the formulas above:
+
+```{r}
+bind_cols(
+  tibble(i = c('$A$', '$B$', '$C$')),
+  bind_rows(dA, dB, dC)
+) %>%
+  kable(align = 'c', col.names = c('Gamble $i$', '$H_i$', '$L_i$', '$p_i$'), digits = 2)
+```
+
+Gamble $A$ offers a symmetric payoff: its upside $(H_A-\mu_A)$ and downside $(\mu_A-L_A)$ are equally large and equally likely.
+Gamble $B$ offers a positively skewed payoff: a large but unlikely upside, and a small but likely downside.
+Gamble $C$ offers a negatively skewed payoff: a small but likely upside, and a large but unlikely downside.
+
+These upsides and downsides affect my preferences over gambles.
+Suppose I get utility $u(x)\equiv\log(x)$ from receiving payoff $x$.
+Then gamble $A$ gives me expected utility
+$$\begin{align}
+\E[u(X_A)]
+&\equiv p_Au(H_A)+(1-p_A)u(L_A) \\
+&= `r dA$p`\log(`r dA$H`)+(1-`r dA$p`)\log(`r dA$L`) \\
+&= `r round(get_Eu_log(dA), 2)`,
+\end{align}$$
+while $B$ gives me $\E[u(X_B)]=`r round(get_Eu_log(dB), 2)`$ and $C$ gives me $\E[u(X_C)]=`r round(get_Eu_log(dC), 2)`$.
+So I prefer gamble $B$ to $A$, even though $B$'s payoffs have four times the variance of $A$'s.
+I also prefer $B$ to $C$, even though $B$'s payoffs have *sixteen* times the variance of $C$'s.
+How can I be risk averse---that is, have a concave utility function---but prefer gambles with higher variance?
+The answer is that I also care about skewness: I prefer gambles with large upsides and small downsides.
+These "sides" of risk are not captured by variance.
+
+So is gamble $C$ "riskier" than gambles $A$ and $B$?
+Rothschild and Stiglitz wouldn't say so.
+To see why, suppose my friend has utility function $v(x)=\sqrt{x}$.
+Then gamble $A$ gives him expected utility $\E[v(X_A)]=`r round(get_Eu_sqrt(dA), 2)`$, while $B$ gives him $\E[v(X_B)]=`r round(get_Eu_sqrt(dB), 2)`$ and $C$ gives him $\E[v(X_C)]=`r round(get_Eu_sqrt(dC), 2)`$.
+My friend and I have *opposite* preferences: he prefers $C$ to $A$ to $B$, whereas I prefer $B$ to $A$ to $C$.
+But we're both risk averse: our utility functions are both concave!
+Thus, it isn't true that *every* risk-averse decision-maker prefers $A$ or $B$ to $C$.
+Different risk-averse DMs have different preference rankings.
+This makes the three gambles incomparable under Rothschild and Stiglitz's definition of "risky."
+
+```{r session-info}
+bldr::save_session_info()
+```
