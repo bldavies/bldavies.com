@@ -1,0 +1,212 @@
+---
+title: The friendship paradox
+topics: [networks, statistics]
+summary: |
+  People tend to be less popular than their friends.
+  I discuss how this tendency relates to degree assortativity and degree-preserving randomizations.
+---
+
+```{r setup, echo = F, message = F}
+library(bldr)
+library(dplyr)
+library(ggplot2)
+library(ggraph)
+library(igraph)
+library(knitr)
+library(purrr)
+library(tidygraph)
+library(tidyr)
+
+opts_chunk$set(echo = F, message = F,
+               fig.width = 6, fig.height = 3.5, fig.ext = 'svg', dev = 'svg')
+
+set_ggtheme()
+```
+
+People tend to be less popular than their friends.
+This [paradox](https://en.wikipedia.org/wiki/Friendship_paradox), first observed by [Feld (1991)](https://doi.org/10.1086/229693), is due to popular people appearing on many friend lists.
+
+For example, consider the social network among members of a karate club studied by [Zachary (1977)](https://doi.org/10.1086/jar.33.4.3629752):
+
+```{r zachary}
+G = graph.famous('Zachary')
+
+n = gorder(G)
+m = gsize(G)
+nb = neighborhood(G, mindist = 1)
+d = degree(G)
+f = map_dbl(nb, ~mean(d[.]))
+
+G %>%
+  as_tbl_graph() %>%
+  mutate(d = centrality_degree()) %>%
+  ggraph('stress') +
+  geom_edge_link0(alpha = 0.5) +
+  geom_node_point(aes(size = d), show.legend = F) +
+  labs(title = 'Social network among members of Zachary\'s (1977) karate club',
+       subtitle = 'Larger nodes represent people with more friends')
+```
+
+The network contains $n=`r n`$ nodes with mean degree
+$$\DeclareMathOperator{\Corr}{Corr}
+\DeclareMathOperator{\Cov}{Cov}
+\DeclareMathOperator{\E}{E}
+\DeclareMathOperator{\Var}{Var}
+\E[d_i]\equiv\frac{1}{n}\sum_{i=1}^nd_i=`r round(mean(d), 2)`,$$
+where $\E$ takes expected values across nodes and $d_i$ is the degree of node $i$.
+If $N_i$ denotes the set of $i$'s neighbors, then the mean degree among those neighbors equals
+$$f_i\equiv \frac{1}{d_i}\sum_{j\in N_i}d_j.$$
+The friendship paradox states that $\E[d_i]\le\E[f_i]$ in *any* network.
+In Zachary's network we have $\E[f_i]=`r round(mean(f), 2)`$, about twice the mean degree.
+
+We can approximate $\E[f_i]$ using the following procedure:
+
+1. Choose a stub (i.e., the endpoint of an edge) uniformly at random.
+3. Record the degree of the chosen stub.
+
+Repeating these steps many times yields a degree distribution that over-samples from high-degree nodes.
+The mean of this distribution answers the following question: "How many friends does a typical friend have?"
+The probability of choosing node $i$ in the first step equals
+$$p_i\equiv \frac{d_i}{\sum_{j=1}^nd_j},$$
+the proportion of stubs that $i$ adds to the network.
+Using the probabilities $p_i$ to compute the expected value of the degrees $d_i$ yields an approximation
+$$\begin{align}
+\widehat{\E[f_i]}
+&= \sum_{i=1}^np_id_i \\
+&= \sum_{i=1}^n\left(\frac{d_i}{\sum_{j=1}^nd_j}\right)d_i \\
+&= \frac{\sum_{i=1}^nd_i^2}{\sum_{j=1}^nd_j} \\
+&= \frac{\E[d_i^2]}{\E[d_i]} \\
+&= \E[d_i]+\frac{\Var(d_i)}{\E[d_i]}
+\end{align}$$
+of $\E[f_i]$.
+Notice that if $\Var(d_i)=0$ then $\widehat{\E[f_i]}=\E[d_i]$; in that case, everyone has the same degree as their friends, and so there is no friendship paradox.
+The difference between the mean degree $\E[d_i]$ and the typical friend's degree $\widehat{\E[f_i]}$ grows as the variance in degrees grows.
+
+The approximation $\widehat{\E[f_i]}$ is closest to $\E[f_i]$ when there is no [assortative mixing](/blog/assortative-mixing/) with respect to degree.
+Then the $d_i$ are uncorrelated with the $f_i$.
+But this isn't true in Zachary's network:
+
+```{r zachary-degrees}
+tibble(d = d, f = f) %>%
+  ggplot(aes(d, f)) +
+  geom_point() +
+  labs(x = 'Degree',
+       y = 'Friends\' mean degree',
+       title = 'Degree correlations among members of Zachary\'s karate club',
+       subtitle = 'Points represent people. Popular people tend to have unpopular friends') +
+  coord_cartesian(clip = 'off') +
+  scale_x_continuous(expand = c(0, 0), limits = c(0, NA)) +
+  scale_y_continuous(expand = c(0, 0), limits = c(0, NA))
+```
+
+```{r}
+mean_d = mean(d)
+mean_f = mean(f)
+cov_df = cov(d, f) * (n - 1) / n
+approx = mean(d ^ 2) / mean(d)
+```
+
+Indeed, in Zachary's network we have $\widehat{\E[f_i]}=`r round(approx, 2)`$, which is smaller than the true value $\E[f_i]=`r round(mean_f, 2)`$.
+To see why, notice that
+$$\begin{align}
+\E[d_if_i]
+&= \frac{1}{n}\sum_{i=1}^nd_if_i \\
+&= \frac{1}{n}\sum_{i=1}^n\sum_{j\in N_i}d_j \\
+&\overset{\star}{=}\frac{1}{n}\sum_{j=1}^nd_j^2 \\
+&= \E[d_j^2],
+\end{align}$$
+where $\star$ holds because $j$ appears in $d_j$ neighborhoods $N_i$.
+But
+$$\E[d_if_i]=\E[d_if_i]+\Cov(d_i,f_i)$$
+by the definition of covariance, from which it follows that
+$$\widehat{\E[f_i]}=\E[f_i]+\frac{\Cov(d_i,f_i)}{\E[d_i]}.$$
+Thus $\widehat{\E[f_i]}$ under-estimates $\E[f_i]$ in Zachary's network because $\Cov(d_i,f_i)=`r round(cov_df, 2)`$ is negative.
+
+The value of $\widehat{\E[f_i]}$ depends only on the mean and variance of degrees, and not the correlation of degrees across adjacent nodes.
+Thus $\widehat{\E[f_i]}$ is invariant to [degree-preserving randomizations](/blog/degree-preserving-randomisation/) (DPRs).
+But $\E[f_i]$ can vary under DPRs because they can change the correlation of adjacent nodes' degrees.
+For example, consider the three networks shown below:
+
+```{r dpr-example}
+X = 0
+A1 = matrix(c(X, 1, 0, 0, 0, 0, 0,
+              X, X, 0, 0, 0, 0, 0,
+              X, X, X, 1, 1, 0, 0,
+              X, X, X, X, 1, 0, 0,
+              X, X, X, X, X, 0, 0,
+              X, X, X, X, X, X, 1,
+              X, X, X, X, X, X, X), ncol = 7)
+A2 = matrix(c(X, 1, 0, 0, 0, 0, 0,
+              X, X, 0, 0, 0, 0, 0,
+              X, X, X, 1, 1, 0, 0,
+              X, X, X, X, 0, 1, 0,
+              X, X, X, X, X, 0, 1,
+              X, X, X, X, X, X, 0,
+              X, X, X, X, X, X, X), ncol = 7)
+A3 = matrix(c(X, 0, 1, 0, 0, 0, 0,
+              X, X, 0, 1, 0, 0, 0,
+              X, X, X, 0, 1, 0, 0,
+              X, X, X, X, 0, 1, 0,
+              X, X, X, X, X, 0, 1,
+              X, X, X, X, X, X, 0,
+              X, X, X, X, X, X, X), ncol = 7)
+
+mats = list(A1, A2, A3)
+nets = lapply(1:3, function(i) {
+  net = graph_from_adjacency_matrix(mats[[i]], mode = 'undirected')
+  V(net)$id = 1:7
+  V(net)$network = sprintf('G[%d]', i)
+  net
+})
+
+net_layout = matrix(c(0, 1, 0, 1, 0, 1, 0, 4, 4, 3, 3, 2, 2, 1), ncol = 2)
+
+nets %>%
+  bind_graphs() %>%
+  ggraph(layout = net_layout) +
+  geom_edge_link0() +
+  geom_node_label(aes(label = id)) +
+  facet_nodes(. ~ network, labeller = label_parsed) +
+  labs(title = 'Three degree-preserving randomizations',
+       subtitle = 'The networks have the same degree distributions but different degree assortativities') +
+  coord_cartesian(clip = 'off') +
+  theme(panel.spacing.x = unit(3, 'line'),
+        strip.text = element_text(hjust = 0.5))
+```
+
+The networks $G_1$, $G_2$, and $G_3$ have the same degree distributions.
+As a result, they have the same mean degrees $\E[d_i]$ and approximations $\widehat{\E[f_i]}$ of $\E[f_i]$.
+But the true values of $\E[f_i]$ differ because the correlations $\Corr(d_i,f_i)$ differ:
+
+```{r}
+nets_df = map(nets, ~{
+  d = degree(.)
+  nb = neighborhood(., mindist = 1)
+  tibble(
+    d = degree(.),
+    f = map_dbl(nb, ~mean(d[.]))
+  )
+})
+
+map_df(seq_along(nets), ~{
+  n = gorder(nets[[.]])
+  d = nets_df[[.]]$d
+  f = nets_df[[.]]$f
+  tibble(
+    Network = sprintf('$G_%d$', .),
+    `$\\E[d_i]$` = mean(d),
+    `$\\widehat{\\E[f_i]}$` = mean(d ^ 2) / mean(d),
+    `$\\E[f_i]$` = mean(f),
+    `$\\Corr(d_i,f_i)$` = cor(d, f)
+  )
+}) %>%
+  kable(align = 'c', digits = 2)
+```
+
+The network $G_1$ is perfectly assortative with respect to degree, so $\widehat{\E[f_i]}$ over-estimates $\E[f_i]$.
+Whereas $G_3$ is dis-assortative with respect to degree, so $\widehat{\E[f_i]}$ under-estimates $\E[f_i]$.
+The network $G_2$ is relatively unsorted, so $\widehat{\E[f_i]}$ is close to $\E[f_i]$.
+
+```{r session-info}
+bldr::save_session_info()
+```
