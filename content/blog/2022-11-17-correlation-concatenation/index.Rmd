@@ -91,7 +91,7 @@ cor(alpha, beta)
 Now the two correlations agree!
 
 I came across this phenomenon while writing [my previous post](/blog/friendship-paradox/), in which I discuss the degree [assortativity](/blog/assortative-mixing/) among nodes in [Zachary's (1977) karate club network](https://en.wikipedia.org/wiki/Zachary's_karate_club).
-One way to measure this assortativity is to use the `degree_assortativity` function in `igraph`:
+One way to measure this assortativity is to use the `degree_assortativity` function in [igraph](https://igraph.org/):
 
 ```{r}
 library(igraph)
