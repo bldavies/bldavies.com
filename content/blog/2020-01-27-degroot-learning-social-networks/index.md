@@ -1,6 +1,6 @@
 ---
 title: DeGroot learning in social networks
-topics: [networks]
+topics: [mathematics, networks]
 summary: |
   Demonstration of DeGroot's (1974) learning model.
 image: "figures/example.jpg"

@@ -1,6 +1,6 @@
 ---
 title: Transitivity in positive correlations
-topics: [statistics]
+topics: [mathematics, statistics]
 ---
 
 Let $X$, $Y$ and $Z$ be random variables.

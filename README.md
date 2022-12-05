@@ -17,7 +17,7 @@ I use a custom [taxonomy](https://gohugo.io/content-management/taxonomies/) to c
 * [culture](https://bldavies.com/topics/culture/)
 * (micro)[economics](https://bldavies.com/topics/economics/): choices, markets, and strategic behavior
 * [education](https://bldavies.com/topics/education/)
-* [mathematics](https://bldavies.com/topics/mathematics/)
+* [mathematics](https://bldavies.com/topics/mathematics/) and mathematical proofs
 * (mass) [media](https://bldavies.com/topics/media/): blogs, music, and podcasts
 * [networks](https://bldavies.com/topics/networks/)
 * [politics](https://bldavies.com/topics/politics/), voting, and government

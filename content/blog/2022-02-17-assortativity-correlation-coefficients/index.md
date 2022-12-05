@@ -1,6 +1,6 @@
 ---
 title: Assortativity and correlation coefficients
-topics: [networks]
+topics: [mathematics, networks]
 linkSource: no
 loadMathJax: yes
 ---
