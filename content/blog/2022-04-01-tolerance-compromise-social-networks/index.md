@@ -1,6 +1,6 @@
 ---
 title: Tolerance and compromise in social networks
-topics: [networks, politics]
+topics: [culture, networks]
 summary: Summary of Genicot (2022).
 ---
 

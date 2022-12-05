@@ -20,7 +20,7 @@ I use a custom [taxonomy](https://gohugo.io/content-management/taxonomies/) to c
 * [mathematics](https://bldavies.com/topics/mathematics/)
 * (mass) [media](https://bldavies.com/topics/media/): music, news, and podcasts
 * [networks](https://bldavies.com/topics/networks/)
-* [politics](https://bldavies.com/topics/politics/) and voting
+* [politics](https://bldavies.com/topics/politics/), voting, and government
 * [research](https://bldavies.com/topics/research/), publishing, and academia
 * information about [software](https://bldavies.com/topics/software/) and data I maintain
 * [sports](https://bldavies.com/topics/sports/)

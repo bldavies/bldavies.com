@@ -1,6 +1,6 @@
 ---
 title: Echo chambers can be useful
-topics: [economics, politics]
+topics: [economics]
 summary: Summary of Jann and Schottmüller (2021)
 ---
 
