@@ -1,6 +1,6 @@
 ---
 title: Ideological bias and trust in information sources
-topics: [economics, media]
+topics: [statistics]
 ---
 
 If people were [Bayesian](https://en.wikipedia.org/wiki/Bayesian_inference), then giving them more information would help them learn the truth and reach consensus.

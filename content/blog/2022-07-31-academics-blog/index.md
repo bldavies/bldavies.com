@@ -1,6 +1,6 @@
 ---
 title: Why should academics blog?
-topics: [research]
+topics: [media, research]
 summary: Blogging complements research rather than substitutes for it.
 ---
 
