@@ -1,6 +1,6 @@
 ---
 title: Greedy Pig strategies
-topics: [mathematics, statistics]
+topics: [mathematics]
 ---
 
 ```{r echo = F, message = F, warning = F}

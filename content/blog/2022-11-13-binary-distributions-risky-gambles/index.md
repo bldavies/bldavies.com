@@ -1,6 +1,6 @@
 ---
 title: Binary distributions and risky gambles
-topics: [economics, statistics]
+topics: [economics]
 summary: |
   Binary random variables can be defined by their mean, variance, and skewness.
   I use this fact to show that variance does not (always) measure "riskiness."
