@@ -1,6 +1,6 @@
 ---
 title: Communicating science
-topics: [economics, research, statistics]
+topics: [economics, statistics]
 ---
 
 Science is hard, and communicating it to a broad audience is even harder.

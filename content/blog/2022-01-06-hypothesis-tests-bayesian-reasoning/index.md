@@ -1,6 +1,6 @@
 ---
 title: Hypothesis tests and Bayesian reasoning
-topics: [research, statistics]
+topics: [statistics]
 ---
 
 Most empirical research relies on [hypothesis testing](https://en.wikipedia.org/wiki/Statistical_hypothesis_testing).

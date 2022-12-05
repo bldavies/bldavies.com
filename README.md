@@ -21,7 +21,7 @@ I use a custom [taxonomy](https://gohugo.io/content-management/taxonomies/) to c
 * (mass) [media](https://bldavies.com/topics/media/): blogs, music, and podcasts
 * [networks](https://bldavies.com/topics/networks/)
 * [politics](https://bldavies.com/topics/politics/), voting, and government
-* [research](https://bldavies.com/topics/research/), publishing, and academia
+* [research](https://bldavies.com/topics/research/) and academia
 * information about [software](https://bldavies.com/topics/software/) and data I maintain
 * [sports](https://bldavies.com/topics/sports/)
 * [statistics](https://bldavies.com/topics/statistics/): sampling, estimation, and inference
