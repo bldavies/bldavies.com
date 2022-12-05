@@ -1,6 +1,6 @@
 ---
 title: Judging economic models
-topics: [economics, research]
+topics: [research]
 summary: |
   We shouldn't judge models by their realism.
   We should them by their predictions and clarity.

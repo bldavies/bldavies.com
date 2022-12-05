@@ -1,6 +1,6 @@
 ---
 title: Homophily and the strength of moderate ties
-topics: [economics, networks]
+topics: [networks]
 ---
 
 Yesterday *Science* published [a study](https://doi.org/10.1126/science.abl4476) on social networks and job mobility.

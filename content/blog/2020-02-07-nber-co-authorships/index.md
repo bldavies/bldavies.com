@@ -1,6 +1,6 @@
 ---
 title: NBER (co-)authorships
-topics: [economics, networks, research, software]
+topics: [networks, research, software]
 linkSource: yes
 ---
 

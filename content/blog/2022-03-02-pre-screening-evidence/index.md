@@ -1,6 +1,6 @@
 ---
 title: Pre-screening evidence
-topics: [economics, statistics]
+topics: [statistics]
 ---
 
 [Cheng and Hsiaw (2022)](https://doi.org/10.1016/j.jet.2021.105401) study an agent who wants to learn about a binary state (e.g., whether a vaccine is safe).

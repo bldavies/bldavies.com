@@ -1,6 +1,6 @@
 ---
 title: Triadic closure at the NBER
-topics: [economics, networks, research]
+topics: [networks, research]
 linkSource: yes
 ---
 

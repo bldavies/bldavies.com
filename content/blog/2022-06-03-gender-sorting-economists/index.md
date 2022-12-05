@@ -1,6 +1,6 @@
 ---
 title: Gender sorting among economists
-topics: [economics, networks, research]
+topics: [networks, research]
 summary: |
   Summary of "Gender sorting among economists: Evidence from the NBER"
 ---

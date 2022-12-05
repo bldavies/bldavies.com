@@ -1,6 +1,6 @@
 ---
 title: Gender differences in publication rates within NBER programs
-topics: [economics, research]
+topics: [research]
 loadMathJax: no
 ---
 

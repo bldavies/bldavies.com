@@ -1,6 +1,6 @@
 ---
 title: Publication outcomes of NBER working papers
-topics: [economics, research]
+topics: [research]
 summary: |
   Women wrote an increasing share of NBER working papers during the 1970s through 2010s.
   But the growth was slower among papers appearing in "Top Five" journals.

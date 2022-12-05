@@ -15,7 +15,7 @@ I convert such posts to Markdown using `R/build.R`.
 I use a custom [taxonomy](https://gohugo.io/content-management/taxonomies/) to classify my blog posts based on the topics they discuss:
 
 * [culture](https://bldavies.com/topics/culture/)
-* [economics](https://bldavies.com/topics/economics/): markets, incentives, and the academic discipline
+* (micro)[economics](https://bldavies.com/topics/economics/): choices, markets, and strategic behavior
 * [education](https://bldavies.com/topics/education/)
 * [mathematics](https://bldavies.com/topics/mathematics/)
 * (mass) [media](https://bldavies.com/topics/media/): blogs, music, and podcasts

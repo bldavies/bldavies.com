@@ -1,6 +1,6 @@
 ---
 title: Female representation and collaboration at the NBER
-topics: [economics, networks, research]
+topics: [networks, research]
 loadMathJax: no
 linkSource: yes
 ---

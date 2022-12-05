@@ -1,6 +1,6 @@
 ---
 title: "Reflections on grad school: Years 1 and 2"
-topics: [economics, education, research]
+topics: [education, research]
 summary: |
   I reflect on the first two years of my economics PhD at Stanford University.
   I discuss my first- and second-year coursework, and my quality of life as a grad student.
