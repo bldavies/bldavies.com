@@ -1,6 +1,6 @@
 ---
 title: Degree-preserving randomisation
-topics: [networks]
+topics: [networks, statistics]
 ---
 
 ```{r setup, echo = F, message = F, warning = F}
