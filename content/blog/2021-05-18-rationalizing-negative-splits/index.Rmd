@@ -30,11 +30,14 @@ $$\newcommand{\der}{\mathrm{d}}
 \newcommand{\derfrac}[2]{\frac{\der #1}{\der #2}}
 \newcommand{\parfrac}[2]{\frac{\partial #1}{\partial #2}}
 T[s]:=\int_0^1\frac{1}{s(x)}\,\der x,$$
-where $x$ indexes distance.
+where $x$ indexes distance.[^discrete-time]
 However, running uses energy, of which I have a limited supply $e(0)=1$ at the start of my run and which evolves according to
 $$\parfrac{e(x)}{x}=-r(x,s(x),e(x)),$$
 where $r$ determines the rate of energy consumption based on the instantaneous values of $x$, $s(x)$, and $e(x)$.
 I assume that running faster uses more energy (i.e., $r$ is increasing in $s(x)$) and that I use all of my energy (i.e, $e(1)=0$).
+
+[^discrete-time]: I formalize my pacing problem as a "continuous-time" [optimal control problem](https://en.wikipedia.org/wiki/Optimal_control).
+I consider a discrete-time version of this problem [here](/blog/optimal-pacing-varying-energy-costs/).
 
 My interest is in how the shape of $s$ depends on the shape of $r$.
 In particular, I want to know what conditions I have to put on $r$ to make $s$ an increasing function of $x$.

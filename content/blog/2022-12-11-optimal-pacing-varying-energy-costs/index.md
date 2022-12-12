@@ -1,0 +1,176 @@
+---
+title: Optimal pacing with varying energy costs
+topics: [economics, sports]
+linkSource: no
+summary: |
+  I run faster races when the energy cost of running fast varies.
+loadMathJax: yes
+---
+
+Suppose I'm running a race.
+I have a fixed amount of energy to "spend" on running fast.
+But the energy cost of running fast varies during the race (e.g., it's high on hills and low on flats).
+How should I pace myself to minimize my race time?
+
+This post discusses my optimal pacing problem.
+I describe it mathematically, derive its solution in [simple](#solving-the-two-lap-case) and [general](#solving-the-general-case) settings, and analyze these solutions' [properties](#solution-properties).
+I assume energy costs are deterministic, whereas [my next post][next-post] allows them to be random.
+
+[next-post]: /blog/optimal-pacing-random-energy-costs/
+
+## The optimal pacing problem
+
+My race consists of `\(N\)` "laps" `\(n\in\{1,2,\ldots,N\}\)` with equal lengths.
+I start with `\(k_1=k>0\)` units of energy and finish the race with none.
+Running lap `\(n\)` at speed `\(s_n\)` costs `\(c_ns_n\)` units of energy, where `\(c_n>0\)` varies with `\(n\)`.
+
+My goal is to find the speed sequence `\((s_n)_{n=1}^N\)` that minimizes my total time[^negative-splits]
+`$$\DeclareMathOperator{\E}{E}
+\DeclareMathOperator{\Var}{Var}
+\newcommand{\der}{\mathrm{d}}
+\newcommand{\parfrac}[2]{\frac{\partial #1}{\partial #2}}
+T\equiv\sum_{n=1}^N\frac{1}{s_n}$$`
+subject to the dynamic energy constraint
+`$$k_{n+1}=k_n-c_ns_n,$$`
+boundary conditions `\(k_1=k\)` and `\(k_{N+1}=0\)`, and non-negativity constraint `\(s_n\ge0\)`.
+
+[^negative-splits]: Replacing `\(T\)` with `\(T/N\)`, and letting `\(x=n/N\)` and `\(N\to\infty\)`, yields a special (linear) case of the problem discussed in [my post on negative splits][negative-splits-post].
+
+[negative-splits-post]: /blog/rationalizing-negative-splits/
+
+## Solving the two-lap case
+
+We can build intuition by solving the case with `\(N=2\)`.
+Then the dynamic constraint and boundary conditions imply
+`$$T=\frac{c_1}{k-k_2}+\frac{c_2}{k_2},$$`
+where `\(k_2\)` is the energy I choose to leave for the second lap.
+It satisfies the first-order condition `\(\partial T/\partial k_2=0\)`, which we can write as
+`$$\frac{c_1}{(k-k_2)^2}=\frac{c_2}{k_2^2}.$$`
+The left-hand side is the marginal cost (in units of total time) of using less energy in the first lap.
+The right-hand side is the marginal benefit of using more energy in the second lap.
+The first-order condition balances this marginal cost and benefit.
+It determines how I should [smooth my energy consumption](https://en.wikipedia.org/wiki/Consumption_smoothing) across laps.
+
+Rearranging the first-order condition for `\(k_2\)` gives
+`$$k_2=\frac{\sqrt{c_2}}{\sqrt{c_1}+\sqrt{c_2}}k.$$`
+So I should spend my energy proportionally to the square roots of the costs I face.
+For example, if `\(c_1=4c_2\)` then I should spend a third of my energy on the first lap and two thirds on the second.
+This leads me to run twice as fast on the second lap and makes my total time equal `\(9c_2/k\)`.
+In contrast, if I spent energy proportionally to costs then I would spend a fifth on the first lap and four fifths on the second.
+I would run at a constant speed and my total time would equal `\(10c_2/k\)`.
+That strategy would be optimal if the costs were constant at their mean `\(5c_2/2\)`.
+But they *aren't* constant: they vary by a factor of four.
+Square-root scaling takes advantage of this variation.
+It makes me run slow when it's expensive to run fast.
+
+## Solving the general case
+
+The results and intuitions from the case with `\(N=2\)` generalize to cases with `\(N>2\)`.
+But those cases require more powerful solution methods.
+I explain two: using the [Hamiltonian](https://en.wikipedia.org/wiki/Hamiltonian_(control_theory)) and using the [Bellman equation](https://en.wikipedia.org/wiki/Bellman_equation).
+The first is faster, but the second is more intuitive and extends naturally to a setting with [random costs][next-post].
+
+### Using the Hamiltonian
+
+The Hamiltonian for my optimal pacing problem is
+`$$H\equiv-\frac{1}{s_n}-\lambda_{n+1}c_ns_n,$$`
+where `\(\lambda_{n+1}\)` is a costate that satisfies
+`$$\lambda_{n+1}-\lambda_n=-\parfrac{H}{k_n}$$`
+for each `\(n\)`.
+But `\(\partial H/\partial k_n=0\)` and so `\(\lambda_{n+1}=\lambda\)` is constant.
+Substituting it into the first-order condition `\(\partial H/\partial s_n=0\)` gives
+`$$s_n=\frac{1}{\sqrt{\lambda c_n}}.$$`
+Now the dynamic constraint and boundary conditions imply
+`$$\sum_{n=1}^Nc_ns_n=k,$$`
+from which it follows that
+`$$\sqrt\lambda=\frac{1}{k}\sum_{n=1}^N\sqrt{c_n}$$`
+and therefore
+`$$s_n=\frac{k}{\sqrt{c_n}\sum_{m=1}^N\sqrt{c_m}}$$`
+for each `\(n\)`.
+Then my total time equals
+`$$T=\frac{1}{k}\left(\sum_{n=1}^N\sqrt{c_n}\right)^2.$$`
+For example, letting `\(N=2\)` and `\(c_1=4c_2\)` yields the optimal time `\(T=9c_2/k\)` [described above](#solving-the-two-lap-case).
+
+### Using the Bellman equation
+
+The dynamic constraint implies
+`$$s_n=\frac{k_n-k_{n+1}}{c_n}$$`
+for each `\(n.\)`
+Consequently, the cost sequence `\((c_n)_{n=1}^N\)` and "remaining energy" sequence `\((k_{n+1})_{n=0}^N\)` uniquely determine the speed sequence `\((s_n)_{n=1}^N\)`.
+So if
+`$$V_n\equiv\sum_{m=n}^N\frac{1}{s_n}$$`
+denotes the time spent running laps `\(n\)` through `\(N\)` when I pace myself optimally, then `\(V_n\)` must satisfy the Bellman equation
+`$$V_n=\min_{k_{n+1}}\left\{\frac{c_n}{k_n-k_{n+1}}+V_{n+1}\right\}.$$`
+This equation echoes my objective in [the two-lap case](#solving-the-two-lap-case).
+Intuitively, my optimal speeds in the `\(N\)`-lap case solve a sequence of two-lap problems, where the second "lap" is the remainder of my race.
+
+We can solve the Bellman equation using the [method of undetermined coefficients](https://en.wikipedia.org/wiki/Method_of_undetermined_coefficients).
+Suppose `\(V_{n+1}=a_{n+1}/k_{n+1}\)` for some `\(a_{n+1}\ge0\)`.
+Then, under optimal pacing, we have
+`$$\begin{align}
+0
+&= \parfrac{}{k_{n+1}}\left(\frac{c_n}{k_n-k_{n+1}}+V_{n+1}\right) \\
+&= \frac{c_n}{(k_n-k_{n+1})^2}-\frac{a_{n+1}}{k_{n+1}}
+\end{align}$$`
+and therefore
+`$$k_{n+1}=\frac{\sqrt{a_{n+1}}}{\sqrt{a_{n+1}}+\sqrt{c_n}}k_n.$$`
+Substituting this recurrence into the Bellman equation gives `\(V_n=a_n/k_n\)`, where
+`$$a_n\equiv\left(\sqrt{a_{n+1}}+\sqrt{c_n}\right)^2$$`
+and `\(a_{N+1}=0\)`.
+Solving recursively gives
+`$$\sqrt{a_n}=\sum_{m=n}^N\sqrt{c_m}$$`
+for each `\(n\)`, from which it follows that 
+`$$k_{n+1}=\frac{\sum_{m=n+1}^N\sqrt{c_m}}{\sum_{m=1}^N\sqrt{c_m}}k$$`
+and
+`$$s_n=\frac{k}{\sqrt{c_n}\sum_{m=1}^N\sqrt{c_m}}.$$`
+So we get the same optimal speed sequence and total time as obtained [using the Hamiltonian](#using-the-hamiltonian).
+We also see the square-root scaling from the two-lap case generalize to the `\(N\)`-lap case.
+For example, if the costs I face in the first half of the race are four times the costs I face in the second, then I should run half as fast in the first half than I run in the second.
+
+## Solution properties
+
+As explained above, each speed term `\(s_n\)` scales with the inverse square-root of the corresponding cost term `\(c_n\)`.
+This scaling takes advantage of the variation in costs faced during my race.
+But scaling *all* of the cost terms has a linear effect: doubling each `\(c_n\)` halves each `\(s_n\)` and so doubles my total time `\(T\)`.
+Likewise, doubling my initial energy `\(k\)` doubles each `\(s_n\)` and so halves `\(T\)`.
+These linearities come from the linearity of the dynamic constraint `\(k_{n+1}=k_n-c_ns_n\)`.
+
+Rearranging the cost sequence `\((c_n)_{n=1}^N\)` leads to the same rearrangement of the optimal speed sequence `\((s_n)_{n=1}^N\)`.
+This is because the sequences satisfy
+`$$\sqrt{c_n}s_n=\frac{k}{\sum_{m=1}^N\sqrt{c_m}},$$`
+the right-hand side of which doesn't change if I rearrange the `\(c_n\)`.
+Nor does my minimized time `\(T\)` change.
+Intuitively, swapping the laps on which I run slow and fast doesn't change my average pace.
+
+Whereas variation in costs *improves* my average pace.
+To see how, let
+`$$\E[c_n]\equiv\frac{1}{N}\sum_{n=1}^Nc_n$$`
+be the empirical mean cost of energy during my race and let
+`$$\overline{T}\equiv\frac{\E[c_n]N}{k}$$`
+be my optimal time when `\(c_n=\E[c_n]\)` for each `\(n\)`.
+Then
+`$$\begin{align}
+\overline{T}-T
+&= \frac{N}{k}\left(\E[c_n]-\frac{1}{N^2}\left(\sum_{n=1}^N\sqrt{c_n}\right)^2\right) \\
+&= \frac{N}{k}\left(\E[\sqrt{c_n}^2]-\E[\sqrt{c_n}]^2\right)
+\end{align}$$`
+and therefore
+`$$T=\overline{T}-\frac{N}{k}\Var(\sqrt{c_n}),$$`
+where `\(\Var(\sqrt{c_n})=\E[\sqrt{c_n}^2]-\E[\sqrt{c_n}]^2\)` is the empirical variance of the `\(\sqrt{c_n}\)`.
+So applying a [mean-preserving spread](https://en.wikipedia.org/wiki/Mean-preserving_spread) to the distribution of `\(\sqrt{c_n}\)` values lowers my optimal time `\(T\)`.
+But this is not the same as increasing the variance in `\(c_n\)`.
+For example, consider the cost sequences `\((c_n)_{n=1}^{100}\)` and `\((c_n')_{n=1}^{100}\)` defined by
+`$$c_n=\begin{cases}
+145 & \text{if}\ n\le 50 \\
+55 & \text{otherwise}
+\end{cases}$$`
+and
+`$$c_n'=\begin{cases}
+200 & \text{if}\ n\le 20 \\
+75 & \text{otherwise}.
+\end{cases}$$`
+Then `\(\E[c_n]=\E[c_n']=100\)`, while `\(\Var(c_n)=2025\)` and `\(\Var(c_n')=2500\)`.
+So the `\(c_n\)` have lower variance than the `\(c_n'\)`.
+But `\(\Var(\sqrt{c_n})\approx5.3\)` is larger than `\(\Var(\sqrt{c_n'})\approx4.8\)`, which means my optimal time is *smaller* under `\((c_n)_{n=1}^{100}\)` than under `\((c_n')_{n=1}^{100}\)`.
+Intuitively, I [prefer](/blog/binary-distributions-risky-gambles) cost sequences with a mix of highs and lows to sequences with a few sharp highs and lots of mild lows.
+
