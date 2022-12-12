@@ -79,7 +79,7 @@ Consequently, the percentage of time and energy spent on the first half of the r
 
 ## Extensions
 
-One way to extend my analysis could be to make the energy consumption rate stochastic.
+One way to extend my analysis could be to [make the energy consumption rate stochastic](/blog/optimal-pacing-random-energy-costs/).
 For example, if I run on unfamiliar terrain then I face uncertainty about upcoming obstacles (e.g., steep hills) and the energy cost of overcoming those obstacles.
 This uncertainty would encourage me to start my run slowly as a form of [precautionary saving](https://en.wikipedia.org/wiki/Precautionary_savings), resulting in negative splits.
 
