@@ -2,9 +2,9 @@
 
 I'm an economics PhD student at [Stanford University](https://economics.stanford.edu).
 I'm interested in networks, experts, uncertainty, and metascience.
-I lived in New Zealand and worked at [Motu](https://www.motu.nz) before starting my PhD.
+I lived and worked in New Zealand before starting my PhD.
 
-Outside of research I enjoy running, playing music, and [blogging](/blog/).
+Outside of research I enjoy running and [blogging](/blog/).
 My favorite blog posts include:
 
 * [How central is Grand Central Terminal?](/blog/how-central-grand-central-terminal/)
