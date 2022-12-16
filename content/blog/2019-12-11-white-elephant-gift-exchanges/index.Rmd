@@ -146,7 +146,7 @@ I could hedge this risk by instead always stealing the unwrapped gift with the *
 Alternatively, I could play as a pacifist and never steal (unless I'm the last player).
 
 I compare these three strategies---greediness, hedged greediness, and pacifism---via simulation.
-I assume gifts' subjective values are determined as the mean of two [standard uniform](https://en.wikipedia.org/wiki/Uniform_distribution_(continuous)#Standard_uniform) random variables: one describing an underlying value common to all players, and one describing an idiosyncratic component unique to each player.
+I assume gifts' subjective values are determined as the mean of two [standard uniform](https://en.wikipedia.org/wiki/Continuous_uniform_distribution#Standard_uniform) random variables: one describing an underlying value common to all players, and one describing an idiosyncratic component unique to each player.
 I simulate `r n_games` games among `r n_players` players, randomising the strategies adopted by each player in each game.
 
 For each simulated game, I compute the subjective value of the gift in each player's possession when the exchange ends.

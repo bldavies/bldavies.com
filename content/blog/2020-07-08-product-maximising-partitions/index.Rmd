@@ -60,7 +60,7 @@ Finally, if a partition contains three twos then we should replace them with two
 To summarise, we can obtain a product-maximising partition using only twos and threes, with as many threes as possible.
 Letting $n=3q+r$ for some $q\in\N\cup\{0\}$ and $r\in\{0,1,2\}$, the maximum product we can obtain is
 $$P(n)=\begin{cases}3^q&\text{if}\ r=0\\ 2^2\times3^{q-1}&\text{if}\ r=1\\ 2\times3^q&\text{if}\ r=2.\end{cases}$$
-We can approximate this solution by [relaxing](https://en.wikipedia.org/wiki/Relaxation_(approximation)) the integrality constraint on the $x_i$.
+We can approximate this solution by [relaxing](https://en.wikipedia.org/wiki/Relaxation_%28approximation%29) the integrality constraint on the $x_i$.
 For any given $k$, we can find the vector $x^*$ that solves
 $$\newcommand{\R}{\mathbb{R}}\max_{x\in\R_+^k}\prod_{i=1}^kx_i\ \text{subject to}\ \sum_{i=1}^kx_i=n \tag{1},$$
 where $\R_+$ is the set of positive real numbers.

@@ -259,8 +259,8 @@ Another way is to use the [top trading cycle](https://en.wikipedia.org/wiki/Top_
 
 The allocation delivered by this algorithm has several desirable properties.
 First, it is [Pareto efficient](https://en.wikipedia.org/wiki/Pareto_efficiency): every cycle identifies a mutually beneficial exchange, and the algorithm stops when no such exchanges remain.
-Second, it is [strategy-proof](https://en.wikipedia.org/wiki/Strategyproofness): people cannot get better gifts by lying about their preferences (see [Roth, 1982](https://doi.org/10.1016/0165-1765(82)90003-9)).
-Third, it is [core-stable](https://en.wikipedia.org/wiki/Core_(game_theory)): no group of people can cooperate to improve their allocations, for otherwise they would have formed a cycle before the algorithm stopped.
+Second, it is [strategy-proof](https://en.wikipedia.org/wiki/Strategyproofness): people cannot get better gifts by lying about their preferences (see [Roth, 1982](https://doi.org/10.1016/0165-1765%2882%2990003-9)).
+Third, it is [core-stable](https://en.wikipedia.org/wiki/Core_%28game_theory%29): no group of people can cooperate to improve their allocations, for otherwise they would have formed a cycle before the algorithm stopped.
 
 However, the TTC algorithm may not deliver the allocation that maximizes the sum of gifts' subjective values.
 This allocation corresponds to a [maximum-weight matching](https://en.wikipedia.org/wiki/Maximum_weight_matching) in the bipartite graph connecting people to gifts, with each edge's weight equal to the incident player's subjective value of the incident gift.[^practice]

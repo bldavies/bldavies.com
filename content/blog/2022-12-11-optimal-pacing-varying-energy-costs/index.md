@@ -67,7 +67,7 @@ It makes me run slow when it's expensive to run fast.
 
 The results and intuitions from the case with `\(N=2\)` generalize to cases with `\(N>2\)`.
 But those cases require more powerful solution methods.
-I explain two: using the [Hamiltonian](https://en.wikipedia.org/wiki/Hamiltonian_(control_theory)) and using the [Bellman equation](https://en.wikipedia.org/wiki/Bellman_equation).
+I explain two: using the [Hamiltonian](https://en.wikipedia.org/wiki/Hamiltonian_%28control_theory%29) and using the [Bellman equation](https://en.wikipedia.org/wiki/Bellman_equation).
 The first is faster, but the second is more intuitive and extends naturally to a setting with [random costs][next-post].
 
 ### Using the Hamiltonian

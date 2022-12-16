@@ -32,7 +32,7 @@ One approach is to [hierarchically cluster](https://en.wikipedia.org/wiki/Hierar
 Generating the dendrogram restricts my choice set but, ultimately, I still have to choose which partition is "best."
 
 The intellectually honest way forward is to define an objective function on the set of partitions and choose the partition that obtains the function's maximum.
-One such function is network [modularity](https://en.wikipedia.org/wiki/Modularity_(networks)), which captures the extent to which groups of nodes are intra-connected densely but inter-connected sparsely.
+One such function is network [modularity](https://en.wikipedia.org/wiki/Modularity_%28networks%29), which captures the extent to which groups of nodes are intra-connected densely but inter-connected sparsely.
 Ranking partitions by modularity removes the need for supervision: rather than making a subjective, potentially biased judgment on which partition is "best," I simply choose the partition that maximises modularity.
 
 Unfortunately, [maximising modularity is hard](https://arxiv.org/abs/physics/0608255).

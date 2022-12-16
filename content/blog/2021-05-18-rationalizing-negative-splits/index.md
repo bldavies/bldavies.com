@@ -30,7 +30,7 @@ I consider a discrete-time version of this problem [here](/blog/optimal-pacing-v
 My interest is in how the shape of `\(s\)` depends on the shape of `\(r\)`.
 In particular, I want to know what conditions I have to put on `\(r\)` to make `\(s\)` an increasing function of `\(x\)`.
 I determine these conditions as follows.
-First, I define the [Hamiltonian](https://en.wikipedia.org/wiki/Hamiltonian_(control_theory))
+First, I define the [Hamiltonian](https://en.wikipedia.org/wiki/Hamiltonian_%28control_theory%29)
 `$$H(x,s(x),e(x),\lambda(x))\equiv-\frac{1}{s(x)}-\lambda(x)r(x,s(x),e(x)),$$`
 where `\(\lambda\)` is a co-state function.
 Under some regularity conditions, I can choose the optimizing functions point-wise, so for convenience I let `\(x\in[0,1]\)` be arbitrary and suppress functions' arguments.

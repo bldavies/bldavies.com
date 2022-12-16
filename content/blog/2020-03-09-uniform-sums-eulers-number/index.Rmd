@@ -9,7 +9,7 @@ How many samples should I expect to take before the sum of my sampled values exc
 [^numberphile]: [Grant Sanderson](https://www.3blue1brown.com) mentions this problem in [this Numberphile video](https://www.youtube.com/watch?v=6_yU9eJ0NxA&t=28m7s).
 
 Let $N$ be the (random) number of samples taken when the sum first exceeds unity.
-Then $N$ has expected value $E[N]$ equal to [Euler's number](https://en.wikipedia.org/wiki/E_(mathematical_constant)) $e\approx2.718282$.
+Then $N$ has expected value $E[N]$ equal to [Euler's number](https://en.wikipedia.org/wiki/E_%28mathematical_constant%29) $e\approx2.718282$.
 This can be verified approximately via simulation:
 
 ```{r}

@@ -99,7 +99,7 @@ Such connectivity is facilitated by the three shaded hubs identified above.
 The sparsity of `net` implies that most pairs of authors aren't coauthors.
 Indeed, the probability that two randomly selected authors are coauthors is given by `net`'s edge density: about 0.06.
 However, it is not unusual for two randomly selected authors to share a common coauthor; within the LCC of `net`, the probability of such an event is about 0.46.
-I calculate this probability by examining the distribution of (unweighted) [geodesic distances](https://en.wikipedia.org/wiki/Distance_(graph_theory)) between the vertices in `net` and determining the proportion of vertex pairs that are distance two apart.
+I calculate this probability by examining the distribution of (unweighted) [geodesic distances](https://en.wikipedia.org/wiki/Distance_%28graph_theory%29) between the vertices in `net` and determining the proportion of vertex pairs that are distance two apart.
 The following function performs that calculation for an arbitrary connected graph `G`.
 
 ```r

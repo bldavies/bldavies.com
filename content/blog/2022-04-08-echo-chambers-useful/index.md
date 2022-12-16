@@ -20,7 +20,7 @@ Each agent has a binary [bit](https://en.wikipedia.org/wiki/Bit) of information.
 Summing these bits gives the "state."
 Agents take actions based on (i) their individual biases and (ii) their beliefs about the state.
 They want other agents to take similar actions.
-Biases are [common knowledge](https://en.wikipedia.org/wiki/Common_knowledge_(logic)).
+Biases are [common knowledge](https://en.wikipedia.org/wiki/Common_knowledge_%28logic%29).
 
 Agents learn about the state by talking to each other.
 But before they talk, agents sort into "rooms."
@@ -74,7 +74,7 @@ The authors summarize this point nicely:
 > Reducing polarization will weakly improve welfare; reducing segregation may not."
 
 The authors go on to study extensions of their model.
-For example, they show that adding public information can [crowd out](https://en.wikipedia.org/wiki/Crowding_out_(economics)) incentives to tell the truth.
+For example, they show that adding public information can [crowd out](https://en.wikipedia.org/wiki/Crowding_out_%28economics%29) incentives to tell the truth.
 They also show that their model agrees with data from Twitter.
 The authors suggest that social media platforms do more than connect people: they provide infrastructure for efficient segregation.
 

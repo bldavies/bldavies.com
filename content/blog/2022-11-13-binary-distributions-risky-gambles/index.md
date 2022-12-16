@@ -30,7 +30,7 @@ Increasing the target skewness `\(s\)` makes the upside `\((H-\mu)\)` larger but
 
 This mapping between `\((\mu,\sigma,s)\)` and `\((H,L,p)\)` is useful for generating examples of "risky" gambles.
 Intuition suggests that a gamble is less risky if its payoffs have lower variance.
-But [Rothschild and Stiglitz (1970)](https://doi.org/10.1016/0022-0531(70)90038-4) define a gamble `\(A\)` to be less risky than gamble `\(B\)` if every [risk averse](https://en.wikipedia.org/wiki/Risk_aversion) decision-maker (DM) prefers `\(A\)` to `\(B\)`.
+But [Rothschild and Stiglitz (1970)](https://doi.org/10.1016/0022-0531%2870%2990038-4) define a gamble `\(A\)` to be less risky than gamble `\(B\)` if every [risk averse](https://en.wikipedia.org/wiki/Risk_aversion) decision-maker (DM) prefers `\(A\)` to `\(B\)`.
 These two definitions of "risky" agree when
 
 1. payoffs are normally distributed, or

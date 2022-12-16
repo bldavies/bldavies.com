@@ -5,7 +5,7 @@ linkSource: yes
 ---
 
 [Fafchamps et al. (2010)](https://academic.oup.com/jeea/article-abstract/8/1/203/2295936) describe a model of team formation in which people learn about potential collaborators via existing collaborators.
-These "referrals" provide information about potential collaborators' match qualities, allowing people to [screen](https://en.wikipedia.org/wiki/Screening_(economics)) each other and sort into more productive teams.
+These "referrals" provide information about potential collaborators' match qualities, allowing people to [screen](https://en.wikipedia.org/wiki/Screening_%28economics%29) each other and sort into more productive teams.
 Fafchamps et al. argue, and demonstrate empirically, that this referral mechanism leads to more teams being formed among people who are closer in the collaboration network.
 
 Fafchamps et al.'s referral model implies that triads in collaboration networks should tend to [close](https://en.wikipedia.org/wiki/Triadic_closure) over time; that is, people should tend to collaborate with others with whom they share common collaborators.
