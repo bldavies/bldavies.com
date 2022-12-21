@@ -67,7 +67,7 @@ But it can't restore communication between agents who moved to different rooms.
 Thus, polarization lowers welfare *despite* segregation, rather than *because* of it.
 The authors summarize this point nicely:
 
-> "One could think of echo chambers as society’s (decentralized) defense mechanism against polarization.
+> "One could think of echo chambers as society's (decentralized) defense mechanism against polarization.
 > Like fever in a human body, segregation occurs as the effect of an underlying problem, and its presence hence indicates that polarization is at problematic levels.
 > Echo chambers, and segregation more generally, are hence a symptom of polarization.
 > And just like artificially lowering fever, treating the symptom without addressing the cause can in fact exacerbate the situation.

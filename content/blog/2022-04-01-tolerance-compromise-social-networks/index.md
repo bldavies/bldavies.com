@@ -53,7 +53,7 @@ If people want to make friends, but making friends requires compromise towards e
 
 Genicot closes with guidance on finding tolerant people:
 
-> Looking at the identity of the members of a person’s social network may overestimate the tolerance exhibited by the person.
-> The distance between a person’s identity and her friends’ behaviors would likely tell us more about her tolerance.
+> Looking at the identity of the members of a person's social network may overestimate the tolerance exhibited by the person.
+> The distance between a person's identity and her friends' behaviors would likely tell us more about her tolerance.
 
 Tolerance isn't about having diverse friends; it's about *not forcing friends to accommodate your beliefs*.

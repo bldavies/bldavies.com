@@ -16,12 +16,12 @@ The scientific method involves stating hypotheses *before* testing them.
 Dave encourages this practice at a smaller scale: before plotting figures or printing regression tables, write down what you expect to see.
 
 Stating your predictions forces you to think about how and why variables might be related.
-For example, if I regressed workers’ wages on their years of education, I would expect to estimate a positive coefficient because education provides knowledge and skills that make people more employable.
+For example, if I regressed workers' wages on their years of education, I would expect to estimate a positive coefficient because education provides knowledge and skills that make people more employable.
 Likewise, if I could control for natural ability then I would expect the coefficient on education to decrease because I would remove some endogeneity bias.
 Forming these expectations (and their justifications) in advance makes my [priors](#have-weak-priors-and-strong-nulls) explicit, making them easier to revise when confronted with new evidence.
 It also insures against *ex post* rationalisations of the empirical patterns.
 
-Stating your predictions also means you have two independent data sources—your predictions and your figures/tables—that you can compare to identify and correct mistakes.
+Stating your predictions also means you have two independent data sources---your predictions and your figures/tables---that you can compare to identify and correct mistakes.
 For example, if I estimated a negative relationship between education and wages, I would want to make sure the disagreement between my intuition and my estimate was not due to errant definitions of the variables in my data.
 
 ## Have weak priors and strong nulls
