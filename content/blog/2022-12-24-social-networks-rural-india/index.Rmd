@@ -1,0 +1,184 @@
+---
+title: Social networks in rural India
+topics: [culture, networks, software]
+summary: |
+  I describe IndianVillages, an R package containing data on social networks in rural India.
+  These networks are assortatively mixed with respect to caste.
+---
+
+```{r setup, echo = F, message = F}
+library(dplyr)
+library(igraph)
+library(IndianVillages)
+library(knitr)
+library(purrr)
+library(tidyr)
+```
+
+[IndianVillages](https://github.com/bldavies/IndianVillages) is a new R package containing data on social networks in rural India.
+I derived these data from [Banerjee et al.'s (2013)](https://doi.org/10.1126/science.1236498) surveys of households across `r n_distinct(households$village)` [Karnatakan](https://en.wikipedia.org/wiki/Karnataka) villages.
+This post describes the derived data and the networks they define.
+I also show that the networks are [assortatively mixed](/blog/assortative-mixing/) with respect to [caste](https://en.wikipedia.org/wiki/Caste_system_in_India).
+
+## Data description
+
+IndianVillages provides two tables.
+The first, `households`, links each household to its village and caste:
+
+```{r}
+library(dplyr)
+library(IndianVillages)
+
+head(households)
+```
+
+The `hhid` and `village` columns store household and village IDs.
+The `caste` column stores caste memberships:
+
+```{r}
+count(households, caste, sort = T)
+```
+
+Some `caste` values are missing because the surveys were changed during their collection.
+About `r round(100 * sum(households$caste == 'OBC', na.rm = T) / sum(!is.na(households$caste)))`% of the households with known castes are in the [Other Backward Class](https://en.wikipedia.org/wiki/Other_Backward_Class) ("OBC").
+This exceeds the (disputed) share of OBCs in India's general population during the survey period.
+
+The second table, `household_relationships`, contains information on inter-household relationships:
+
+```{r}
+head(household_relationships)
+```
+
+The `hhid.x` and `hhid.y` columns store ego and alter household IDs.
+The `type` column stores relationship types:
+
+```{r}
+count(household_relationships, type, sort = T)
+```
+
+These types correspond to questions asked in Banerjee et al.'s surveys.
+
+## Inter-household networks
+
+We can use `households` and `household_relationships` to define social networks among the households in each village.
+First, use the `graph_from_data_frame` function from [igraph](https://igraph.org/) to create the network among all households:
+
+```{r}
+library(igraph)
+
+net = graph_from_data_frame(
+  distinct(household_relationships, hhid.x, hhid.y),
+  directed = F,
+  vertices = households
+)
+```
+
+`net` contains `r format(gsize(net), big.mark = ',')` edges: one for each pair of households with at least one social relationship.
+There are no between-village relationships in the data, so we can partition `net` into village-specific networks without deleting any edges:
+
+```{r}
+library(purrr)
+
+villages = sort(unique(households$village))
+
+village_nets = map(villages, ~subgraph(net, V(net)$village == .))
+
+sum(map_dbl(village_nets, gsize))  # Same as gsize(net)
+```
+
+The networks in `village_nets` are too large to describe visually.
+Instead, let's compute some of their properties:
+
+```{r}
+village_nets_properties = map_df(village_nets, ~{
+  comp = components(.)
+  giant = subgraph(., comp$membership == which.max(comp$csize))
+  tibble(
+    Households = gorder(.),
+    `Mean degree` = mean(degree(.)),
+    `% of households in giant` = 100 * gorder(giant) / gorder(.),
+    `Mean distance in giant` = mean_distance(giant)
+  )
+})
+```
+
+I summarize these properties in the table below.
+The number of households in each village ranges from `r min(village_nets_properties[[1]])` to `r max(village_nets_properties[[1]])`.
+The mean degree of the households in each village ranges from `r round(min(village_nets_properties[[2]]), 2)` to `r round(max(village_nets_properties[[2]]), 2)`.
+Most households are in the giant component for their village, and are connected to others in that component via paths of length two or three.
+
+```{r echo = F}
+village_nets_properties %>%
+  gather(Property, x, factor_key = T) %>%
+  group_by(Property) %>%
+  summarise(Mean = mean(x),
+            `Std. dev.` = sd(x) * (n() - 1) / n(),
+            `Min.` = min(x),
+            Median = median(x),
+            `Max.` = max(x)) %>%
+  kable(digits = 2)
+```
+
+## Inter-caste mixing
+
+We can use `net` to study the extent of [assortative mixing](/blog/assortative-mixing/) with respect to caste membership.
+First, delete the `r format(sum(is.na(households$caste)), big.mark = ',')` households with missing `caste` values:
+
+```{r}
+subnet = subgraph(net, !is.na(V(net)$caste))
+```
+
+```{r echo = F}
+V(subnet)$caste = gsub('Scheduled', 'Sch.', V(subnet)$caste)
+```
+
+`subnet` contains `r format(gorder(subnet), big.mark = ',')` households with a mean degree of `r round(mean(degree(subnet)), 2)`.
+This is similar to the mean degree in `net`.
+The two networks also have similar mean distances between connected households: `r round(mean_distance(subnet), 2)` in `subnet`, versus `r round(mean_distance(net), 2)` in `net`.
+
+Next, compute `subnet`'s mixing matrix:
+
+```{r}
+library(bldr)  # https://github.com/bldavies/bldr
+
+mix_mat = get_mixing_matrix(subnet, 'caste')
+```
+
+I define `get_mixing_matrix` [here](https://github.com/bldavies/bldr/blob/master/R/get_mixing_matrix.R).
+It returns a matrix in which rows and columns correspond to castes, and entries equal the share of edges joining households in each caste pair.
+Multiplying these entries by the sum of degrees---which, by the [degree sum formula](https://en.wikipedia.org/wiki/Handshaking_lemma), equals twice the number of edges---yields a table of inter-caste edge counts:
+
+```{r}
+mix_mat * (2 * gsize(subnet))
+```
+
+For example, `subnet` contains `r format((mix_mat * 2 * gsize(subnet))[1, 3], big.mark = ',')` edges between households in general castes and households in OBC castes.
+
+We can measure the extent of assortative mixing by comparing `mix_mat` to the matrix we'd expect if edges were independent of caste.
+This matrix equals the outer product of the row and column sums of `mix_mat`:
+
+```{r}
+mix_mat_indep = rowSums(mix_mat) %*% t(colSums(mix_mat))
+```
+
+Comparing the traces of `mix_mat` and `mix_mat_indep` allows us to measure mixing overall:
+
+```{r}
+tr = function(m) sum(diag(m))
+
+c(tr(mix_mat), tr(mix_mat_indep))
+```
+
+So `subnet` contains about twice as many within-caste edges than we'd expect if edges were independent of caste.
+
+We can also compare `mix_mat` and `mix_mat_indep` element-wise to assess which inter-caste relationships are most over-represented:
+
+```{r}
+round(mix_mat / mix_mat_indep, 2)
+```
+
+So, for example, there are about 51% more OBC-OBC edges than we'd expect if edges were independent of caste, but less than half as many general-OBC edges.
+
+```{r session-info, echo = F}
+bldr::save_session_info()
+```
