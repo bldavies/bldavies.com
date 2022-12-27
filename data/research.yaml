@@ -1,5 +1,5 @@
 - id: D3
-  title: Why Do Experts Give Simple Advice?
+  title: Why do experts give simple advice?
   date: 2022-09-25
   type: wp
   url: https://arxiv.org/abs/2209.11710
@@ -11,7 +11,7 @@
     He trades off the accuracy benefit and reputational risk induced by providing the condition.
     He prefers not to provide it---i.e., to give "simple advice"---when his payoff is sufficiently concave in the posterior belief about his competence.
 - id: D2
-  title: Contracting with Persuasive Agents
+  title: Contracting with persuasive agents
   date: 2022-08-02
   type: old
   url: /research/D2.pdf
@@ -22,7 +22,7 @@
     The agent can persuade the client to pay more by manipulating their beliefs about market thickness and prospective match qualities.
     Persuasion benefits the agent more when they can shirk than when competition prevents them from shirking.
 - id: D1
-  title: "Gender Sorting among Economists: Evidence from the NBER"
+  title: "Gender sorting among economists: Evidence from the NBER"
   outlet: "*Economics Letters*"
   date: 2022-08-01
   type: pub
@@ -35,7 +35,7 @@
   preprint: https://doi.org/10.31235/osf.io/zeb7a
   dataCode: https://github.com/bldavies/nber-sorting
 - id: DGHJ1
-  title: Research Funding and Collaboration
+  title: Research funding and collaboration
   coauthors: Jason Gush, Shaun C. Hendy, and Adam B. Jaffe
   outlet: "*Research Policy*"
   date: 2022-03-01
@@ -51,7 +51,7 @@
   preprint: https://www.nber.org/papers/w27916
   dataCode: https://github.com/moturesearch/marsden-networks
 - id: DM2
-  title: Delineating Functional Labour Market Areas with Estimable Classification Stabilities
+  title: Delineating functional labour market areas with estimable classification stabilities
   coauthors: David C. Maré
   date: 2020-08-28
   type: old
@@ -62,7 +62,7 @@
     We demonstrate our method using historical Census commuting data from New Zealand.
   dataCode: https://github.com/moturesearch/NZ-LMAs
 - id: DG1
-  title: COVID-19, Lockdown and Two-Sided Uncertainty
+  title: COVID-19, lockdown and two-sided uncertainty
   coauthors: Arthur Grimes
   outlet: "*New Zealand Economic Papers*"
   date: 2022-04-01
@@ -76,12 +76,12 @@
     Our model captures both two-sided uncertainty and the dynamic consequences that flow from the government’s initial decision.
     Our analysis will help guide future policy decisions amid similarly complex uncertainties.
 - id: BD1
-  title: Climate Change Adaptation within New Zealand's Transport System
+  title: Climate change adaptation within New Zealand's transport system
   coauthors: Anthony Byett and others
   date: 2019-11-06
   url: https://motu.nz/assets/Documents/our-work/environment/climate-change-impacts/Transport-Dialogue-Report.pdf
 - id: DM1
-  title: Relatedness, Complexity and Local Growth
+  title: Relatedness, complexity and local growth
   coauthors: David C. Maré
   outlet: "*Regional Studies*"
   date: 2021-03-04
@@ -95,7 +95,7 @@
   preprint: http://motu-www.motu.org.nz/wpapers/19_01.pdf
   dataCode: https://github.com/moturesearch/relatedness-complexity
 - id: DW1
-  title: Bundling and Insurance of Independent Risks
+  title: Bundling and insurance of independent risks
   coauthors: Richard Watt
   date: 2017-08-14
   type: old
