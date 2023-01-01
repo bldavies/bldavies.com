@@ -6,7 +6,7 @@ summary: |
 linkSource: yes
 ---
 
-[stravadata](https://github.com/bldavies/stravadata) is an R package I use to organize and analyze my [Strava](https://www.strava.com/dashboard) activity data.
+[stravadata](https://github.com/bldavies/stravadata) is an R package I use to organize and analyze my [Strava](https://www.strava.com/) activity data.
 This post offers some example analyses:
 
 * [Computing annual totals](#computing-annual-totals)
