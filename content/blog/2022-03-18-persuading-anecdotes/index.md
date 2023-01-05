@@ -1,6 +1,6 @@
 ---
-title: Communicating with anecdotes
-topics: [economics]
+title: Persuading with anecdotes
+topics: [economics, statistics]
 ---
 
 My [previous post](/blog/ideological-bias-trust-information-sources/) explained why rational people can prefer like-minded information sources.

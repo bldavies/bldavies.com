@@ -10,7 +10,7 @@ Doesn't this hinder learning?
 
 [Jann and Schottmüller (2021)](https://scholar.google.com/scholar?cluster=15025907096771476263) answer: "not always."
 Different people know *and want* different things.
-These differences give us [persuasion temptations](/blog/communicating-anecdotes): we tell selective stories to influence others' behavior.
+These differences give us [persuasion temptations](/blog/persuading-anecdotes): we tell selective stories to influence others' behavior.
 We don't share everything we know.
 Sorting into echo chambers removes our persuasion temptations.
 This leads to more sharing and learning.
