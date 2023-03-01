@@ -1,0 +1,76 @@
+─ Session info ───────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.2.1 (2022-06-23)
+ os       macOS Big Sur ... 10.16
+ system   x86_64, darwin17.0
+ ui       X11
+ language (EN)
+ collate  en_NZ.UTF-8
+ ctype    en_NZ.UTF-8
+ tz       America/Los_Angeles
+ date     2023-03-01
+ pandoc   2.14.2 @ /usr/local/bin/pandoc
+
+─ Packages ───────────────────────────────────────────────────────────────────
+ package        * version    date (UTC) lib source
+ bldr           * 0.1.0      2022-12-25 [1] Github (bldavies/bldr@0f4f4ac)
+ blogdata         0.1.0      2023-03-01 [1] local
+ cli              3.6.0      2023-01-09 [1] CRAN (R 4.2.0)
+ colorspace       2.1-0      2023-01-23 [1] CRAN (R 4.2.1)
+ data.table       1.14.8     2023-02-17 [1] CRAN (R 4.2.0)
+ dplyr          * 1.1.0      2023-01-29 [1] CRAN (R 4.2.0)
+ ellipsis         0.3.2      2021-04-29 [1] CRAN (R 4.2.0)
+ evaluate         0.20       2023-01-17 [1] CRAN (R 4.2.0)
+ fansi            1.0.4      2023-01-22 [1] CRAN (R 4.2.0)
+ farver           2.1.1      2022-07-06 [1] CRAN (R 4.2.0)
+ generics         0.1.3      2022-07-05 [1] CRAN (R 4.2.0)
+ ggplot2        * 3.4.1      2023-02-10 [1] CRAN (R 4.2.0)
+ glue             1.6.2      2022-02-24 [1] CRAN (R 4.2.0)
+ goatcounts     * 0.1.0      2023-03-01 [1] local
+ gtable           0.3.1      2022-09-01 [1] CRAN (R 4.2.0)
+ highr            0.10       2022-12-22 [1] CRAN (R 4.2.0)
+ hms              1.1.2      2022-08-19 [1] CRAN (R 4.2.0)
+ ISOcodes       * 2022.09.29 2022-09-30 [1] CRAN (R 4.2.0)
+ janeaustenr      1.0.0      2022-08-26 [1] CRAN (R 4.2.0)
+ knitr          * 1.42       2023-01-25 [1] CRAN (R 4.2.1)
+ koRpus           0.13-8     2021-05-17 [1] CRAN (R 4.2.0)
+ koRpus.lang.en   0.1-4      2020-10-24 [1] CRAN (R 4.2.0)
+ labeling         0.4.2      2020-10-20 [1] CRAN (R 4.2.0)
+ lattice          0.20-45    2021-09-22 [1] CRAN (R 4.2.1)
+ lexicon          1.2.1      2019-03-21 [1] CRAN (R 4.2.0)
+ lifecycle        1.0.3      2022-10-07 [1] CRAN (R 4.2.0)
+ lubridate      * 1.9.2      2023-02-10 [1] CRAN (R 4.2.0)
+ magrittr         2.0.3      2022-03-30 [1] CRAN (R 4.2.0)
+ Matrix           1.5-3      2022-11-11 [1] CRAN (R 4.2.0)
+ munsell          0.5.0      2018-06-12 [1] CRAN (R 4.2.0)
+ pillar           1.8.1      2022-08-19 [1] CRAN (R 4.2.0)
+ pkgconfig        2.0.3      2019-09-22 [1] CRAN (R 4.2.0)
+ purrr          * 1.0.1      2023-01-10 [1] CRAN (R 4.2.0)
+ R6               2.5.1      2021-08-19 [1] CRAN (R 4.2.0)
+ Rcpp             1.0.10     2023-01-22 [1] CRAN (R 4.2.0)
+ readr          * 2.1.4      2023-02-10 [1] CRAN (R 4.2.0)
+ rlang            1.0.6      2022-09-24 [1] CRAN (R 4.2.0)
+ scales           1.2.1      2022-08-20 [1] CRAN (R 4.2.0)
+ sessioninfo      1.2.2      2021-12-06 [1] CRAN (R 4.2.0)
+ SnowballC        0.7.0      2020-04-01 [1] CRAN (R 4.2.0)
+ stringi          1.7.12     2023-01-11 [1] CRAN (R 4.2.0)
+ sylly            0.1-6      2020-09-20 [1] CRAN (R 4.2.0)
+ sylly.en         0.1-3      2018-03-19 [1] CRAN (R 4.2.0)
+ syuzhet          1.0.6      2020-11-24 [1] CRAN (R 4.2.0)
+ textstem         0.1.4      2018-04-09 [1] CRAN (R 4.2.0)
+ tibble           3.1.8      2022-07-22 [1] CRAN (R 4.2.0)
+ tidyr          * 1.3.0      2023-01-24 [1] CRAN (R 4.2.1)
+ tidyselect       1.2.0      2022-10-10 [1] CRAN (R 4.2.0)
+ tidytext       * 0.4.1      2023-01-07 [1] CRAN (R 4.2.0)
+ timechange       0.2.0      2023-01-11 [1] CRAN (R 4.2.0)
+ tokenizers       0.3.0      2022-12-22 [1] CRAN (R 4.2.0)
+ tzdb             0.3.0      2022-03-28 [1] CRAN (R 4.2.0)
+ uk2us            0.1.0      2021-02-19 [1] CRAN (R 4.2.0)
+ utf8             1.2.3      2023-01-31 [1] CRAN (R 4.2.0)
+ vctrs            0.5.2      2023-01-23 [1] CRAN (R 4.2.1)
+ withr            2.5.0      2022-03-03 [1] CRAN (R 4.2.0)
+ xfun             0.37       2023-01-31 [1] CRAN (R 4.2.0)
+
+ [1] /Library/Frameworks/R.framework/Versions/4.2/Resources/library
+
+──────────────────────────────────────────────────────────────────────────────

@@ -1,0 +1,274 @@
+---
+title: Five years of blogging
+topics: [media]
+summary: |
+  This post marks the fifth anniversary of my blog.
+  I summarize the words I've used and traffic I've received.
+---
+
+```{r setup, echo = F, message = F}
+library(bldr)
+# library(blogdata)
+library(dplyr)
+library(ggplot2)
+library(goatcounts)
+library(ISOcodes)
+library(lubridate)
+library(knitr)
+library(purrr)
+library(readr)
+library(tidyr)
+library(tidytext)
+
+opts_chunk$set(echo = F, message = F,
+               fig.width = 6, fig.height = 3.5, fig.ext = 'svg', dev = 'svg')
+
+set_ggtheme()
+
+n2w = function(x) ifelse(x <= 9, xfun::n2w(x), x)
+```
+
+```{r data}
+end_date = as_date('2023-03-01')
+
+posts = filter(blogdata::posts, date < end_date)
+
+links = filter(blogdata::links, slug %in% posts$slug)
+
+words = filter(blogdata::words, slug %in% posts$slug) %>%
+  mutate(word = textstem::lemmatize_words(word),
+         word = uk2us::convert_uk2us(word)) %>%
+  count(slug, word, wt = n_uses, name = 'n_uses')
+
+topics = filter(blogdata::topics, slug %in% posts$slug)
+```
+
+Today marks five years since [my first blog post](/blog/habitat-choices-first-generation-pokemon/).
+This post is my 100th.
+It summarizes the [words I've used](#words-used) and [traffic I've received](#traffic).
+
+## Words used
+
+My first `r nrow(posts)` posts contained more than `r format(floor(sum(words$n_uses) / 1e3), big.mark = ',')` thousand words:
+
+```{r growth}
+post_lengths = words %>%
+  group_by(slug) %>%
+  summarise(n_words = sum(n_uses)) %>%
+  ungroup()
+
+posts %>%
+  left_join(post_lengths, by = 'slug') %>%
+  group_by(Date = date) %>%
+  summarise(Posts = n(),
+            `Words (000s)` = sum(n_words) / 1e3) %>%
+  ungroup() %>%
+  full_join(tibble(Date = seq(min(posts$date), end_date, by = 'day'))) %>%
+  arrange(Date) %>%
+  mutate_if(is.numeric, na2zero) %>%
+  mutate_if(is.numeric, cumsum) %>%
+  gather(key, value, -Date) %>%
+  ggplot(aes(Date, value)) +
+  geom_line(aes(lty = key)) +
+  labs(x = 'Publication date',
+       y = NULL,
+       title = 'Cumulative blog post and word counts',
+       subtitle = sprintf('I wrote %d posts and %s words in my first five years of blogging', nrow(posts), format(sum(words$n_uses), big.mark = ',')),
+       lty = NULL) +
+  coord_cartesian(clip = 'off', expand = F, ylim = c(0, 100)) +
+  theme(legend.justification = c(0, 1),
+        legend.position = c(0, 1))
+```
+
+```{r}
+covid_posts = posts %>%
+  filter(date >= '2020-03-01' & date < '2020-05-01') %>%
+  left_join(post_lengths)
+
+phd_start_date = as_date('2020-09-14')
+
+phd_posts = posts %>%
+  filter(date >= phd_start_date) %>%
+  left_join(post_lengths)
+```
+
+I wrote `r n2w(nrow(covid_posts))` posts in March and April 2020, when the pandemic forced me to "work" from home.
+I've written `r nrow(phd_posts)` posts---about once every `r round(as.numeric(end_date - phd_start_date) / nrow(phd_posts))` days---since [starting my PhD](/blog/stanford/) in September 2020.
+
+```{r}
+word_counts = words %>%
+  left_join(posts, by = 'slug') %>%
+  group_by(word) %>%
+  summarise(n_uses = sum(n_uses),
+            n_posts = n_distinct(slug)) %>%
+  anti_join(stop_words)
+```
+
+```{r}
+plot_n_words = 6
+```
+
+My [longest post](`r paste0('/blog/', slice_max(post_lengths, n_words)$slug)`) had `r format(max(post_lengths$n_words), big.mark = ',')` words and my [shortest](`r paste0('/blog/', slice_min(post_lengths, n_words)$slug)`) had `r format(min(post_lengths$n_words), big.mark = ',')`.
+The most common (non-[stop](https://en.wikipedia.org/wiki/Stop_word)) word was "`r slice_max(word_counts, n_uses)$word`," used `r max(word_counts$n_uses)` times across `r slice_max(word_counts, n_uses)$n_posts` distinct posts.
+The chart below shows the `r n2w(plot_n_words)` most common words overall and among posts on my most common topics.
+It includes "datum" rather than "data" because I [lemmatize](https://en.wikipedia.org/wiki/Lemmatisation) words before counting them.
+
+```{r common-words, fig.height = 4.5}
+plot_df = topics %>%
+  add_count(slug, name = 'n_topics') %>%
+  add_count(topic, wt = 1 / n_topics, name = 'n_posts_frac') %>%
+  mutate(topic = ifelse(dense_rank(-n_posts_frac) <= 5, paste('Posts on', topic), NA)) %>%
+  {bind_rows(., mutate(., topic = 'Overall', n_posts_frac = nrow(posts)))} %>%
+  filter(!is.na(topic)) %>%
+  left_join(words, multiple = 'all') %>%
+  count(topic, word, wt = n_uses, name = 'n_uses') %>%
+  add_count(topic, wt = n_uses, name = 'n_uses_tot') %>%
+  mutate(perc_uses = 100 * n_uses / n_uses_tot) %>%
+  anti_join(stop_words) %>%
+  group_by(topic) %>%
+  slice_max(perc_uses, n = plot_n_words) %>%
+  ungroup()
+
+plot_df %>%
+  ggplot(aes(perc_uses, reorder_within(word, perc_uses, topic))) +
+  geom_col(alpha = 0.25) +
+  geom_text(data = filter(plot_df, perc_uses <= 0.95), aes(x = perc_uses, label = word), hjust = 0, nudge_x = 0.02, size = 3) +
+  geom_text(data = filter(plot_df, perc_uses > 0.95), aes(x = perc_uses, label = word), hjust = 1, nudge_x = -0.02, size = 3) +
+  facet_wrap(~topic, scales = 'free_y') +
+  labs(x = '% of word uses',
+       y = NULL,
+       title = paste('Most common words in my first', nrow(posts), 'blog posts'),
+       subtitle = 'After lemmatizing words and removing stopwords') +
+  coord_cartesian(clip = 'off', expand = F) +
+  scale_y_reordered(labels = NULL) +
+  theme(panel.grid.major.y = element_blank())
+```
+
+```{r}
+topic_counts = topics %>%
+  count(topic, sort = T)
+```
+
+```{r}
+topic_pair_counts = topics %>%
+  {with(., table(topic, slug))} %>%
+  {. %*% t(.)} %>%
+  mat2tbl() %>%
+  filter(row < col) %>%
+  arrange(-value)
+
+make_topic_link = function(x) {
+  paste0('[', x, '](/topics/', x, ')')
+}
+
+tmp = topic_pair_counts %>%
+  mutate(pos = row_number()) %>%
+  gather(key, topic, row, col, factor_key = T) %>%
+  group_by(topic) %>%
+  arrange(pos) %>%
+  mutate(rep = row_number()) %>%
+  ungroup() %>%
+  mutate(topic = ifelse(topic %in% topic_counts$topic[1:2] | rep > 1, topic, make_topic_link(topic))) %>%
+  select(-rep) %>%
+  spread(key, topic) %>%
+  arrange(pos)
+```
+
+So far I've written `r topic_counts$n[1]` posts on `r make_topic_link(topic_counts$topic[1])` and `r topic_counts$n[2]` on `r make_topic_link(topic_counts$topic[2])`.
+Most posts had multiple topics.
+The most commonly paired topics were `r tmp$row[1]` and `r tmp$col[1]` (`r n2w(tmp$value[1])` posts), `r topic_pair_counts$row[2]` and `r tmp$col[2]` (`r n2w(tmp$value[2])` posts), and `r tmp$row[3]` and `r tmp$col[3]` (`r n2w(tmp$value[3])` posts).
+
+## Traffic
+
+```{r}
+views = goatcounts %>%
+  filter(time >= as_date('2020-03-01') & time < end_date) %>%
+  filter(grepl('^/blog/', path)) %>%
+  select(-title) %>%
+  mutate(date = date(time),
+         country = substr(location, 1, 2),
+         slug = sub('/blog/', '', path))
+```
+
+```{r}
+post_view_counts = views %>%
+  add_count(slug) %>%
+  mutate(top10 = dense_rank(-n) <= 10) %>%
+  select(path, slug, top10, session) %>%
+  inner_join(posts) %>%
+  mutate(title = ifelse(top10, title, 'Other'),
+         path = ifelse(top10, path, NA)) %>%
+  {bind_rows(., mutate(., title = 'Total', path = NA))} %>%
+  group_by(Post = ifelse(is.na(path), title, sprintf('[%s](%s)', title, path))) %>%
+  summarise(Views = n()) %>%
+  ungroup() %>%
+  arrange(Post == 'Total', Post == 'Other', -Views)
+```
+
+Since March 2020 I've used [GoatCounter](https://www.goatcounter.com) to count page views and visitors.
+I had lots in late 2022, when I shared my [reflections on graduate school](/blog/reflections-grad-school-years-1-2) and people started [applying to economics PhD programs](/blog/applying-economics-phd-programs):
+
+```{r goatcounts}
+views %>%
+  group_by(Month = floor_date(date, 'months')) %>%
+  summarize(`Page views` = n(),
+            `Unique visitors` = n_distinct(session)) %>%
+  gather(Series, Value, -Month) %>%
+  ggplot(aes(Month, Value)) +
+  geom_line(aes(lty = Series)) +
+  coord_cartesian(clip = 'off') +
+  labs(y = NULL,
+       lty = NULL,
+       title = 'Monthly blog post traffic since March 2020',
+       subtitle = 'Based on GoatCounter data and excluding suspected bots') +
+  coord_cartesian(clip = 'off', expand = F, ylim = c(0, NA)) +
+  scale_x_date(date_labels = '%b \'%y') +
+  scale_y_continuous(labels = \(x) format(x, big.mark = ',')) +
+  theme(legend.justification = c(0, 1),
+        legend.position = c(0, 1))
+```
+
+My most popular three posts benefit from being in the top few Google search results.
+They account for about half of my (non-bot) page views:
+
+```{r}
+post_view_counts %>%
+  kable(format.args = list(big.mark = ','))
+```
+
+```{r}
+country_visitor_counts = views %>%
+  group_by(country) %>%
+  mutate(n_visitors = n_distinct(session)) %>%
+  ungroup() %>%
+  mutate(n_visitors_rank = dense_rank(-n_visitors),
+         Country = ifelse(n_visitors_rank > 5 | is.na(country), 'Other/unknown', country)) %>%
+  {bind_rows(., mutate(., Country = 'Total'))} %>%
+  group_by(Country) %>%
+  summarise(Visitors = n_distinct(session)) %>%
+  ungroup() %>%
+  arrange(Country == 'Total', Country == 'Other/unknown', -Visitors)
+
+state_visitor_counts = views %>%
+  filter(country == 'US') %>%
+  group_by(location) %>%
+  mutate(n_visitors = n_distinct(session)) %>%
+  ungroup() %>%
+  left_join(ISO_3166_2, by = c('location' = 'Code')) %>%
+  filter(!is.na(Name)) %>%
+  count(state = Name, sort = T)
+```
+
+Most of my visitors were from the USA (usually `r state_visitor_counts$state[1]` or `r state_visitor_counts$state[2]`):
+
+```{r}
+country_visitor_counts %>%
+  left_join(ISO_3166_1, by = c('Country' = 'Alpha_2')) %>%
+  mutate(Country = ifelse(!is.na(Name), Name, Country)) %>%
+  select(Country, Visitors) %>%
+  kable(format.args = list(big.mark = ','))
+```
+
+```{r session-info}
+save_session_info()
+```
