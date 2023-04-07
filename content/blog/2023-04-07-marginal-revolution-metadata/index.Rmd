@@ -1,0 +1,353 @@
+---
+title: "*Marginal Revolution* metadata"
+topics: [media, software]
+summary: I introduce MRposts, an R package containing data on Marginal Revolution blog posts.
+image: "figures/focus.jpg"
+---
+
+```{r setup, echo = F, message = F}
+library(bldr)
+library(dplyr)
+library(ggplot2)
+library(knitr)
+library(lubridate)
+# library(MRposts)
+library(purrr)
+library(readr)
+library(rvest)
+library(tidyr)
+library(tidytext)
+# library(xfun)
+
+opts_chunk$set(echo = F, message = F,
+               fig.width = 6, fig.height = 3, fig.ext = 'svg', dev = 'svg')
+
+set_ggtheme()
+
+focal_authors = c('Tyler Cowen', 'Alex Tabarrok')
+
+get_author_label = function(x) {
+  p = 'Posts by'
+  y = paste(p, ifelse(x %in% focal_authors, sub('(.*) .*', '\\1', x), 'others'))
+  factor(y, paste(p, c('Tyler', 'Alex', 'others')))
+}
+
+get_post_url = function(path) {
+  paste0('https://marginalrevolution.com/marginalrevolution/', path)
+}
+
+n2w = function(x) {
+  ifelse(x > 9, x, xfun::n2w(x, hyphen = F))
+}
+```
+
+```{r data, cache = T}
+metadata = MRposts::metadata %>%
+  filter(date(time) < '2023-04-01')
+
+categories = MRposts::categories %>%
+  semi_join(metadata, by = 'id')
+```
+
+Today I released the R package [MRposts](https://github.com/bldavies/MRposts).
+It contains data on [*Marginal Revolution*](https://marginalrevolution.com) blog posts: their [authors](#authors), [titles](#titles), [publication times](#publication-times), [categories](#categories), and [comment counts](#comments).
+I describe these data below.
+They cover all `r format(nrow(metadata), big.mark = ',')` posts published between `r format(min(metadata$time), '%B %Y')` and `r format(max(metadata$time), '%B %Y')`.
+
+## Authors
+
+```{r author_counts}
+author_counts = count(metadata, author)
+```
+
+*Marginal Revolution* is run by [Tyler Cowen](https://en.wikipedia.org/wiki/Tyler_Cowen) and [Alex Tabarrok](https://en.wikipedia.org/wiki/Alex_Tabarrok).
+They wrote `r round(100 * mean(metadata$author == 'Tyler Cowen'))`% and `r round(100 * mean(metadata$author == 'Alex Tabarrok'))`% of the posts in MRposts.
+The rest were written by several guest bloggers.
+I count posts by author in the table below.
+
+```{r author_counts-table}
+author_counts %>%
+  mutate(author = ifelse(n >= 10, author, paste(sum(n < 10), 'others, each with fewer than ten posts'))) %>%
+  count(author, wt = n) %>%
+  arrange(grepl('others', author), -n) %>%
+  kable(col.names = c('Author', 'Posts'), format.args = list(big.mark = ','))
+```
+
+```{r author_month_counts, cache = T, dependson = 'data'}
+author_month_counts = metadata %>%
+  filter(author %in% focal_authors) %>%
+  count(author_label = get_author_label(author), Month = floor_date(time, 'months')) %>%
+  group_by(author_label) %>%
+  mutate(n_mean = mean(n)) %>%
+  ungroup()
+```
+
+Tyler wrote [the first *Marginal Revolution* post](`r get_post_url(slice_min(metadata, time)$path)`) on `r format(min(metadata$time), '%B %d, %Y')`, and posted every day thereafter.
+His monthly output grew during the late 2000s and early 2010s.
+Alex's monthly output was lower but relatively constant:
+
+```{r monthly-output}
+author_month_counts %>%
+  ggplot(aes(Month, n, col = author_label)) +
+  geom_point(alpha = 0.5, shape = 20) +
+  geom_smooth(se = F, linewidth = 0.5) +
+  geom_text(data = filter(author_month_counts, Month == max(Month)), aes(label = author_label), hjust = 1, nudge_y = 20) +
+  labs(y = 'Posts',
+       title = 'Tyler and Alex\'s monthly output',
+       subtitle = 'Points represent months; lines represent LOESS curves') +
+  coord_cartesian(clip = 'off', expand = F) +
+  scale_x_datetime() +
+  scale_y_continuous(limits = c(0, NA)) +
+  scale_color_brewer(palette = 'Set1') +
+  theme(legend.position = 'none')
+```
+
+## Titles
+
+```{r title_words, cache = T, dependson = 'data'}
+title_words = metadata %>%
+  unnest_tokens(word, title)
+```
+
+```{r title_word_counts}
+title_word_counts = title_words %>%
+  distinct(id, author, word, .keep_all = T) %>%
+  count(year = year(time), author, word)
+```
+
+```{r author_title_word_counts}
+author_title_word_counts = title_word_counts %>%
+  filter(author %in% focal_authors) %>%
+  count(author_label = get_author_label(author), word, wt = n)
+```
+
+My next chart compares the words used in Tyler and Alex's posts' titles.
+Their posts often contained "assorted links" or "facts of the day," or explained how there are "markets in everything."
+Tyler also had many posts on "sentences to ponder" and "what [he'd] been reading."
+
+```{r titular-words}
+plot_n_words = 10
+
+plot_df = author_title_word_counts %>%
+  group_by(author_label) %>%
+  mutate(p = 100 * n / sum(n)) %>%
+  anti_join(stop_words, by = 'word') %>%
+  arrange(-p) %>%
+  slice(1:plot_n_words) %>%
+  mutate(pos = row_number()) %>%
+  ungroup()
+
+plot_df %>%
+  ggplot(aes(p, factor(-pos))) +
+  geom_col(aes(fill = author_label), alpha = 0.25, show.legend = F) +
+  geom_text(data = filter(plot_df, p < 2), aes(label = word), hjust = 0, nudge_x = 0.1, size = 3) +
+  geom_text(data = filter(plot_df, p > 2), aes(label = word), hjust = 1, nudge_x = -0.1, size = 3) +
+  facet_wrap(~author_label) +
+  labs(x = '% of titles',
+       y = NULL,
+       title = 'Common titular words in Tyler and Alex\'s posts',
+       subtitle = 'Excludes stop words') +
+  coord_cartesian(clip = 'off', expand = F) +
+  scale_x_continuous(labels = \(x) round(x, 4)) +
+  scale_y_discrete(labels = NULL) +
+  scale_fill_brewer(palette = 'Set1') +
+  theme(panel.grid.major.y = element_blank())
+```
+
+```{r title_lengths}
+title_lengths = title_words %>%
+  count(path, id, author)
+```
+
+The longest title contained `r n2w(max(title_lengths$n))` words (`r filter(metadata, id == slice_max(title_lengths, n)$id)$title`).
+Tyler's titles had a median of `r n2w(median(filter(title_lengths, author == 'Tyler Cowen')$n))` words while Alex's had a median of `r n2w(median(filter(title_lengths, author == 'Alex Tabarrok')$n))`.[^nagelberg]
+
+[^nagelberg]: Mark Nagelberg [compares](https://www.marknagelberg.com/lets-scrape-a-blog-part-1/) the mean lengths of all authors' titles.
+
+## Publication times
+
+*Marginal Revolution* posts tended to appear in early mornings and afternoons.
+Tyler posted at all hours of the day, albeit seldom at night.[^noel]
+Alex's posting schedule was more regular.
+His posts usually appeared between 7am and 9am:
+
+[^noel]: Hamilton Noel [looks closer](https://hamiltonnoel.substack.com/p/does-tyler-cowen-sleep) at Tyler's blogging habits.
+
+```{r author_time_counts}
+author_time_counts = metadata %>%
+  filter(author %in% focal_authors) %>%
+  mutate(hod = round(hour(time) + minute(time) / 60)) %>%
+  count(author, hod) %>%
+  group_by(author) %>%
+  mutate(p = 100 * n / sum(n)) %>%
+  ungroup()
+```
+
+```{r publication-times}
+author_time_counts %>%
+  mutate(author_label = get_author_label(author)) %>%
+  ggplot(aes(hod, p)) +
+  geom_col(aes(fill = author_label), alpha = 0.5, show.legend = F) +
+  facet_wrap(~author_label, ncol = 1, scales = 'free_y') +
+  labs(x = 'Hour of day',
+       y = '% of posts',
+       title = 'Publication times of Tyler and Alex\'s posts',
+       subtitle = 'Alex had a more regular posting schedule than Tyler') +
+  coord_cartesian(clip = 'off', expand = F) +
+  scale_x_continuous(breaks = 6 * (1:3), labels = c('6am', 'noon', '6pm')) +
+  scale_fill_brewer(palette = 'Set1')
+```
+
+## Categories
+
+```{r author_category_counts, cache = T, dependson = 'data'}
+author_category_counts = bind_rows(
+  mutate(metadata, author = 'Any'),
+  filter(metadata, author %in% focal_authors)
+) %>%
+  select(author, id) %>%
+  left_join(categories, by = 'id', relationship = 'many-to-many') %>%
+  add_count(author, id, name = 'n_categories') %>%
+  group_by(author, category) %>%
+  summarise(n = n(),
+            n_frac = sum(1 / n_categories)) %>%
+  group_by(author) %>%
+  mutate(p_frac = 100 * n_frac / sum(n_frac)) %>%
+  arrange(-n) %>%
+  ungroup()
+```
+
+```{r common_categories}
+common_categories = author_category_counts %>%
+  filter(author == 'Any', !is.na(category))
+```
+
+MRposts matches posts with their [categories](https://marginalrevolution.com/categories).
+The most common categories were `r common_categories$category[1]` (`r format(common_categories$n[1], big.mark = ',')` posts), `r common_categories$category[2]` (`r format(common_categories$n[2], big.mark = ',')` posts), and `r common_categories$category[3]` (`r format(common_categories$n[3], big.mark = ',')` posts).
+About `r round(100 * mean(count(categories, id)$n > 1))`% of posts had two or more categories, while `r round(100 * filter(author_category_counts, author == 'Any', is.na(category))$n / nrow(metadata))`% had none.
+
+The following chart compares the categories of Tyler and Alex's posts.
+I count posts "fractionally" so that, e.g., posts with two categories contribute half a post to each category.
+Tyler wrote proportionally more non-Economics posts than Alex.
+
+```{r categories}
+plot_n_categories = 8
+
+plot_df = author_category_counts %>%
+  filter(author != 'Any') %>%
+  group_by(author_label = get_author_label(author)) %>%
+  mutate(r = dense_rank(-p_frac * !is.na(category)),
+         category = ifelse(r > plot_n_categories & !is.na(category), 'Other', category),
+         category = ifelse(is.na(category), 'None', category)) %>%
+  count(author_label, category, wt = p_frac, name = 'p_frac') %>%
+  arrange(category == 'None', category == 'Other', -p_frac) %>%
+  mutate(pos = row_number()) %>%
+  ungroup()
+
+plot_df %>%
+  ggplot(aes(p_frac, factor(-pos))) +
+  geom_col(aes(fill = author_label), alpha = 0.25, show.legend = F) +
+  geom_text(data = filter(plot_df, p_frac < 20), aes(label = category), hjust = 0, nudge_x = 0.5, size = 3) +
+  geom_text(data = filter(plot_df, p_frac > 20), aes(label = category), hjust = 1, nudge_x = -0.5, size = 3) +
+  labs(x = '% of posts',
+       y = NULL,
+       title = 'Categories of Tyler and Alex\'s posts',
+       subtitle = 'Based on fractional counts') +
+  coord_cartesian(clip = 'off', expand = F) +
+  facet_wrap(~author_label) +
+  scale_y_discrete(labels = NULL) +
+  scale_fill_brewer(palette = 'Set1') +
+  theme(panel.grid.major.y = element_blank())
+```
+
+## Comments
+
+The median post in MRposts had `r n2w(median(metadata$comments))` comments.
+Tyler's median post had `r n2w(median(filter(metadata, author == 'Tyler Cowen')$comments))` comments while Alex's had `r n2w(median(filter(metadata, author == 'Alex Tabarrok')$comments))`.
+About `r round(100 * mean(metadata$comments > 100))`% of posts had more than 100 comments, while `r round(100 * mean(metadata$comments < 10))`% had fewer than ten and `r round(100 * mean(metadata$comments == 0))`% had none.
+I list the most-commented-on posts in the table below.
+
+```{r most-commented}
+metadata %>%
+  arrange(-comments) %>%
+  head(10) %>%
+  mutate(Post = paste0('[', title, '](', get_post_url(path), ')'),
+         Year = year(time)) %>%
+  select(Post, Year, Comments = comments) %>%
+  kable()
+```
+
+Three of the ten most-commented-on posts were published in the last year.
+Indeed, the mean number of comments per post grew over time:
+
+```{r comments-growth}
+plot_df = metadata %>%
+  group_by(Month = floor_date(time, 'months')) %>%
+  summarise(y = mean(comments)) %>%
+  ungroup()
+
+plot_df %>%
+  ggplot(aes(Month, y)) +
+  geom_point(alpha = 0.5, shape = 20) +
+  labs(y = 'Comments',
+       title = 'Monthly mean comments per post',
+       subtitle = 'Post engagement increased sharply in early 2011',
+       col = NULL) +
+  coord_cartesian(clip = 'off', expand = F) +
+  scale_y_continuous(limits = c(0, NA))
+```
+
+Post engagement grew slowly during the late 2010s.
+It increased sharply in early 2011, when Tyler was [listed among the most influential economists](https://www.economist.com/free-exchange/2011/02/01/economics-most-influential-people).
+
+## Content
+
+```{r gpt_matches, cache = T, dependson = 'data'}
+posts_dir = read_file('posts_dir.txt')
+
+tylers_recent_posts = metadata %>%
+  filter(author == 'Tyler Cowen') %>%
+  filter(date(time) >= '2021-04-01' & date(time) <= '2023-03-31') %>%  # Past two years
+  mutate(content_file = paste0(posts_dir, path, '/content.html'),
+         content = map(content_file, read_html)) %>%
+  mutate(text = map(content, html_text),
+         body = map(text, ~strsplit(., '\n')[[1]])) %>%
+  select(path, time, title, body) %>%
+  gather(source, text, title, body) %>%
+  unnest('text')
+
+gpt_matches = tylers_recent_posts %>%
+  mutate(match = map_lgl(text, ~grepl('chat|GPT|LLM|language model', ., ignore.case = T))) %>%
+  group_by(path, time) %>%
+  summarise(match = any(match)) %>%
+  ungroup()
+```
+
+I could update MRposts to include data on posts' content.
+This would allow users to mine the text of Tyler and Alex's posts.
+For example, many commenters have decried Tyler's recent focus on ChatGPT and other large language models.
+I document that focus in the chart below.
+It shows the share of Tyler's posts containing the string "chat", "GPT", "LLM", or "language model" in each of the past 24 months.
+The majority of those posts contained none of those strings!
+
+```{r focus}
+gpt_matches %>%
+  mutate(Month = floor_date(time, 'months')) %>%
+  group_by(Month) %>%
+  summarise(y = 100 * mean(match)) %>%
+  ungroup() %>%
+  ggplot(aes(Month, y)) +
+  geom_line() +
+  labs(y = '% of posts',
+       title = 'Tyler\'s recent focus on ChatGPT and other LLMs',
+       subtitle = 'Share of posts containing the string "chat", "GPT", "LLM", or "language model"') +
+  coord_cartesian(clip = 'off', expand = F) +
+  scale_x_datetime(date_labels = '%b %Y') +
+  scale_y_continuous(limits = c(0, NA))
+
+ggsave('figures/focus.jpg', width = 1200, height = 630, units = 'px', dpi = 200)
+```
+
+```{r session-info}
+save_session_info()
+```
