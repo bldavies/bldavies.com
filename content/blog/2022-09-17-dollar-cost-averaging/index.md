@@ -1,6 +1,6 @@
 ---
 title: Dollar cost averaging
-topics: [economics]
+topics: [finance]
 summary: I compare lump-sum investing and dollar cost averaging, using simulated data on S&P 500 and bitcoin prices.
 linkSource: yes
 ---
