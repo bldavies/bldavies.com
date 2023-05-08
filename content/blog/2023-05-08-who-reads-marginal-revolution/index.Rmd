@@ -1,0 +1,133 @@
+---
+title: "Who reads *Marginal Revolution*?"
+topics: [media]
+summary: "I discuss the visits to my post on *Marginal Revolution* metadata."
+---
+
+```{r setup, echo = F, message = F}
+library(bldr)
+library(dplyr)
+library(ggplot2)
+library(goatcounts)
+library(ISOcodes)
+library(knitr)
+library(lubridate)
+
+opts_chunk$set(echo = F, message = F,
+               fig.width = 6, fig.height = 3, fig.ext = 'svg', dev = 'svg')
+
+set_ggtheme()
+```
+
+```{r views, cache = T}
+date_range = seq(as_date('2023-01-01'), as_date('2023-05-07'), 'days')
+
+views = goatcounts %>%
+  mutate(Date = date(time),
+         Country = substr(location, 1, 2)) %>%
+  filter(Date %in% date_range)
+```
+
+```{r daily_counts}
+daily_counts = views %>%
+  group_by(Date) %>%
+  summarise(Visitors = n_distinct(session),
+            `Page views` = n()) %>%
+  ungroup()
+```
+
+```{r post_views}
+non_mr_referrers = c('bldavies.com/blog', 'Google', 'Hacker News', 'hnblogs.substack.com', 'substack.com', 't.co')
+
+post_views = views %>%
+  filter(path == '/blog/marginal-revolution-metadata') %>%
+  mutate(from_mr = !referrer %in% non_mr_referrers & Date >= '2023-04-09')
+```
+
+Here's a summary of my website's traffic since the start of 2023:
+
+```{r daily-visitors}
+daily_counts %>%
+  ggplot(aes(Date, Visitors)) +
+  geom_line() +
+  labs(title = 'Daily visitors to my website since the start of 2023',
+       subtitle = 'Based on non-bot sessions tracked by GoatCounter') +
+  coord_cartesian(clip = 'off', expand = F) +
+  scale_y_continuous(limits = c(0, NA), labels = \(y) format(y, big.mark = ','))
+```
+
+Notice the spike on April 9, when Tyler Cowen [linked](https://marginalrevolution.com/marginalrevolution/2023/04/sunday-assorted-links-413.html) to [my post of *Marginal Revolution* metadata](/blog/marginal-revolution-metadata).
+That post is now my second most-viewed ever (just behind my post on [applying to economics PhD programs](/blog/applying-economics-phd-programs)).
+
+```{r mr_referrals}
+mr_referrals = post_views %>%
+  filter(from_mr)
+```
+
+```{r country_counts}
+country_counts = mr_referrals %>%
+  left_join(ISO_3166_1, by = c('Country' = 'Alpha_2')) %>%
+  group_by(Name, Code = Country) %>%
+  summarise(Visitors = n_distinct(session),
+            Views = n()) %>%
+  ungroup()
+```
+
+```{r state_counts}
+state_counts = mr_referrals %>%
+  filter(Country == 'US') %>%
+  left_join(ISO_3166_2, by = c('location' = 'Code')) %>%
+  group_by(Name, Code = location) %>%
+  summarise(Visitors = n_distinct(session),
+            Views = n()) %>%
+  ungroup()
+```
+
+Where in the world did those views come from?
+Here's a summary:
+
+```{r top_sources}
+top_sources = bind_rows(
+  mutate(country_counts, key = 'By country'),
+  mutate(state_counts, key = 'By US state')
+) %>%
+  group_by(key) %>%
+  arrange(is.na(Name), -Visitors) %>%
+  mutate(pos = row_number(),
+         Name = ifelse(pos <= 10, Name, 'Other/unknown')) %>%
+  group_by(key, Name) %>%
+  summarise(Visitors = sum(Visitors),
+            Views = sum(Views),
+            pos = min(pos)) %>%
+  ungroup()
+```
+
+```{r sources, fig.height = 4}
+top_sources %>%
+  ggplot(aes(Visitors, factor(-pos))) +
+  geom_col(alpha = 1/3) +
+  geom_text(data = filter(top_sources, Visitors >= 600), aes(label = Name, x = Visitors - ifelse(key == 'By country', 25, 10)), hjust = 1, size = 3) +
+  geom_text(data = filter(top_sources, Visitors < 600), aes(label = Name, x = Visitors + ifelse(key == 'By country', 25, 10)), hjust = 0, size = 3) +
+  facet_wrap(~key, scales = 'free_x') +
+  labs(y = NULL,
+       title = 'Visits to my post on Marginal Revolution metadata',
+       subtitle = 'Based on non-bot sessions tracked by GoatCounter since the start of 2023') +
+  coord_cartesian(clip = 'off', expand = F) +
+  scale_x_continuous(labels = \(x) format(x, big.mark = ',')) +
+  theme(axis.text.y = element_blank(),
+        panel.grid.major.y = element_blank(),
+        panel.spacing.x = unit(1, 'lines'))
+```
+
+Most visitors came from the US.
+This makes sense: *Marginal Revolution* is run by American authors who tend to focus on American issues.
+About a third of my US-based visitors came from California, New York, or Massachusetts.
+Bigger states tended to bring more visitors, but the relationship was not perfect.
+For example, Californians comprise about 11.7% of the US population but `r sprintf('%.1f', 100 * filter(state_counts, Code == 'US-CA')$Visitors / sum(filter(state_counts, !is.na(Code))$Visitors))`% of my visitors.
+These percentages differ due to selection effects: *Marginal Revolution* caters to educated readers who share the authors' interests.
+Indeed, all my visitors saw the word "metadata" and thought "I want to know more."
+I doubt the typical American would react similarly!
+
+```{r session-info}
+save_session_info()
+```
