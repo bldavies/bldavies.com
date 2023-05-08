@@ -15,5 +15,4 @@ My favorite blog posts include:
 
 I've also written about [applying to economics PhD programs](/blog/applying-economics-phd-programs/) and [living in the USA](blog/living-america/).
 
-See [my CV](/cv.pdf) for more information.
-You can reach me via [email](mailto:bldavies@stanford.edu) or [Twitter](https://twitter.com/bnldvs).
+See [my CV](/cv.pdf) or [send me an email](mailto:bldavies@stanford.edu) for more information.
