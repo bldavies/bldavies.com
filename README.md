@@ -26,6 +26,7 @@ I use a custom [taxonomy](https://gohugo.io/content-management/taxonomies/) to c
 * information about [software](https://bldavies.com/topics/software/) and data I maintain
 * [sports](https://bldavies.com/topics/sports/)
 * [statistics](https://bldavies.com/topics/statistics/): sampling, estimation, and inference
+* [technology](https://bldavies.com/topics/technology/)
 
 ### Research
 
