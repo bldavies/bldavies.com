@@ -1,10 +1,10 @@
 ### Hi, I'm Ben.
 
-I'm an economics PhD student at [Stanford University](https://economics.stanford.edu).
-I'm interested in networks, experts, uncertainty, and metascience.
+I'm an economics PhD student at Stanford University.
+My [research](/research/) explores how people learn, interact, and form connections.
 I lived and worked in New Zealand before starting my PhD.
 
-Outside of research I enjoy running and [blogging](/blog/).
+Outside of research I love to run, cook, and [blog](/blog/).
 My favorite blog posts include:
 
 * [How central is Grand Central Terminal?](/blog/how-central-grand-central-terminal/)
