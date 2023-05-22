@@ -54,4 +54,23 @@ local({
     xfun::write_utf8(outfile, a[2])
     
   }
+  
+  # Post-process SVG files
+  svg_files = list.files(post_dir, '[.]svg', full.names = T, recursive = T)
+  for (f in svg_files) {
+    
+    # Read file
+    xml = xml2::read_xml(f)
+    
+    # Add units to width and height
+    for (attr in c('width', 'height')) {
+      value = xml2::xml_attr(xml, attr)
+      if (!grepl('[A-Za-z]', value)) value = paste0(value, 'pt')
+      xml2::xml_set_attr(xml, attr, value)
+    }
+    
+    # Save file
+    xml2::write_xml(xml, f)
+    
+  }
 })
