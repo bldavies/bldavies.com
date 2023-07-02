@@ -1,0 +1,138 @@
+---
+title: Binary signals and posterior variances
+topics: [economics, statistics]
+summary: I study the expected posterior variance in my beliefs about a binary state given a noisy signal of that state.
+---
+
+```{r setup, echo = F, message = F}
+library(bldr)
+library(dplyr)
+library(ggplot2)
+library(knitr)
+library(purrr)
+library(tidyr)
+
+opts_chunk$set(echo = F, message = F,
+               fig.width = 6, fig.height = 3, fig.ext = 'svg', dev = 'svg')
+
+set_ggtheme()
+```
+
+Suppose I receive a [noisy signal](/blog/learning-noisy-signals/) $s\in\{0,1\}$ about an unknown state $\omega\in\{0,1\}$.
+The signal has false positive rate
+$$\renewcommand{\epsilon}{\varepsilon}
+\Pr(s=1\mid\omega=0)=\alpha$$
+and false negative rate
+$$\Pr(s=0\mid\omega=1)=\beta$$
+with $\alpha,\beta\in[0,0.5]$.[^wlog]
+I use these rates, my prior belief $p=\Pr(\omega=1)$, and [Bayes' rule](https://en.wikipedia.org/wiki/Bayes%27_theorem) to form a posterior belief
+$$\begin{align}
+q_s
+&\equiv \Pr(\omega=1\mid s) \\
+&= \frac{\Pr(s\mid\omega=1)\Pr(\omega=1)}{\Pr(s)} \\
+&= \begin{cases}
+  \frac{\beta p}{(1-\alpha)(1-p)+\beta p} & \text{if}\ s=0 \\
+  \frac{(1-\beta)p}{\alpha(1-p)+(1-\beta)p} & \text{if}\ s=1
+\end{cases}
+\end{align}$$
+that depends on the signal I receive.
+
+[^wlog]: There is no loss in generality from assuming $\alpha,\beta\le0.5$ because observing $s$ is the same as observing $(1-s)$.
+
+Now suppose I take an action $a\in[0,1]$ with cost $c(a,\omega)\equiv(a-\omega)^2$.
+I want to minimize my expected cost
+$$\DeclareMathOperator{\E}{E}
+\begin{align}
+\E[c(a,\omega)\mid s]
+&= (1-q_s)c(a,0)+q_sc(a,1) \\
+&= (1-q_s)a^2+q_s(a-1)^2
+\end{align}$$
+given $s$, which leads me to choose $a=q_s$.
+Then my minimized expected cost
+$$\begin{align}
+\E[c(q_s,\omega)\mid s]
+&= q_s(1-q_s) \\
+&= p(1-p)\times\begin{cases}
+  \frac{(1-\alpha)\beta}{\left((1-\alpha)(1-p)+\beta p\right)^2} & \text{if}\ s=0 \\
+  \frac{\alpha(1-\beta)}{\left(\alpha(1-p)+(1-\beta)p\right)^2} & \text{if}\ s=1
+\end{cases}
+\end{align}$$
+equals the posterior variance in my belief about $\omega$ after receiving $s$.
+The expected value of this variance *before* receiving $s$ equals
+$$\begin{align}
+V(p,\alpha,\beta)
+&\equiv q_0(1-q_0)\Pr(s=0)+q_1(1-q_1)\Pr(s=1) \\
+&= p(1-p)\times\frac{\alpha(1-\alpha)(1-p)+\beta(1-\beta)p}{\left((1-\alpha)(1-p)+\beta p\right)\left(\alpha(1-p)+(1-\beta)p\right)},
+\end{align}$$
+which depends on my prior $p$ as well as the error rates $\alpha$ and $\beta$.
+For example, the chart below plots
+$$V(p,\epsilon,\epsilon)=p(1-p)\times\frac{\epsilon(1-\epsilon)}{p(1-p)+\epsilon(1-\epsilon)(1-2p)^2}$$
+against $\epsilon$ when $p\in\{0.5,0.7,0.9\}$.
+If $\epsilon=0$ then the signal is fully informative because it always matches the state $\omega$.
+Larger values of $\epsilon\le0.5$ lead to less precise posterior beliefs.
+Indeed if $\epsilon=0.5$ then the signal is uninformative because $\Pr(s=1)=0.5$ (and, hence, $q_0=q_1=p$) independently of $\omega$.
+The slope $\partial V(p,\epsilon,\epsilon)/\partial\epsilon$ falls as my prior $p$ moves away from $0.5$ because having a more precise prior makes my beliefs less sensitive to the signal.
+
+```{r get_epv}
+get_epv = function(p, a, b) {
+  n = p * (1 - p) * (a * (1 - a) * (1 - p) + b * (1 - b) * p)
+  d = ((1 - a) * (1 - p) + b * p) * (a * (1 - p) + (1 - b) * p)
+  return(n / d)
+}
+```
+
+```{r convexity}
+crossing(p = c(0.5, 0.7, 0.9), eps = seq(0, 0.5, by = 0.01)) %>%
+  mutate(epv = map2_dbl(p, eps, ~get_epv(.x, .y, .y))) %>%
+  ggplot(aes(eps, epv)) +
+  geom_line(aes(lty = paste('p =', p))) +
+  labs(x = 'False positive/negative rate (\u03b5)',
+       y = 'Expected posterior variance',
+       title = 'Expected posterior variance when \u03b1 = \u03b2 = \u03b5',
+       subtitle = 'Signals are more informative when \u03b5 is farther from 0.5',
+       lty = 'Prior') +
+  coord_cartesian(clip = 'off', expand = F) +
+  scale_x_continuous(labels = \(x) round(x, 2)) +
+  scale_y_continuous(labels = \(y) round(y, 2)) +
+  theme(legend.justification = c(0, 1),
+        legend.position = c(0, 1))
+```
+
+The next chart shows the contours of $V(p,\alpha,\beta)$ in the $\alpha\beta$-plane.
+These contours are symmetric across the diagonal line $\alpha=\beta$ when my prior $p$ equals $0.5$ but asymmetric when $p\not=0.5$.
+Intuitively, if I have a strong prior that $\omega=1$ then positive signals $s=1$ are less surprising, and shift my belief less, than negative signals $s=0$.
+So if $p>0.5$ then I need to increase the false positive rate $\alpha$ by more than I decrease the false negative rate $\beta$ to keep $V(p,\alpha,\beta)$ constant.
+
+```{r contours}
+crossing(p = c(0.5, 0.7, 0.9), a = seq(0, 0.5, by = 0.01), b = seq(0, 0.5, by = 0.01)) %>%
+  mutate(epv = pmap_dbl(list(p = p, a = a, b = b), get_epv)) %>%
+  filter(!is.na(epv)) %>%
+  ggplot(aes(a, b)) +
+  geom_contour_filled(aes(z = epv), show.legend = F) +
+  labs(x = 'False positive rate (\u03b1)',
+       y = 'False negative rate (\u03b2)',
+       title = 'Expected posterior variance',
+       subtitle = 'Darker regions represent larger values') +
+  facet_wrap(~paste('p =', p)) +
+  coord_fixed(clip = 'off', expand = F) +
+  scale_x_continuous(labels = \(x) round(x, 2)) +
+  scale_y_continuous(labels = \(y) round(y, 2)) +
+  scale_fill_grey(start = 1, end = 0) +
+  theme(panel.spacing.x = unit(1, 'line'))
+```
+
+One consequence of this asymmetry is that the constrained minimization problem
+$$\min_{\alpha,\beta}V(p,\alpha,\beta)\ \text{subject to}\ 0\le\alpha,\beta\le0.5\ \text{and}\ \alpha+\beta\ge B$$
+has a corner solution
+$$(\alpha^*,\beta^*)=\begin{cases}
+(0,B) & \text{if}\ p\le1/2 \\
+(B,0) & \text{if}\ p>1/2
+\end{cases}$$
+for all lower bounds $B\in[0,0.5]$ on the sum of the error rates.
+Intuitively, if I can limit my exposure to false positives and negatives then I should prevent whichever occur in the state that's most likely under my prior.
+For example, if $p>0.5$ then I'm best off allowing some false positives but preventing any false negatives.
+This makes negative signals fully informative because they only occur when $\omega=0$.
+
+```{r session-info}
+save_session_info()
+```
