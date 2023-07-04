@@ -1,0 +1,50 @@
+---
+title: Paying for precision
+topics: [economics, statistics]
+summary: I derive the posterior variance-minimizing sample size when observations have constant marginal cost.
+loadMathJax: yes
+---
+
+Suppose my payoff `\(u(a,\mu)\equiv-(a-\mu)^2\)` from taking an action `\(a\in\mathbb{R}\)` depends on an unknown state `\(\mu\in\mathbb{R}\)`.
+I can learn about `\(\mu\)` by collecting data `\(X=\{x_1,x_2,\ldots,x_n\}\)`, where the observations `\(x_i\)` are iid normally distributed with mean `\(\mu\)` and variance `\(\sigma^2\)`:[^errors]
+`$$x_i\mid \mu\sim N(\mu,\sigma^2).$$`
+I use these data, my prior belief
+`$$\mu\sim N(\mu_0,\sigma_0^2),$$`
+and Bayes' rule to form a posterior belief
+`$$\mu\mid X\sim N\left(\frac{\tau_0}{\tau_0+n\tau}\mu_0+\frac{n\tau}{\tau_0+n\tau}\bar{x},\frac{1}{\tau_0+n\tau}\right),$$`
+where `\(\tau_0\equiv1/\sigma_0^2\)` is the precision of my prior, `\(\tau\equiv1/\sigma^2\)` is the precision of the `\(x_i\)`, and
+`$$\bar{x}\equiv\frac{1}{n}\sum_{i=1}^nx_i$$`
+is their arithmetic mean.
+Then my expected payoff from taking action `\(a\)` equals
+`$$\DeclareMathOperator{\E}{E}
+\DeclareMathOperator{\Var}{Var}
+\E[u(a,\mu)\mid X]=-(a-\E[\mu\mid X])^2-\Var(\mu\mid X).$$`
+I maximize this payoff by choosing `\(a^*\equiv\E[\mu\mid X]\)`.
+This yields expected payoff
+`$$\E[u(a^*,\mu)\mid X_n]=-\frac{1}{\tau_0+n\tau},$$`
+which is increasing in `\(n\)`.
+Intuitively, collecting more data makes me more informed and makes my optimal action more likely to be "correct."
+But data are costly: I have to pay `\(\kappa n\tau\)` to collect `\(n\)` observations, where `\(\kappa>0\)` captures the marginal cost of information.[^specification]
+I choose `\(n\)` to maximize my total payoff
+`$$\begin{align*}
+U(n)
+&\equiv \E[u(a^*,\mu)\mid X]-\kappa n\tau,
+\end{align*}$$`
+which has maximizer
+`$$n^*=\max\left\{0,\frac{1}{\tau}\left(\frac{1}{\sqrt\kappa}-\tau_0\right)\right\}.$$`
+If `\(1\le\sqrt\kappa\tau_0\)` then `\(n^*=0\)` because the cost of collecting *any* data isn't worth the variance reduction they deliver.
+Whereas if `\(1>\sqrt\kappa\tau_0\)` then `\(n^*\)` is strictly positive and gives me total payoff
+`$$U(n^*)=-2\sqrt\kappa+\kappa\tau_0.$$`
+Both `\(n^*\)` and `\(U(n^*)\)` are decreasing in `\(\kappa\)`.
+Intuitively, making the data more expensive makes me want to collect less, leaving me less informed and worse off.
+In contrast, making my prior more precise (i.e., increasing `\(\tau_0\)`) makes me want to collect less data but leaves me *better* off.
+This is because being well-informed means I can pay for less data and still be well-informed.
+
+Curiously, making the `\(x_i\)` more precise (i.e., increasing `\(\tau\)`) makes me want to collect more data but does not change my welfare.
+This is because the cost `\(\kappa\tau\)` of each observation `\(x_i\)` scales with its precision.
+This cost exactly offsets the value of the information gained, leaving my total payoff `\(U(n^*)\)` unchanged.
+
+[^errors]: This is the same as letting `\(x_i=\mu+\varepsilon_i\)` with iid errors `\(\varepsilon_i\sim N(0,\sigma^2)\)`.
+
+[^specification]: [Pomatto et al. (2023)](https://doi.org/10.1257/aer.20190185) show that this cost function (uniquely) satisfies some attractive properties.
+Linear cost functions also appear in many sequential sampling problems (see, e.g., [Wald's (1945)](https://doi.org/10.1214/aoms/1177731118) classic model or [Morris and Strack's (2019)](https://dx.doi.org/10.2139/ssrn.2991567) discussion of it) and their continuous-time analogues (see, e.g.,  [Fudenberg et al. (2018)](https://doi.org/10.1257/aer.20150742) or [Liang et al. (2022)](https://doi.org/10.3982/ECTA18324)).
