@@ -5,7 +5,7 @@ summary: I derive the posterior variance-minimizing sample size when observation
 loadMathJax: yes
 ---
 
-Suppose my payoff `\(u(a,\mu)\equiv-(a-\mu)^2\)` from taking an action `\(a\in\mathbb{R}\)` depends on an unknown state `\(\mu\in\mathbb{R}\)`.
+Suppose my payoff `\(u(a,\mu)\equiv-(a-\mu)^2\)` from taking an action `\(a\in\mathbb{R}\)` depends on an unknown state `\(\mu\in\mathbb{R}\)`.[^binary]
 I can learn about `\(\mu\)` by collecting data `\(X=\{x_1,x_2,\ldots,x_n\}\)`, where the observations `\(x_i\)` are iid normally distributed with mean `\(\mu\)` and variance `\(\sigma^2\)`:[^errors]
 `$$x_i\mid \mu\sim N(\mu,\sigma^2).$$`
 I use these data, my prior belief
@@ -39,6 +39,8 @@ Both `\(n^*\)` and `\(U(n^*)\)` are decreasing in `\(\kappa\)`.
 Intuitively, making the data more expensive makes me want to collect less, leaving me less informed and worse off.
 In contrast, making my prior more precise (i.e., increasing `\(\tau_0\)`) makes me want to collect less data but leaves me *better* off.
 This is because being well-informed means I can pay for less data and still be well-informed.
+
+[^binary]: See [here](/blog/paying-truth/) for my discussion of the case when the state and data are binary.
 
 Curiously, making the `\(x_i\)` more precise (i.e., increasing `\(\tau\)`) makes me want to collect more data but does not change my welfare.
 This is because the cost `\(\kappa\tau\)` of each observation `\(x_i\)` scales with its precision.

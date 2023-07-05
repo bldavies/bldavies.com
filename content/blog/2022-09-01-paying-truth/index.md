@@ -11,12 +11,14 @@ I discussed the trade-off between (i) experiencing reality and (ii) experiencing
 Truth-seeking made sense only when the benefit of (i) exceeded the cost of forgoing (ii).
 This post discusses another cost of truth-seeking: having to pay---financially, cognitively, or emotionally---for information.
 
-One way to model that cost is as follows.
+One way to model that cost is as follows.[^normal]
 Suppose the truth is determined by a random variable `\(\theta\in\{0,1\}\)`.
 I learn about `\(\theta\)` by observing a signal `\(s(x)\in\{0,1\}\)` with precision
 `$$\Pr(s(x)=\theta)=\frac{1+x}{2}.$$`
 The parameter `\(x\in[0,1]\)` determines the signal's quality.
 If `\(x=1\)` then the signal is fully informative; if `\(x=0\)` then it is uninformative.
+
+[^normal]: See [here](/blog/paying-precision) for my discussion of the case when `\(\theta\)` and `\(s\)` are normally distributed.
 
 My prior estimate `\(\theta_0\in[0.5,1]\)` of `\(\theta\)` is based on no information; it reflects my ideology.
 I use the realization of `\(s(x)\)` and my prior `\(\theta_0\)` to form a posterior estimate
