@@ -1,18 +1,16 @@
 ### Hi, I'm Ben.
 
 I'm an economics PhD student at Stanford University.
-My [research](/research/) explores how people learn, interact, and form connections.
-I lived and worked in New Zealand before starting my PhD.
+[My research](/research/) explores how people learn and interact.
+It combines economic theory with tools from statistics and network science.
 
-Outside of research I love to run, cook, and [blog](/blog/).
-My favorite blog posts include:
+[My blog posts](/blog/) highlight some of my interests and quirks.
+They include:
 
-* [How central is Grand Central Terminal?](/blog/how-central-grand-central-terminal/)
-* [Birds, voting, and Russian interference](/blog/birds-voting-russian-interference/)
-* [White elephant gift exchanges](/blog/white-elephant-gift-exchanges/)
-* [Rationalizing negative splits](/blog/rationalizing-negative-splits/)
-* [Truth-seekers and ideologues](/blog/truth-seekers-ideologues/)
+* simulating [bird elections](/blog/birds-voting-russian-interference/) and [gift exchanges](/blog/white-elephant-gift-exchanges/);
+* analysing [transport](/blog/how-central-grand-central-terminal/), [collaboration](/blog/female-representation-collaboration-nber/), and [co-habitation](/blog/habitat-choices-first-generation-pokemon/) networks;
+* showing, mathematically, how to [run fast races](/blog/optimal-pacing-varying-energy-costs/) and [make animations](/blog/computing-epicycles);
+* summarising papers on [research incentives](/blog/research-incentives-evolution-knowledge/) and [science communication](/blog/communicating-science/);
+* describing my experience [applying to PhD programs](/blog/applying-economics-phd-programs/) and [living in the USA](blog/living-america/).
 
-I've also written about [applying to economics PhD programs](/blog/applying-economics-phd-programs/) and [living in the USA](blog/living-america/).
-
-See [my CV](/cv.pdf) or [send me an email](mailto:bldavies@stanford.edu) for more information.
+You can follow my blog [via RSS](/index.xml) and send me comments [via email](mailto:bldavies@stanford.edu).

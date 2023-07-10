@@ -15,7 +15,7 @@ outputs:
   section: ["HTML"]
 params:
   author: Benjamin Davies
-  description: "Ben Davies is an economics PhD student at Stanford University."
+  description: "Ben Davies is an economics PhD student at Stanford University. His research explores how people learn and interact."
   githubContentURL: "https://github.com/bldavies/bldavies.com/tree/master/content/"
 permalinks:
   blog: "/blog/:slug/"
