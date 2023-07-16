@@ -9,11 +9,11 @@ topics: [economics, politics]
 * What will be the consequences of policies introduced to combat the virus?
 * How willing and able are people to tolerate those consequences?
 
-Under this uncertainty, policymakers must determine which policies to introduce and when to introduce them.
+Under this uncertainty, policymakers must determine which policies to introduce and [when to introduce them](/blog/covid-19-lockdown-two-sided-uncertainty/).
 On the one hand, acting early may prevent the virus from spreading uncontrollably; on the other, delaying action allows policymakers to collect more information about the virus and the policies best suited to combat it.
 
 This post compares two approaches to policymaking under uncertainty: "commit early," and "wait and learn."
-These approaches highlight the trade-off between acting decisively and waiting for more information.
+These approaches highlight the trade-off between acting decisively and [waiting for more information](/blog/option-value-waiting/).
 I discuss this trade-off in the context of the New Zealand (NZ) government's response to COVID-19.
 However, my discussion also applies in other (non-NZ and non-pandemic) contexts.
 

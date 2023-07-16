@@ -22,7 +22,7 @@ ROA extends traditional cost-benefit analyses by accounting for managerial flexi
 For example, ROA provides tools for valuing the ability to abandon roads that get flooded during storms.
 These tools help planners identify investments that meet users' needs across a range of climate change scenarios.
 
-However, real options provide an incentive to delay investments in order to draw more samples from, and thereby learn more about, the temporal and spatial distributions of climate change impacts.
+However, real options provide an [incentive to delay](/blog/option-value-waiting/) investments in order to draw more samples from, and thereby learn more about, the temporal and spatial distributions of climate change impacts.
 Such delays halt investment decisions made by transport network users, who rely on the network to conduct economic and social activities, and by utility providers, who provide services that co-locate with transport infrastructure.
 
 My coauthors and I discuss these issues further in [Motu Note #40][note-url].
