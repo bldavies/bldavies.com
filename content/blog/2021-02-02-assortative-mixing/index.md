@@ -1,6 +1,6 @@
 ---
 title: Assortative mixing
-topics: [networks]
+topics: [mathematics, networks]
 linkSource: yes
 loadMathJax: yes
 ---

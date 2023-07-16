@@ -1,6 +1,6 @@
 ---
 title: Optimal pacing with varying energy costs
-topics: [economics, sports]
+topics: [economics, mathematics, sports]
 linkSource: no
 summary: |
   I run faster races when the energy cost of running fast varies.

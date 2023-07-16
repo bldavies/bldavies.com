@@ -1,6 +1,6 @@
 ---
 title: Assortative mixing
-topics: [networks]
+topics: [mathematics, networks]
 ---
 
 ```{r setup, echo = F, message = F, warning = F}
