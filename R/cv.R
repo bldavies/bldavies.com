@@ -73,12 +73,12 @@ footer = c(
 
 # Contact info ----
 
-coordinates = read_yaml(paste0(data_dir, 'coordinates.yaml'))
+coordinates = cvdata::coordinates
 
 contact_info = c(
   '\\parbox{\\textwidth}{%',
   '\t\\parbox[t]{0.6\\textwidth}{%',
-  paste(paste0('\t\t', coordinates$address), collapse = '\\par\n\t'),
+  paste(paste0('\t\t', strsplit(coordinates$address, '\n')[[1]]), collapse = '\\par\n\t'),
   '\t}',
   '\t\\hfill',
   '\t\\parbox[t]{0.3\\textwidth}{\\raggedleft%',
