@@ -34,7 +34,7 @@ I list my research projects in `data/research.yaml`.
 
 ### Vita
 
-I build my CV using `R/cv.R` based on data stored in `_cv/` and `data/research.yaml`.
+I build my CV using `R/cv.R` based on data stored in `_cv/`, `data/research.yaml`, and the cvdata package.
 I save the intermediate TeX file for version control.
 
 ## License
