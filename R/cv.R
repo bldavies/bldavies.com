@@ -13,7 +13,6 @@ library(cvdata)
 library(dplyr)
 library(lubridate)
 library(purrr)
-library(readr)
 library(rmarkdown)
 library(yaml)
 
@@ -34,8 +33,33 @@ get_period = function(start_date, end_date) {
 
 # Header and footer ----
 
+preamble = '\\documentclass[11pt,oneside]{memoir}
+
+\\title{Curriculum Vitae}
+\\author{Benjamin Davies}
+\\date{\\today}
+
+\\usepackage{mathpazo}
+\\usepackage[T1]{fontenc}
+\\usepackage[utf8]{inputenc}
+\\usepackage[margin=1in,includefoot]{geometry}
+\\usepackage{nohyperref}
+
+\\makeevenfoot{plain}{\\theauthor}{}{Page~\\thepage\\ of~\\thelastpage}
+\\makeoddfoot{plain}{\\theauthor}{}{Page~\\thepage\\ of~\\thelastpage}
+\\OnehalfSpacing
+\\pagestyle{plain}
+\\raggedright
+\\setaftersecskip{1em}
+\\setbeforesecskip{2em}
+\\setlength{\\parindent}{0pt}
+\\setsecheadstyle{\\large\\bfseries}
+\\setsecnumdepth{part}
+
+\\newcommand{\\entry}[1]{\\par\\hangindent=0.4in #1}'
+
 header = c(
-  read_lines(paste0(data_dir, 'preamble.tex')),
+  preamble,
   '',
   '\\begin{document}',
   ''
