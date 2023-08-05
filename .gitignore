@@ -2,6 +2,7 @@ _*
 .Rproj.user
 *.Rproj
 content/blog/[a-z]*/
+data/cv.yaml
 Makefile
 serve
 

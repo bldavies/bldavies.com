@@ -1,6 +1,6 @@
 # CV.R
 #
-# This script builds my CV.
+# This script builds my CV using data from data/cv.yaml and data/research.yaml.
 #
 # Ben Davies
 # August 2023
@@ -9,14 +9,11 @@
 # Initialization ----
 
 library(bldr)
-library(cvdata)
 library(dplyr)
 library(lubridate)
 library(purrr)
 library(rmarkdown)
 library(yaml)
-
-data_dir = '_cv/'
 
 md2tex = function(x) {  # Untested against edge cases
   x = gsub('[*](.*)[*]', '\\\\emph{\\1}', x)
@@ -29,6 +26,8 @@ get_period = function(start_date, end_date) {
   y = year(end_date)
   ifelse(is.na(y), paste0(x, '--present'), ifelse(x < y, paste0(x, '--', y - 2000), x))
 }
+
+indata = read_yaml('data/cv.yaml')
 
 
 # Header and footer ----
@@ -73,34 +72,37 @@ footer = c(
 
 # Contact info ----
 
-coordinates = cvdata::coordinates
-
-contact_info = c(
-  '\\parbox{\\textwidth}{%',
-  '\t\\parbox[t]{0.6\\textwidth}{%',
-  paste(paste0('\t\t', strsplit(coordinates$address, '\n')[[1]]), collapse = '\\par\n\t'),
-  '\t}',
-  '\t\\hfill',
-  '\t\\parbox[t]{0.3\\textwidth}{\\raggedleft%',
-  sprintf('\t\t%s\\par', coordinates$email),
-  sprintf('\t\t%s', coordinates$website),
-  '\t}',
-  '}\\par'
+contact_info = with(
+  unlist(indata$addresses, recursive = F),
+  c(
+    '\\parbox{\\textwidth}{%',
+    '\t\\parbox[t]{0.6\\textwidth}{%',
+    paste(paste0('\t\t', strsplit(physical, '\n')[[1]]), collapse = '\\par\n\t'),
+    '\t}',
+    '\t\\hfill',
+    '\t\\parbox[t]{0.3\\textwidth}{\\raggedleft%',
+    sprintf('\t\t%s\\par', email),
+    sprintf('\t\t%s', web),
+    '\t}',
+    '}\\par'
+  )
 )
 
 
 # Education ----
 
-education = cvdata::education %>%
+education = indata$degrees %>%
+  bind_rows() %>%
   arrange(desc(start_date)) %>%
   mutate(period = get_period(start_date, end_date),
-         text = sprintf('\t\\entry{%s, %s, %s.}', qualification, institution, period)) %>%
+         text = sprintf('\t\\entry{%s, %s, %s.}', degree, institution, period)) %>%
   {.$text}
 
 
 # Employment ----
 
-employment = cvdata::employment %>%
+employment = indata$jobs %>%
+  bind_rows() %>%
   arrange(desc(start_date)) %>%
   mutate(period = paste0(year(start_date), '--', ifelse(!is.na(end_date), year(end_date) - 2000, 'present')),
          text = sprintf('\t\\entry{%s, %s, %s.}', position, employer, period)) %>%
@@ -109,9 +111,9 @@ employment = cvdata::employment %>%
 
 # Honours ---
 
-honours = cvdata::honours %>%
+honours = indata$honours %>%
+  bind_rows() %>%
   mutate(text = sprintf('%s, %s.', description, year)) %>%
-  arrange(desc(row_number())) %>%
   {sprintf('\t\\entry{%s}', .$text)}
 
 
@@ -137,7 +139,8 @@ publications = research %>%
 
 # Presentations ----
 
-presentations = cvdata::presentations %>%
+presentations = indata$talks %>%
+  bind_rows() %>%
   arrange(date) %>%
   group_by(year = year(date)) %>%
   distinct(location) %>%
@@ -149,7 +152,8 @@ presentations = cvdata::presentations %>%
 
 # Teaching ----
 
-teaching = cvdata::teaching %>%
+teaching = indata$teaching %>%
+  bind_rows() %>%
   arrange(desc(start_date)) %>%
   mutate(period = get_period(start_date, end_date),
          text = sprintf('\t\\entry{%s, %s, %s.}', position, institution, period)) %>%
