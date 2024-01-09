@@ -1,3 +1,13 @@
+- id: D4
+  title: Learning about a changing state
+  date: 2024-01-07
+  type: wp
+  url: https://arxiv.org/abs/2401.03607
+  abstract: |
+    A long-lived Bayesian agent observes costly signals of a time-varying state.
+    He chooses the signals' precisions sequentially, balancing their costs and marginal informativeness.
+    I compare the optimal myopic and forward-looking precisions when the state follows a Brownian motion.
+    I also compare the myopic precisions induced by other Gaussian processes.
 - id: D3
   title: Why do experts give simple advice?
   date: 2022-09-25
