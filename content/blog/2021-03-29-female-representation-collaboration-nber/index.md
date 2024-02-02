@@ -149,7 +149,7 @@ It would be interesting to explore these mechanisms further, but I'll leave that
 
 ## Acknowledgements
 
-Thanks to Mohamad Adhami, Florencia Hnilo and Akhila Kovvuri for reading draft versions of this post.
+Thanks to [Mohamad Adhami](https://adhami.people.stanford.edu), [Florencia Hnilo](https://fhnilo.sites.stanford.edu) and Akhila Kovvuri for reading draft versions of this post.
 
 ## Appendix
 

@@ -57,5 +57,5 @@ Letting the more-informed side make proposals allows more information to feed in
 
 ---
 
-*Thanks to Spencer Pantoja for inspiring this post and to [Al Roth](https://web.stanford.edu/~alroth/) for his comments.*
+*Thanks to [Spencer Pantoja](https://www.spantoja.com) for inspiring this post and to [Al Roth](https://web.stanford.edu/~alroth/) for his comments.*
 

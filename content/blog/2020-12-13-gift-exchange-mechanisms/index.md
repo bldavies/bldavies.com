@@ -63,5 +63,5 @@ On the other hand, the unobservability of wrapped gifts' subjective values means
 
 ---
 
-*Thanks to Mohamad Adhami, [Nick Cao](https://nickcao.com/), and Spencer Pantoja for commenting on a draft version of this post.*
+*Thanks to [Mohamad Adhami](https://adhami.people.stanford.edu), [Nick Cao](https://nickcao.com/), and [Spencer Pantoja](https://www.spantoja.com) for commenting on a draft version of this post.*
 
