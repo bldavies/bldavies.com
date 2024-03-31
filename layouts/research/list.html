@@ -5,17 +5,15 @@
 <h1>{{ .Title | markdownify }}</h1>
 {{ .Content }}
 
-{{ $wpList := where .Site.Data.research "type" "wp" }}
-{{ if $wpList }}
-<h2>Working papers</h2>
-{{ range sort $wpList "date" "desc" }}
-{{ partial "publication.html" . }}
-{{ end }}
-{{ end }}
-
 {{ $pubList := where .Site.Data.research "type" "pub" }}
 <h2>Publications</h2>
 {{ range sort $pubList "date" "desc" }}
+{{ partial "publication.html" . }}
+{{ end }}
+
+{{ $wpList := where .Site.Data.research "type" "wp" }}
+<h2>Working papers</h2>
+{{ range sort $wpList "date" "desc" }}
 {{ partial "publication.html" . }}
 {{ end }}
 
@@ -23,6 +21,14 @@
 {{ if $oldList }}
 <h2>Dormant papers</h2>
 {{ range sort $oldList "date" "desc" }}
+{{ partial "publication.html" . }}
+{{ end }}
+{{ end }}
+
+{{ $noteList := where .Site.Data.research "type" "note" }}
+{{ if $noteList }}
+<h2>Policy and technical notes</h2>
+{{ range sort $noteList "date" "desc" }}
 {{ partial "publication.html" . }}
 {{ end }}
 {{ end }}
