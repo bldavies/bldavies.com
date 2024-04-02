@@ -1,3 +1,12 @@
+- id: D5
+  title: Estimating sample paths of Gauss-Markov processes from noisy data
+  date: 2024-03-31
+  type: note
+  url: https://arxiv.org/abs/2404.00784
+  abstract: |
+    I derive the pointwise conditional means and variances of an arbitrary Gauss-Markov process, given noisy observations of points on a sample path.
+    These moments depend on the process's mean and covariance functions, and on the conditional moments of the sampled points.
+    I study the Brownian motion and bridge as special cases.
 - id: D4
   title: Learning about a changing state
   date: 2024-01-07
