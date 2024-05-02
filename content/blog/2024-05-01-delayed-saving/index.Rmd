@@ -1,0 +1,71 @@
+---
+title: Delayed saving
+topics: [finance]
+hidden: true
+---
+
+Suppose I want to retire at time $T>0$.
+I make constant payments to a savings account that earns continuously compounded interest $r>0$.
+I want my retirement fund to be worth $V>0$ today (time $0$).
+How much bigger do my payments have to be if I delay them?
+
+Let $X_d$ be the payments I have to make if I start saving at time $d\in[0,T]$.
+These payments form an [annuity](https://en.wikipedia.org/wiki/Annuity) with value
+$$\frac{X_d}{r}\left(1-e^{-r(T-d)}\right)$$
+at time $d$.
+I want this value to equal $Ve^{rd}$.
+So my payments must equal
+$$\begin{align}
+X_d
+&= \frac{r}{1-e^{-r(T-d)}}\times Ve^{rd} \\
+&= \frac{rV}{e^{-rd}-e^{-rT}}.
+\end{align}$$
+Therefore, delaying to time $d$ increases my payments by a factor of
+$$\frac{X_d}{X_0}=\frac{1-e^{-rT}}{e^{-rd}-e^{-rT}}.$$
+The chart below shows how $X_d/X_0$ grows with the proportion of time $d/T$ I delay saving.
+Part of this growth comes from having less time remaining: if my savings earn no interest, then the factor
+$$\lim_{r\to0}\frac{X_d}{X_0}=\frac{T}{T-d}$$
+equals the ratio of time until retirement and time spent saving.
+Raising $r$ raises $X_d/X_0$ because I forgo more opportunities to earn interest on my interest the longer I delay.
+This is especially true when I'm far from retiring (i.e., $T$ is large).
+
+```{r setup, echo = F, message = F}
+library(bldr)
+library(dplyr)
+library(ggplot2)
+library(knitr)
+library(tidyr)
+
+opts_chunk$set(echo = F, message = F,
+               fig.width = 6, fig.height = 3, fig.ext = 'svg', dev = 'svg')
+
+set_ggtheme()
+```
+
+```{r plot}
+crossing(t = c(1, 10, 100), d = seq(0, 1, by = 0.01), r = c(0, 0.01, 0.05)) %>%
+  mutate(d = d * t,
+         y = ifelse(r == 0, t / (t - d), (1 - exp(-r * t)) / (exp(-r * d) - exp(-r * t)))) %>%
+  ggplot(aes(d / t, y)) +
+  geom_line(aes(col = paste0('r = ', 100 * r, '%'))) +
+  facet_wrap(~paste('T =', t)) +
+  labs(x = 'Delay ratio (d/T)',
+       y = expression(paste('Payment ratio (', X[d] / X[0], ')')),
+       title = 'Delaying payments makes them bigger',
+       subtitle = 'Ratio of payments needed to reach a target balance at time T\nwhen I start saving at time d vs. time 0',
+       col = NULL) +
+  coord_cartesian(expand = F, ylim = c(1, 10)) +
+  scale_x_continuous(labels = \(x) round(x, 2)) +
+  scale_y_continuous(labels = \(y) round(y, 2)) +
+  theme(legend.justification = c(0, 1),
+        legend.position = c(0.01, 1),
+        panel.spacing.x = unit(1, 'lines'))
+```
+
+```{r session-info}
+save_session_info()
+```
+
+---
+
+*Thanks to [Michael Boskin](https://profiles.stanford.edu/michael-boskin) for inspiring this post.*
