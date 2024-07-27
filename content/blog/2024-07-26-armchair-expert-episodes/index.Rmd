@@ -1,0 +1,152 @@
+---
+title: "*Armchair Expert* episodes"
+topics: [media, software]
+---
+
+```{r setup, echo = F, message = F}
+library(ArmchairExpert)
+library(bldr)
+library(dplyr)
+library(ggplot2)
+library(knitr)
+library(lubridate)
+library(tidyr)
+
+opts_chunk$set(echo = F, message = F, warning = F,
+               fig.width = 6, fig.height = 3, fig.ext = 'svg', dev = 'svg')
+
+set_ggtheme()
+```
+
+```{r episodes, cache = T}
+episodes = episodes %>%
+  mutate(Show = ifelse(is.na(show), 'Interviews', show),
+         show_group = ifelse(is.na(show), Show, 'Shows'))
+```
+
+[*Armchair Expert*](https://armchairexpertpod.com) is a podcast hosted by [Dax Shepard](https://en.wikipedia.org/wiki/Dax_Shepard) and [Monica Padman](https://en.wikipedia.org/wiki/Monica_Padman).
+They interview celebrities, scientists, and other public figures.
+They also publish some subsidiary "shows" via the podcast's main feed.
+The table below counts episodes by show:
+
+```{r show_counts}
+show_counts = episodes %>%
+  {bind_rows(., mutate(., Show = 'Total'))} %>%
+  count(Show, name = 'Episodes') %>%
+  arrange(Show == 'Total', -Episodes)
+```
+
+```{r show_counts-table}
+kable(show_counts)
+```
+
+I store episodes' metadata in the R package [ArmchairExpert](https://github.com/bldavies/ArmchairExpert).
+It contains a single table, `episodes`, with a row for each episode and seven columns:
+
+* `id`: Episode ID on Spotify
+* `date`: Episode release date
+* `title`: Episode title
+* `show`: Show to which episode belongs
+* `number`: Within-show episode number
+* `duration`: Episode length (in seconds)
+* `description`: Episode description
+
+<!-- I list episodes' Spotify IDs because I collect their metadata via the [Spotify API](https://developer.spotify.com/documentation/web-api). -->
+
+The first *Armchair Expert* episode---an interview with Dax's wife, [Kristen Bell](https://en.wikipedia.org/wiki/Kristen_Bell)---was released in February 2018.
+The earliest show ([Monica & Jess Love Boys](https://armchairexpertpod.com/monica-jess-love-boys)) started in February 2020 and ended two months later.
+Other shows have been and gone, and three are ongoing:
+
+```{r show-timelines}
+plot_df = episodes %>%
+  mutate(Show = factor(Show, rev(show_counts$Show))) %>%
+  group_by(Show) %>%
+  mutate(start_date = min(date),
+         end_date = max(date)) %>%
+  slice(1, n()) %>%
+  ungroup() %>%
+  mutate(ongoing = end_date >= '2024-07-01',
+         date = if_else(ongoing & date == end_date, max(end_date), date))
+
+plot_df %>%
+  ggplot(aes(date, Show)) +
+  geom_line() +
+  geom_point(aes(shape = date == start_date, fill = ongoing), show.legend = F) +
+  labs(x = 'Date',
+       y = NULL,
+       title = 'Armchair Expert timeline',
+       subtitle = 'Six subsidiary shows have been and gone, and three are ongoing') +
+  coord_cartesian(clip = 'off', expand = F) +
+  scale_fill_manual(values = c('black', 'white')) +
+  scale_shape_manual(values = c(21, 19))
+```
+
+My favorite show is [Flightless Bird](https://armchairexpertpod.com/flightless-bird).
+It's hosted by [David Farrier](https://en.wikipedia.org/wiki/David_Farrier), a fellow Kiwi who reflects on [living in the USA](/blog/living-america/).
+
+The median episode is about `r median(round(episodes$duration / 60))` minutes long.
+But most interviews are longer and most shows are shorter:
+
+```{r lengths}
+episodes %>%
+  ggplot(aes(duration / 60)) +
+  geom_histogram(aes(fill = show_group), alpha = 0.5, binwidth = 5, position = 'identity') +
+  labs(x = 'Length (minutes)',
+       y = 'Episodes',
+       title = 'Armchair Expert episode lengths',
+       subtitle = paste('The median episode is about', median(round(episodes$duration / 60)), 'minutes long'),
+       fill = NULL) +
+  coord_cartesian(clip = 'off', expand = F) +
+  scale_x_continuous(breaks = 30 * (0:10)) +
+  theme(legend.justification = c(0.01, 1),
+        legend.position = c(0.01, 1))
+```
+
+Most interviews end with a "fact check," during which Dax and Monica discuss the interview and their lives.
+Fact checks can be as long as the interviews themselves.
+
+```{r interviews, cache = T, dependson = 'episodes'}
+interviews = episodes %>%
+  filter(show_group == 'Interviews') %>%
+  select(date, title, number) %>%
+  filter(number > 1) %>%
+  filter(!grepl('Best of|Holiday Spectacular', title))
+```
+
+```{r interview_guests, cache = T, dependson = 'interviews'}
+interview_guests = interviews %>%
+  mutate(guest = title,
+         guest = sub('.*: ', '', guest),
+         guest = sub('\\(.*\\)$', '', guest),
+         guest = sub('Return.*$', '', guest),
+         guest = sub('Men\'s Bodies with', '', guest),  # Kumail Nanjiani and Rob McElhenney
+         guest = sub('on COVID-19', '', guest), # Sanjay Gupta
+         guest = sub('#4', '', guest),  # Sanjay Gupta and David Sedaris
+         guest = sub(', by.*$', '', guest),  # Kristen Bell
+         guest = sub('Yuval Harari', 'Yuval Noah Harari', guest)) %>%
+  select(guest, number) %>%
+  mutate(guest = strsplit(guest, '&')) %>%
+  unnest('guest') %>%
+  mutate(guest = trimws(guest)) %>%
+  left_join(interviews, by = 'number')
+```
+
+```{r repeat_guest_lists, cache = T, dependson = 'interview_guests'}
+repeat_guest_lists = interview_guests %>%
+  count(guest) %>%
+  filter(n > 1) %>%
+  group_by(n) %>%
+  summarise(guest_list = paste(guest, collapse = ', ')) %>%
+  ungroup() %>%
+  mutate(guest_list = gsub(', ([^,]+)$', ', and \\1', guest_list))
+```
+
+Dax and Monica have interviewed some people many times.
+They've interviewed Kristen Bell five times, and [David Sedaris](https://en.wikipedia.org/wiki/David_Sedaris) and [Sanjay Gupta](https://en.wikipedia.org/wiki/Sanjay_Gupta) four times each.[^many-interviews]
+My favorite interviews are with [Esther Perel](https://en.wikipedia.org/wiki/Esther_Perel), [Wendy Mogel](https://en.wikipedia.org/wiki/Wendy_Mogel), and [Terry Crews](https://en.wikipedia.org/wiki/Terry_Crews).
+
+[^many-interviews]: `r filter(repeat_guest_lists, n == 3)$guest_list` have been interviewed three times each.
+
+```{r session-info}
+save_session_info()
+```
