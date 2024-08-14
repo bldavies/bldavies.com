@@ -6,7 +6,7 @@ summary: |
   We should them by their predictions and clarity.
 ---
 
-Lots of people criticize economic models for being unrealistic.
+Lots of people criticize [economic models](/blog/what-economic-model) for being unrealistic.
 "Humans are irrational," they cry; "financial markets are inefficient."
 These criticisms are valid, but they miss the point.
 Models aren't *meant* to be realistic.
