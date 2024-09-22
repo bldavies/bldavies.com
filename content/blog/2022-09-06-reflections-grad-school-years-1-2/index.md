@@ -6,8 +6,10 @@ summary: |
   I discuss my first- and second-year coursework, and my quality of life as a grad student.
 ---
 
-This post reflects on the first two years of [my economics PhD at Stanford University](/blog/stanford/).
+This post summarizes the first two years of [my PhD program](/blog/stanford/).[^future]
 I discuss my [first](#first-year-courses)- and [second](#second-year-courses)-year coursework, and my [quality of life](#quality-of-life) as a grad student.
+
+[^future]: See [here](/blog/reflections-grad-school-years-3-4) for reflections on my third and fourth years.
 
 ## First-year courses
 
