@@ -1,0 +1,32 @@
+---
+title: Principal repayments
+topics: [finance]
+hidden: yes
+loadMathJax: yes
+---
+
+Suppose I borrow `\(B_0\)` at an annual interest rate of `\(r\)`.
+I repay the loan by making constant payments of `\(P\)` at the end of each year for `\(N\)` years.
+So, after `\(n\in\{0,1,\ldots,N\}\)` years, the remaining balance on my loan equals
+`$$B_n\equiv\frac{P}{r}\left(1-\frac{1}{(1+r)^{N-n}}\right).$$`
+
+Although I make the same payment `\(P\)` each year, the share
+`$$\begin{align*}
+S_n
+&\equiv \frac{B_{n-1}-B_n}{P} \\
+&= \frac{1}{r}\left[\left(1-\frac{1}{(1+r)^{N-(n-1)}}\right)-\left(1-\frac{1}{(1+r)^{N-n}}\right)\right] \\
+&= \frac{1}{(1+r)^{N-n+1}}
+\end{align*}$$`
+of my payment that goes toward the principal rises each year.
+Indeed it rises at rate
+`$$\begin{align*}
+\frac{S_{n+1}-S_n}{S_n}
+&= \frac{(1+r)^{-(N-(n+1)+1)}-(1+r)^{-(N-n+1)}}{(1+r)^{-(N-n+1)}} \\
+&= r.
+\end{align*}$$`
+Intuitively, each payment lowers the remaining balance on which interest accrues.
+So the interest added to my loan falls each year, raising the share of my constant payments that go toward the principal.
+
+---
+
+*Thanks to [Jeremy Bulow](https://people.stanford.edu/jbulow/) for inspiring this post.*
