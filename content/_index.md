@@ -9,7 +9,7 @@ They include:
 
 * simulating [bird elections](/blog/birds-voting-russian-interference/) and [gift exchanges](/blog/white-elephant-gift-exchanges/);
 * analysing [transport](/blog/how-central-grand-central-terminal/), [collaboration](/blog/female-representation-collaboration-nber/), and [co-habitation](/blog/habitat-choices-first-generation-pokemon/) networks;
-* showing, mathematically, how to [run fast races](/blog/optimal-pacing-varying-energy-costs/) and [make animations](/blog/computing-epicycles);
+* using math to [run fast races](/blog/optimal-pacing-varying-energy-costs/) and [make animations](/blog/computing-epicycles);
 * summarising papers on [research incentives](/blog/research-incentives-evolution-knowledge/) and [science communication](/blog/communicating-science/);
 * describing my experience [applying to PhD programs](/blog/applying-economics-phd-programs/) and [living in the USA](blog/living-america/).
 
