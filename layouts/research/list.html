@@ -11,18 +11,10 @@
 {{ partial "publication.html" . }}
 {{ end }}
 
-{{ $wpList := where .Site.Data.research "type" "wp" }}
+{{ $wpList := where .Site.Data.research "type" "in" (slice "wp" "old") }}
 <h2>Working papers</h2>
 {{ range sort $wpList "date" "desc" }}
 {{ partial "publication.html" . }}
-{{ end }}
-
-{{ $oldList := where .Site.Data.research "type" "old" }}
-{{ if $oldList }}
-<h2>Dormant papers</h2>
-{{ range sort $oldList "date" "desc" }}
-{{ partial "publication.html" . }}
-{{ end }}
 {{ end }}
 
 {{ $noteList := where .Site.Data.research "type" "note" }}

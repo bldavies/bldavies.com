@@ -3,7 +3,7 @@
 # This script builds my CV using data from data/cv.yaml and data/research.yaml.
 #
 # Ben Davies
-# August 2023
+# January 2025
 
 
 # Initialization ----
@@ -128,12 +128,16 @@ research = read_yaml('data/research.yaml') %>%
                        ifelse(!is.na({if ('forthcoming' %in% names(.)) forthcoming else rep(NA, nrow(.))}), 'forthcoming', substr(date, 1, 4)),
                        '.'))
 
-working_papers = research %>%
-  filter(type == 'wp') %>%
-  {sprintf('\t\\entry{%s}', md2tex(.$text))}
-
 publications = research %>%
   filter(type == 'pub') %>%
+  {sprintf('\t\\entry{%s}', md2tex(.$text))}
+
+working_papers = research %>%
+  filter(type %in% c('wp', 'old')) %>%
+  {sprintf('\t\\entry{%s}', md2tex(.$text))}
+
+notes = research %>%
+  filter(type == 'note') %>%
   {sprintf('\t\\entry{%s}', md2tex(.$text))}
 
 
@@ -181,6 +185,10 @@ content = c(
   '',
   honours,
   '',
+  '\\section{Publications}',
+  '',
+  publications,
+  '',
   {
     if (length(working_papers) > 0) {
       c(
@@ -193,9 +201,9 @@ content = c(
       c()
     }
   },
-  '\\section{Publications}',
+  '\\section{Policy and Technical Notes}',
   '',
-  publications,
+  notes,
   '',
   '\\section{Seminars and Conference Presentations}',
   '',
