@@ -20,7 +20,7 @@
 - id: D3
   title: Why do experts give simple advice?
   date: 2022-09-25
-  type: old
+  type: wp
   url: https://arxiv.org/abs/2209.11710
   abstract: |
     An expert tells an advisee whether to take an action that may be good or bad.
@@ -73,8 +73,8 @@
   title: Delineating functional labour market areas with estimable classification stabilities
   coauthors: David C. Maré
   date: 2020-08-28
-  type: note
-  url: http://ftp.iza.org/dp13642.pdf
+  type: wp
+  url: https://www.iza.org/publications/dp/13642
   abstract: |
     We describe an unsupervised method for delineating functional labour market areas (LMAs) in national commuting networks.
     Our method uses the Louvain algorithm, which we extend to support top-down hierarchical LMA classification and estimable classification stabilities.
@@ -118,8 +118,8 @@
   title: Bundling and insurance of independent risks
   coauthors: Richard Watt
   date: 2017-08-14
-  type: old
-  url: http://www.econ.canterbury.ac.nz/RePEc/cbt/econwp/1705.pdf
+  type: wp
+  url: https://ideas.repec.org/p/cbt/econwp/17-05.html
   abstract: |
     Risky prospects can often by disaggregated into several identifiable, smaller risks.
     In such cases, at least two modes of insurance are available: either (i) the disaggregated risks can be insured independently or (ii) the aggregate risk can be insured as one.

@@ -193,7 +193,7 @@ publication_lines = research_data %>%
 
 # Create working paper lines
 working_paper_lines = research_data %>%
-  filter(type %in% c('wp', 'old')) %>%
+  filter(type == 'wp') %>%
   mutate(line = sprintf('\\entry{%s}{%s}', year(date), headline)) %>%
   {paste0('\t', .$line)}
 
