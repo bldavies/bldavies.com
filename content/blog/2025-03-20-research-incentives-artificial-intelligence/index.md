@@ -4,7 +4,7 @@ topics: [economics, research, technology]
 summary: I discuss Carnehl and Schneider (2025) and Gans (2025), who study the evolution of knowledge and the impact of AI.
 ---
 
-In one of my favorite papers (summarized [here](/blog/research-incentives-evolution-knowledge/)), [Carnehl and Schneider](https://arxiv.org/abs/2102.13434) (forthcoming in [*Econometrica*](https://www.econometricsociety.org/publications/econometrica)) study the choice between two types of research:
+In one of my favorite papers (summarized [here](/blog/research-incentives-evolution-knowledge/)), [Carnehl and Schneider (2025)](https://doi.org/10.3982/ECTA22144) study the choice between two types of research:
 
 1. research that "deepens" our knowledge by filling gaps between answered questions;
 2. research that "expands" our knowledge by answering questions beyond the frontier.
