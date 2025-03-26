@@ -105,14 +105,13 @@ for (i in seq_along(institution_lines)) {
     filter(institution_pos == i) %>%
     arrange(degree_pos) %>%
     mutate(line = sprintf('\\entry{%s}{%s}', get_period(start_date, end_date), title)) %>%
-    {paste0('\t', .$line)}
+    {.$line}
   
   # Update lines
   education_lines = c(
     education_lines,
     '',
     institution_lines[i],
-    '',
     degree_lines
   )
   
@@ -153,14 +152,13 @@ for (i in seq_along(employer_lines)) {
     filter(employer_pos == i) %>%
     arrange(role_pos) %>%
     mutate(line = sprintf('\\entry{%s}{%s}', get_period(start_date, end_date), title)) %>%
-    {paste0('\t', .$line)}
+    {.$line}
   
   # Update lines
   experience_lines = c(
     experience_lines,
     '',
     employer_lines[i],
-    '',
     role_lines
   )
   
@@ -173,7 +171,7 @@ for (i in seq_along(employer_lines)) {
 award_lines = indata$awards %>%
   bind_rows() %>%
   mutate(line = sprintf('\\entry{%s}{%s}', year, description)) %>%
-  {paste0('\t', .$line)}
+  {.$line}
 
 
 ## Research ----
@@ -189,19 +187,19 @@ research_data = read_yaml('data/research.yaml') %>%
 publication_lines = research_data %>%
   filter(type == 'pub') %>%
   mutate(line = sprintf('\\entry{%s}{%s, \\emph{%s}}', year(date), headline, gsub('[*]', '', outlet))) %>%
-  {paste0('\t', .$line)}
+  {.$line}
 
 # Create working paper lines
 working_paper_lines = research_data %>%
   filter(type == 'wp') %>%
   mutate(line = sprintf('\\entry{%s}{%s}', year(date), headline)) %>%
-  {paste0('\t', .$line)}
+  {.$line}
 
 # Create note lines
 note_lines = research_data %>%
   filter(type == 'note') %>%
   mutate(line = sprintf('\\entry{%s}{%s}', year(date), headline)) %>%
-  {paste0('\t', .$line)}
+  {.$line}
 
 
 ## Conference presentations ----
@@ -212,7 +210,7 @@ conference_lines = indata$conferences %>%
   arrange(desc(date)) %>%
   mutate(text = ifelse(!is.na(location), sprintf('%s, %s', conf_title, location), conf_title),
          line = sprintf('\\entry{%s}{%s}', year(date), text)) %>%
-  {paste0('\t', .$line)}
+  {.$line}
 
 
 ## Collation ----
@@ -220,9 +218,9 @@ conference_lines = indata$conferences %>%
 body = c(
   '\\chapter{\\theauthor}',
   '',
-  sprintf('\tEmail: \\href{mailto:%s}{%s}', indata$email, indata$email),
+  sprintf('Email: \\href{mailto:%s}{%s}', indata$email, indata$email),
   '',
-  sprintf('\tWebsite: \\href{https://%s}{%s}', indata$website, indata$website),
+  sprintf('Website: \\href{https://%s}{%s}', indata$website, indata$website),
   '',
   '\\section{Education}',
   education_lines,
@@ -257,8 +255,7 @@ body = c(
   '\\section{Conference Presentations}',
   '',
   conference_lines
-) %>%
-  {paste0('\t', .)}
+)
 
 
 # Compilation ----
