@@ -8,7 +8,7 @@ It extends my model of [paying for precision](/blog/paying-precision/) to a sett
 This makes the agent keep buying new information as his existing information becomes out of date.
 I show how his demand for information depends on whether he is myopic or forward-looking, and on the [Gaussian process](https://en.wikipedia.org/wiki/Gaussian_process) defining how the state evolves.
 
-The paper stems from my research with [Anirudh Sankar](https://kingcenter.stanford.edu/anirudh-sankar) on how people learn across contexts.
+The paper stems from my research with [Anirudh Sankar](https://sites.google.com/view/anirudh-sankar) on how people learn across contexts.
 Suppose I ask you for advice, and you say "X worked for me."
 But will X work for me?
 We're different people with different contexts (e.g., physical and social positions).

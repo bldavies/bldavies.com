@@ -61,5 +61,5 @@ But I'll try to "be more Bayesian" generally: to think more carefully about my b
 
 ---
 
-*Thanks to Anirudh Sankar for reading a draft version of this post.
-It was inspired by the tenth chapter of Jordan Ellenberg's [*How Not to Be Wrong*](http://www.jordanellenberg.com/book/how-not-to-be-wrong/).*
+*Thanks to [Anirudh Sankar](https://sites.google.com/view/anirudh-sankar) for reading a draft version of this post.
+It was inspired by the tenth chapter of Jordan Ellenberg's "[How Not to Be Wrong](http://www.jordanellenberg.com/book/how-not-to-be-wrong/)."*

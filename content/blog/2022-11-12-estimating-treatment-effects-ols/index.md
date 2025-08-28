@@ -94,5 +94,5 @@ It shows the mean absolute difference between `\(\beta_1\)` and `\(\gamma_1\)` a
 
 ---
 
-*Thanks to Anirudh Sankar for reading a draft version of this post.*
+*Thanks to [Anirudh Sankar](https://sites.google.com/view/anirudh-sankar) for reading a draft version of this post.*
 

@@ -28,7 +28,7 @@ But I didn't learn how to ask my own questions.
 That's where I (and many other PhD students) struggle.
 It's hard to find questions that are interesting and important, and can only be answered by me.
 
-I had some help from my classmate, [Anirudh](https://kingcenter.stanford.edu/anirudh-sankar).
+I had some help from my classmate, [Anirudh](https://sites.google.com/view/anirudh-sankar).
 We wrote our second-year papers on similar topics.
 Mine asked [why experts give simple advice](/blog/why-experts-give-simple-advice/).
 Ani's asked how people learn from coarse information.

@@ -179,7 +179,7 @@ sims %>%
 
 ---
 
-*Thanks to Anirudh Sankar for reading a draft version of this post.*
+*Thanks to [Anirudh Sankar](https://sites.google.com/view/anirudh-sankar) for reading a draft version of this post.*
 
 ```{r session-info}
 bldr::save_session_info()
