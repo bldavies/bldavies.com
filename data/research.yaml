@@ -20,7 +20,7 @@
 - id: D3
   title: Why do experts give simple advice?
   date: 2022-09-25
-  type: wp
+  type: old
   url: https://arxiv.org/abs/2209.11710
   abstract: |
     An expert tells an advisee whether to take an action that may be good or bad.
@@ -73,7 +73,7 @@
   title: Delineating functional labour market areas with estimable classification stabilities
   coauthors: David C. Maré
   date: 2020-08-28
-  type: wp
+  type: note
   url: https://www.iza.org/publications/dp/13642
   abstract: |
     We describe an unsupervised method for delineating functional labour market areas (LMAs) in national commuting networks.
@@ -118,7 +118,7 @@
   title: Bundling and insurance of independent risks
   coauthors: Richard Watt
   date: 2017-08-14
-  type: wp
+  type: old
   url: https://ideas.repec.org/p/cbt/econwp/17-05.html
   abstract: |
     Risky prospects can often by disaggregated into several identifiable, smaller risks.

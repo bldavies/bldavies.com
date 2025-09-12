@@ -1,13 +1,7 @@
 <p>
   {{ if .url }}<a href="{{ .url }}">{{ .title }}</a>{{ else }}{{ .title }}{{ end}}
   {{- if .coauthors }}</br>(with {{ .coauthors }}){{ end -}}
-  </br>
-  {{- if or (eq .type "wp") (eq .type "old") -}}
-    Last updated:
-  {{ else if .outlet }}
-    {{ .outlet | markdownify }},
-  {{ end -}}
-  {{ if .forthcoming }}forthcoming{{ else }}{{ dateFormat "January 2006" .date }}{{ end -}}
+  {{- if .outlet }}</br>{{ .outlet | markdownify }}, {{ if .forthcoming }}forthcoming{{ else }}{{ dateFormat "2006" .date }}{{ end -}}{{ end -}}
   </br>
   {{ if .abstract }}
     <a href="javascript:toggle_abstract('{{ .id }}')" id="{{ .id }}-abstract-toggle" class="rounded-link" style="display: none">abstract [+]</a>

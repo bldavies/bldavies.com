@@ -5,15 +5,15 @@
 <h1>{{ .Title | markdownify }}</h1>
 {{ .Content }}
 
-{{ $pubList := where .Site.Data.research "type" "pub" }}
-<h2>Publications</h2>
-{{ range sort $pubList "date" "desc" }}
+{{ $wpList := where .Site.Data.research "type" "wp" }}
+<h2>Working papers</h2>
+{{ range sort $wpList "date" "desc" }}
 {{ partial "publication.html" . }}
 {{ end }}
 
-{{ $wpList := where .Site.Data.research "type" "in" (slice "wp" "old") }}
-<h2>Working papers</h2>
-{{ range sort $wpList "date" "desc" }}
+{{ $pubList := where .Site.Data.research "type" "pub" }}
+<h2>Publications</h2>
+{{ range sort $pubList "date" "desc" }}
 {{ partial "publication.html" . }}
 {{ end }}
 
@@ -31,6 +31,12 @@
 {{ range sort $othList "date" "desc" }}
 {{ partial "publication.html" . }}
 {{ end }}
+{{ end }}
+
+{{ $wpList := where .Site.Data.research "type" "old" }}
+<h2>Resting papers</h2>
+{{ range sort $wpList "date" "desc" }}
+{{ partial "publication.html" . }}
 {{ end }}
 
 {{ partial "footer.html" . }}
