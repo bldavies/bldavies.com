@@ -1,3 +1,17 @@
+- id: DS1
+  title: The value of conceptual knowledge
+  coauthors: Anirudh Sankar
+  date: 2025-09-12
+  type: wp
+  url: https://arxiv.org/abs/2509.09170
+  abstract: |
+    We formalize what it means to have conceptual knowledge about a statistical decision-making environment.
+    Such knowledge tells agents about the structural relationships among unknown, payoff-relevant states.
+    It allows agents to represent states as combinations of features.
+    Conceptual knowledge is more valuable when states are more "reducible": when their prior variances are explained by fewer features.
+    Its value is non-monotone in the quantity and quality of available data, and vanishes with infinite data.
+    Agents with deeper knowledge can attain the same welfare with less data.
+    This is especially true when states are highly reducible.
 - id: D5
   title: Estimating sample paths of Gauss-Markov processes from noisy data
   date: 2024-03-31
