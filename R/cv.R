@@ -3,7 +3,7 @@
 # This script builds my CV using data from data/cv.yaml and data/research.yaml.
 #
 # Ben Davies
-# March 2025
+# September 2025
 
 
 # Initialization ----
@@ -36,7 +36,7 @@ preamble = '\\documentclass[11pt,oneside]{memoir}
 
 \\makeevenfoot{plain}{\\today}{}{Page~\\thepage\\ of~\\thelastpage}
 \\makeoddfoot{plain}{\\today}{}{Page~\\thepage\\ of~\\thelastpage}
-\\OnehalfSpacing
+\\linespread{1.1}
 \\pagestyle{plain}
 \\raggedright
 \\setlength{\\parindent}{0pt}
@@ -48,7 +48,8 @@ preamble = '\\documentclass[11pt,oneside]{memoir}
 \\titlespacing{\\section}{0pt}{2em}{1em}
 \\titlespacing{\\subsection}{0pt}{1em}{0pt}
 
-\\newcommand{\\entry}[2]{\\par\\parbox[t]{0.9\\linewidth}{\\strut\\raggedright\\hangindent=2em #2\\strut}\\hfill#1}'
+\\newcommand{\\entry}[1]{\\par\\hangindent=2em#1}
+\\newcommand{\\datedentry}[2]{\\par\\parbox[t]{0.9\\linewidth}{\\strut\\raggedright\\hangindent=2em #2\\strut}\\hfill#1}'
 
 # Define header
 header = c(
@@ -104,7 +105,7 @@ for (i in seq_along(institution_lines)) {
   degree_lines = education_data %>%
     filter(institution_pos == i) %>%
     arrange(degree_pos) %>%
-    mutate(line = sprintf('\\entry{%s}{%s}', get_period(start_date, end_date), title)) %>%
+    mutate(line = sprintf('\\datedentry{%s}{%s}', get_period(start_date, end_date), title)) %>%
     {.$line}
   
   # Update lines
@@ -120,48 +121,59 @@ for (i in seq_along(institution_lines)) {
 
 ## Experience ----
 
-# Extract data
-experience_data = indata$experience %>%
-  lapply(function(x) {
-    x$roles %>%
-      bind_rows() %>%
-      mutate(employer = x$employer)
-  }) %>%
-  bind_rows() %>%
-  group_by(employer) %>%
-  mutate(min_start_date = min(start_date),
-         role_pos = dense_rank(desc(start_date))) %>%
-  ungroup() %>%
-  mutate(employer_pos = dense_rank(desc(min_start_date)))
+# Extract types
+experience_types = names(indata$experience)
 
-# Initialize lines
-experience_lines = c()
-
-# Create employer headings
-employer_lines = experience_data %>%
-  distinct(employer_pos, employer) %>%
-  arrange(employer_pos) %>%
-  mutate(line = sprintf('\\subsection{%s}', employer)) %>%
-  {.$line}
-
-# Iterate over employers
-for (i in seq_along(employer_lines)) {
+# Iterate over types
+experience_data = list()
+experience_lines = list()
+for (t in experience_types) {
   
-  # Create degree list
-  role_lines = experience_data %>%
-    filter(employer_pos == i) %>%
-    arrange(role_pos) %>%
-    mutate(line = sprintf('\\entry{%s}{%s}', get_period(start_date, end_date), title)) %>%
+  # Extract data
+  experience_data[[t]] = indata$experience[[t]] %>%
+    lapply(function(x) {
+      x$roles %>%
+        bind_rows() %>%
+        mutate(employer = x$employer)
+    }) %>%
+      bind_rows() %>%
+      group_by(employer) %>%
+      mutate(min_start_date = min(start_date),
+             role_pos = dense_rank(desc(start_date))) %>%
+      ungroup() %>%
+      mutate(employer_pos = dense_rank(desc(min_start_date)),
+             type = t)
+  
+  
+  # Initialize lines
+  experience_lines[[t]] = c()
+  
+  # Create employer headings
+  employer_lines = experience_data[[t]] %>%
+    distinct(employer_pos, employer) %>%
+    arrange(employer_pos) %>%
+    mutate(line = sprintf('\\subsection{%s}', employer)) %>%
     {.$line}
   
-  # Update lines
-  experience_lines = c(
-    experience_lines,
-    '',
-    employer_lines[i],
-    role_lines
-  )
-  
+  # Iterate over employers
+  for (i in seq_along(employer_lines)) {
+    
+    # Create degree list
+    role_lines = experience_data[[t]] %>%
+      filter(employer_pos == i) %>%
+      arrange(role_pos) %>%
+      mutate(line = sprintf('\\datedentry{%s}{%s}', get_period(start_date, end_date), title)) %>%
+      {.$line}
+    
+    # Update lines
+    experience_lines[[t]] = c(
+      experience_lines[[t]],
+      '',
+      employer_lines[i],
+      role_lines
+    )
+    
+  }
 }
 
 
@@ -170,7 +182,7 @@ for (i in seq_along(employer_lines)) {
 # Create lines
 award_lines = indata$awards %>%
   bind_rows() %>%
-  mutate(line = sprintf('\\entry{%s}{%s}', year, description)) %>%
+  mutate(line = sprintf('\\datedentry{%s}{%s}', year, description)) %>%
   {.$line}
 
 
@@ -183,22 +195,22 @@ research_data = read_yaml('data/research.yaml') %>%
   mutate(headline = paste0(ifelse(grepl('http', url), sprintf('\\href{%s}{%s}', url, title), title),
                            ifelse(!is.na(coauthors), sprintf(' (with %s)', coauthors), '')))
 
-# Create publication lines
-publication_lines = research_data %>%
-  filter(type == 'pub') %>%
-  mutate(line = sprintf('\\entry{%s}{%s, \\emph{%s}}', year(date), headline, gsub('[*]', '', outlet))) %>%
-  {.$line}
-
 # Create working paper lines
 working_paper_lines = research_data %>%
   filter(type == 'wp') %>%
-  mutate(line = sprintf('\\entry{%s}{%s}', year(date), headline)) %>%
+  mutate(line = sprintf('\\entry{%s}', headline)) %>%
   {.$line}
 
-# Create note lines
-note_lines = research_data %>%
-  filter(type == 'note') %>%
-  mutate(line = sprintf('\\entry{%s}{%s}', year(date), headline)) %>%
+# Create publication lines
+publication_lines = research_data %>%
+  filter(type == 'pub') %>%
+  mutate(line = sprintf('\\datedentry{%s}{%s, \\emph{%s}}', year(date), headline, gsub('[*]', '', outlet))) %>%
+  {.$line}
+
+# Create report lines
+report_lines = research_data %>%
+  filter(type == 'report') %>%
+  mutate(line = sprintf('\\datedentry{%s}{%s}', year(date), headline)) %>%
   {.$line}
 
 
@@ -209,7 +221,7 @@ conference_lines = indata$conferences %>%
   bind_rows() %>%
   arrange(desc(date)) %>%
   mutate(text = ifelse(!is.na(location), sprintf('%s, %s', conf_title, location), conf_title),
-         line = sprintf('\\entry{%s}{%s}', year(date), text)) %>%
+         line = sprintf('\\datedentry{%s}{%s}', year(date), text)) %>%
   {.$line}
 
 
@@ -225,17 +237,6 @@ body = c(
   '\\section{Education}',
   education_lines,
   '',
-  '\\section{Experience}',
-  experience_lines,
-  '',
-  '\\section{Awards}',
-  '',
-  award_lines,
-  '',
-  '\\section{Publications}',
-  '',
-  publication_lines,
-  '',
   {
     if (length(working_paper_lines) > 0) {
       c(
@@ -248,9 +249,23 @@ body = c(
       c()
     }
   },
-  '\\section{Policy and Technical Notes}',
   '',
-  note_lines,
+  '\\section{Publications}',
+  '',
+  publication_lines,
+  '\\section{Technical and Policy Reports}',
+  '',
+  report_lines,
+  '',
+  '\\section{Awards}',
+  '',
+  award_lines,
+  '',
+  '\\section{Research and Professional Experience}',
+  c(experience_lines$research, experience_lines$professional),
+  '',
+  '\\section{Teaching Experience}',
+  experience_lines$teaching,
   '',
   '\\section{Conference Presentations}',
   '',

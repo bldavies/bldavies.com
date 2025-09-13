@@ -15,7 +15,7 @@
 - id: D5
   title: Estimating sample paths of Gauss-Markov processes from noisy data
   date: 2024-03-31
-  type: note
+  type: report
   url: https://arxiv.org/abs/2404.00784
   abstract: |
     I derive the pointwise conditional means and variances of an arbitrary Gauss-Markov process, given noisy observations of points on a sample path.
@@ -87,7 +87,7 @@
   title: Delineating functional labour market areas with estimable classification stabilities
   coauthors: David C. Maré
   date: 2020-08-28
-  type: note
+  type: report
   url: https://www.iza.org/publications/dp/13642
   abstract: |
     We describe an unsupervised method for delineating functional labour market areas (LMAs) in national commuting networks.
@@ -112,7 +112,7 @@
   title: Climate change adaptation within New Zealand's transport system
   coauthors: Anthony Byett and others
   date: 2019-11-06
-  type: note
+  type: report
   url: https://motu.nz/assets/Documents/our-work/environment/climate-change-impacts/Transport-Dialogue-Report.pdf
 - id: DM1
   title: Relatedness, complexity and local growth

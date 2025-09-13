@@ -17,9 +17,9 @@
 {{ partial "publication.html" . }}
 {{ end }}
 
-{{ $noteList := where .Site.Data.research "type" "note" }}
+{{ $noteList := where .Site.Data.research "type" "report" }}
 {{ if $noteList }}
-<h2>Policy and technical notes</h2>
+<h2>Technical and policy reports</h2>
 {{ range sort $noteList "date" "desc" }}
 {{ partial "publication.html" . }}
 {{ end }}
