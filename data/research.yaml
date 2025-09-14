@@ -12,6 +12,21 @@
     Its value is non-monotone in the quantity and quality of available data, and vanishes with infinite data.
     Agents with deeper knowledge can attain the same welfare with less data.
     This is especially true when states are highly reducible.
+- id: DS2
+  title: "How mechanistic explanations reshape learning and behavior:
+Evidence from a fertilizer choice experiment in Eastern Uganda"
+  coauthors: Anirudh Sankar and others
+  date: 2025-09-03
+  type: wip
+  abstract: |
+    Mechanistic explanations---descriptions of a system through the causal interactions of its parts---play a key role in human cognition and scientific progress.
+    Despite their importance, we lack systematic evidence on how mechanistic explanations affect learning and behavior in economic settings.
+    We evaluate the causal impact of including mechanistic explanations in an information intervention: public demonstrations of fertilizer use for smallholder tomato farmers in Eastern Uganda.
+    In all demonstrations, extension officers showcased the impact of a recommended fertilizer recipe.
+    In the treatment group, officers also explained the mechanisms underlying the recipe’s effects—introducing the language of macronutrients and the causal processes linking nutrients, soil features, and plant growth.
+    We collect detailed data on beliefs and behaviors from 797 farmers in a lab-in-the-field experiment.
+    Treated farmers are better able to generalize from mechanisms to update beliefs about the returns to fertilizers, substitute and arbitrage among fertilizers based on nutrient content, and exhibit better understanding of the principles of nutrient and soil science.
+    In an incentivized fertilizer application task, they achieved 9% higher simulated profits by selecting more agronomically sound fertilizer recipes, without increasing costs.
 - id: D5
   title: Estimating sample paths of Gauss-Markov processes from noisy data
   date: 2024-03-31

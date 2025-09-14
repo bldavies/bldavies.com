@@ -11,16 +11,24 @@
 {{ partial "publication.html" . }}
 {{ end }}
 
+{{ $wipList := where .Site.Data.research "type" "wip" }}
+{{ if $wipList }}
+<h2>Work in progress</h2>
+{{ range sort $wipList "date" "desc" }}
+{{ partial "publication.html" . }}
+{{ end }}
+{{ end }}
+
 {{ $pubList := where .Site.Data.research "type" "pub" }}
 <h2>Publications</h2>
 {{ range sort $pubList "date" "desc" }}
 {{ partial "publication.html" . }}
 {{ end }}
 
-{{ $noteList := where .Site.Data.research "type" "report" }}
-{{ if $noteList }}
+{{ $reportList := where .Site.Data.research "type" "report" }}
+{{ if $reportList }}
 <h2>Technical and policy reports</h2>
-{{ range sort $noteList "date" "desc" }}
+{{ range sort $reportList "date" "desc" }}
 {{ partial "publication.html" . }}
 {{ end }}
 {{ end }}

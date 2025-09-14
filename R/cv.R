@@ -136,13 +136,13 @@ for (t in experience_types) {
         bind_rows() %>%
         mutate(employer = x$employer)
     }) %>%
-      bind_rows() %>%
-      group_by(employer) %>%
-      mutate(min_start_date = min(start_date),
-             role_pos = dense_rank(desc(start_date))) %>%
-      ungroup() %>%
-      mutate(employer_pos = dense_rank(desc(min_start_date)),
-             type = t)
+    bind_rows() %>%
+    group_by(employer) %>%
+    mutate(min_start_date = min(start_date),
+           role_pos = dense_rank(desc(start_date))) %>%
+    ungroup() %>%
+    mutate(employer_pos = dense_rank(desc(min_start_date)),
+           type = t)
   
   
   # Initialize lines
@@ -201,6 +201,12 @@ working_paper_lines = research_data %>%
   mutate(line = sprintf('\\entry{%s}', headline)) %>%
   {.$line}
 
+# Create work in progress lines
+wip_lines = research_data %>%
+  filter(type == 'wip') %>%
+  mutate(line = sprintf('\\entry{%s}', headline)) %>%
+  {.$line}
+
 # Create publication lines
 publication_lines = research_data %>%
   filter(type == 'pub') %>%
@@ -243,6 +249,19 @@ body = c(
         '\\section{Working Papers}',
         '',
         working_paper_lines,
+        ''
+      )
+    } else {
+      c()
+    }
+  },
+  '',
+  {
+    if (length(wip_lines) > 0) {
+      c(
+        '\\section{Work in Progress}',
+        '',
+        wip_lines,
         ''
       )
     } else {
