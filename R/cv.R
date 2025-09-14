@@ -34,10 +34,8 @@ preamble = '\\documentclass[11pt,oneside]{memoir}
 \\usepackage[colorlinks,urlcolor=blue]{hyperref}
 \\usepackage{titlesec}
 
-\\makeevenfoot{plain}{\\today}{}{Page~\\thepage\\ of~\\thelastpage}
-\\makeoddfoot{plain}{\\today}{}{Page~\\thepage\\ of~\\thelastpage}
 \\linespread{1.1}
-\\pagestyle{plain}
+\\pagestyle{empty}
 \\raggedright
 \\setlength{\\parindent}{0pt}
 \\setsecnumdepth{part}
@@ -235,6 +233,7 @@ conference_lines = indata$conferences %>%
 
 body = c(
   '\\chapter{\\theauthor}',
+  '\\thispagestyle{empty}',
   '',
   sprintf('Email: \\href{mailto:%s}{%s}', indata$email, indata$email),
   '',
@@ -288,7 +287,10 @@ body = c(
   '',
   '\\section{Conference Presentations}',
   '',
-  conference_lines
+  conference_lines,
+  '',
+  '\\vskip2em\\vfill',
+  sprintf('{\\itshape Last updated: %s}', format(Sys.Date(), '%B %Y'))
 )
 
 

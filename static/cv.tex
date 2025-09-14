@@ -11,10 +11,8 @@
 \usepackage[colorlinks,urlcolor=blue]{hyperref}
 \usepackage{titlesec}
 
-\makeevenfoot{plain}{\today}{}{Page~\thepage\ of~\thelastpage}
-\makeoddfoot{plain}{\today}{}{Page~\thepage\ of~\thelastpage}
 \linespread{1.1}
-\pagestyle{plain}
+\pagestyle{empty}
 \raggedright
 \setlength{\parindent}{0pt}
 \setsecnumdepth{part}
@@ -31,6 +29,7 @@
 \begin{document}
 
 \chapter{\theauthor}
+\thispagestyle{empty}
 
 Email: \href{mailto:bldavies@stanford.edu}{bldavies@stanford.edu}
 
@@ -105,5 +104,8 @@ Website: \href{https://bldavies.com}{bldavies.com}
 \datedentry{2019}{New Zealand Association of Economists Conference, Wellington}
 \datedentry{2018}{New Zealand Association of Economists Conference, Auckland}
 \datedentry{2017}{European Group of Risk and Insurance Economists Annual Seminar, London}
+
+\vskip2em\vfill
+{\itshape Last updated: September 2025}
 
 \end{document}
