@@ -40,8 +40,8 @@ So we combined our ideas and started working together.
 [^farmers]: Hence [this blog post](/blog/estimating-treatment-effects-ols/).
 
 Ani and I have refined our ideas since.
-We've settled on a question that excites us: how do people use [mechanistic knowledge](https://plato.stanford.edu/entries/science-mechanisms/) to learn and make decisions?
-We're answering that question in two papers, one theoretical and the other empirical.
+We've settled on a question that excites us: how do people use conceptual knowledge to learn and make decisions?
+We're answering that question in two papers, [one theoretical](/blog/value-conceptual-knowledge/) and the other empirical.
 The theory and empirics support and motivate each other.
 Likewise Ani and I support and motivate each other.
 Working with him has been the highlight of my PhD.

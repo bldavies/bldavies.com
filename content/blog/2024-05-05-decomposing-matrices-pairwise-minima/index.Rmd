@@ -97,4 +97,4 @@ $$\begin{align*}
 \end{align*}$$
 from which we can derive a (relatively) closed-form expression for the conditional variance of $\hat{f}(x)$ given $\mathcal{D}$.
 
-[^noisy-gm]: I discuss this estimation problem in [a recent paper](https://arxiv.org/abs/2404.00784).
+[^noisy-gm]: I discuss this estimation problem in [a recent paper](https://arxiv.org/abs/2404.00784) and apply its solution in [another](/blog/value-conceptual-knowledge/).

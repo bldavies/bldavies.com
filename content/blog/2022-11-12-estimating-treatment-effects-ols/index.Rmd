@@ -179,7 +179,8 @@ sims %>%
 
 ---
 
-*Thanks to [Anirudh Sankar](https://sites.google.com/view/anirudh-sankar) for reading a draft version of this post.*
+*Thanks to [Anirudh Sankar](https://sites.google.com/view/anirudh-sankar) for reading a draft version of this post.
+It came from discussions that led to [this paper](/blog/value-conceptual-knowledge).*
 
 ```{r session-info}
 bldr::save_session_info()

@@ -23,3 +23,5 @@ Mathematically, learning across contexts is like learning across time: the funct
 But contexts, unlike time, can have many dimensions and may not be [totally orderable](https://en.wikipedia.org/wiki/Total_order).
 Contexts are more general, and so models of learning across them can lead to more general insights.
 I hope to share some of those insights in the future.
+
+*Update (2025-09-16): The future has arrived---see [here](/blog/value-conceptual-knowledge/).*
