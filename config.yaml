@@ -17,6 +17,10 @@ params:
   author: Benjamin Davies
   description: "Ben Davies is a PhD candidate at Stanford University, where he studies economic theory and behavioral economics. His research explores how people learn, interact, and make decisions under uncertainty."
   githubContentURL: "https://github.com/bldavies/bldavies.com/tree/master/content/"
+  orcidURL: https://orcid.org/0000-0002-1749-4567
+  repecURL: https://ideas.repec.org/f/pda777.html
+  scopusURL: https://www.scopus.com/authid/detail.uri?authorId=57218922178
+  scholarURL: https://scholar.google.com/citations?user=iet9PyAAAAAJ
 permalinks:
   blog: "/blog/:slug/"
 pygmentsCodeFences: true

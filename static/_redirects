@@ -16,3 +16,6 @@ https://bldavies.netlify.com/*  https://bldavies.com/:splat  301!
 
 # CV
 /cv/                            /cv.pdf
+
+# Research
+/research/                      /
