@@ -3,7 +3,7 @@
 # This script builds my CV using data from data/cv.yaml and data/research.yaml.
 #
 # Ben Davies
-# September 2025
+# October 2025
 
 
 # Initialization ----
@@ -190,6 +190,7 @@ award_lines = indata$awards %>%
 research_data = read_yaml('data/research.yaml') %>%
   bind_rows() %>%
   arrange(desc(date)) %>%
+  mutate(coauthors = gsub('\\[([^]]+)\\]\\([^)]*\\)', '\\1', coauthors)) %>%  # Remove URLs
   mutate(headline = paste0(ifelse(grepl('http', url), sprintf('\\href{%s}{%s}', url, title), title),
                            ifelse(!is.na(coauthors), sprintf(' (with %s)', coauthors), '')))
 

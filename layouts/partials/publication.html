@@ -1,6 +1,6 @@
 <p>
   {{ if .url }}<a href="{{ .url }}">{{ .title }}</a>{{ else }}{{ .title }}{{ end}}
-  {{- if .coauthors }}</br>(with {{ .coauthors }}){{ end -}}
+  {{- if .coauthors }}</br>(with {{ .coauthors | markdownify }}){{ end -}}
   {{- if .outlet }}</br>{{ .outlet | markdownify }}, {{ if .forthcoming }}forthcoming{{ else }}{{ dateFormat "2006" .date }}{{ end -}}{{ end -}}
   </br>
   {{ if .abstract }}
