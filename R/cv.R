@@ -30,7 +30,7 @@ preamble = '\\documentclass[11pt,oneside]{memoir}
 \\usepackage{mathpazo}
 \\usepackage[T1]{fontenc}
 \\usepackage[utf8]{inputenc}
-\\usepackage[margin=1in,includefoot]{geometry}
+\\usepackage[margin=1in]{geometry}
 \\usepackage[colorlinks,urlcolor=blue]{hyperref}
 \\usepackage{titlesec}
 
