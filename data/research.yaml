@@ -17,7 +17,7 @@
 Evidence from a fertilizer choice experiment in Eastern Uganda"
   coauthors: "[Anirudh Sankar](https://sites.google.com/view/anirudh-sankar), Robert Dulin, [Vesall Nourani](https://sites.google.com/site/vesallnourani/), [Jess Rudder](https://sites.google.com/ucdavis.edu/jessrudder/home), Abraham Salomon, and Godfrey Taulya"
   date: 2025-09-03
-  type: wip
+  type: wp
   abstract: |
     Mechanistic explanations---descriptions of a system through the causal interactions of its parts---play a key role in human cognition and scientific progress.
     Despite their importance, we lack systematic evidence on how mechanistic explanations affect learning and behavior in economic settings.
@@ -30,7 +30,7 @@ Evidence from a fertilizer choice experiment in Eastern Uganda"
 - id: D5
   title: Estimating sample paths of Gauss-Markov processes from noisy data
   date: 2024-03-31
-  type: report
+  type: tech
   url: https://arxiv.org/abs/2404.00784
   abstract: |
     I derive the pointwise conditional means and variances of an arbitrary Gauss-Markov process, given noisy observations of points on a sample path.
@@ -102,7 +102,7 @@ Evidence from a fertilizer choice experiment in Eastern Uganda"
   title: Delineating functional labour market areas with estimable classification stabilities
   coauthors: David C. Maré
   date: 2020-08-28
-  type: report
+  type: tech
   url: https://www.iza.org/publications/dp/13642
   abstract: |
     We describe an unsupervised method for delineating functional labour market areas (LMAs) in national commuting networks.

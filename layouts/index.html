@@ -7,9 +7,11 @@
 {{ .Content }}
 
 {{ $wpList := where .Site.Data.research "type" "wp" }}
+{{ if $wpList }}
 <h2>Working papers</h2>
 {{ range sort $wpList "date" "desc" }}
 {{ partial "publication.html" . }}
+{{ end }}
 {{ end }}
 
 {{ $wipList := where .Site.Data.research "type" "wip" }}
@@ -26,10 +28,10 @@
 {{ partial "publication.html" . }}
 {{ end }}
 
-{{ $reportList := where .Site.Data.research "type" "report" }}
-{{ if $reportList }}
-<h2>Technical and policy reports</h2>
-{{ range sort $reportList "date" "desc" }}
+{{ $techList := where .Site.Data.research "type" "tech" }}
+{{ if $techList }}
+<h2>Technical notes</h2>
+{{ range sort $techList "date" "desc" }}
 {{ partial "publication.html" . }}
 {{ end }}
 {{ end }}

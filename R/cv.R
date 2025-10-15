@@ -30,7 +30,7 @@ preamble = '\\documentclass[11pt,oneside]{memoir}
 \\usepackage{mathpazo}
 \\usepackage[T1]{fontenc}
 \\usepackage[utf8]{inputenc}
-\\usepackage[margin=1in]{geometry}
+\\usepackage[margin=0.67in]{geometry}
 \\usepackage[colorlinks,urlcolor=blue]{hyperref}
 \\usepackage{titlesec}
 
@@ -46,8 +46,9 @@ preamble = '\\documentclass[11pt,oneside]{memoir}
 \\titlespacing{\\section}{0pt}{2em}{1em}
 \\titlespacing{\\subsection}{0pt}{1em}{0pt}
 
-\\newcommand{\\entry}[1]{\\par\\hangindent=2em#1}
-\\newcommand{\\datedentry}[2]{\\par\\parbox[t]{0.9\\linewidth}{\\strut\\raggedright\\hangindent=2em #2\\strut}\\hfill#1}'
+\\newcommand{\\entry}[1]{\\par\\parbox[t]{\\hsize}{\\strut\\raggedright #1}}
+\\newcommand{\\datedentry}[2]{\\par\\parbox[t]{0.9\\hsize}{\\strut\\raggedright\\hangindent=2em #2\\strut}\\hfill#1}
+\\newcommand{\\paper}[2]{\\par\\entry{#1 \\\\ \\vskip0.25em \\parbox[t]{\\hsize}{\\strut\\small\\emph{Abstract}: #2}}}'
 
 # Define header
 header = c(
@@ -190,33 +191,38 @@ award_lines = indata$awards %>%
 research_data = read_yaml('data/research.yaml') %>%
   bind_rows() %>%
   arrange(desc(date)) %>%
-  mutate(coauthors = gsub('\\[([^]]+)\\]\\([^)]*\\)', '\\1', coauthors)) %>%  # Remove URLs
-  mutate(headline = paste0(ifelse(grepl('http', url), sprintf('\\href{%s}{%s}', url, title), title),
+  mutate(coauthors = gsub('\\[([^]]+)\\]\\([^)]*\\)', '\\1', coauthors),  # Remove URLs
+         abstract = gsub('%', '\\\\%', abstract),
+         headline = paste0(ifelse(grepl('http', url), sprintf('\\href{%s}{%s}', url, title), title),
                            ifelse(!is.na(coauthors), sprintf(' (with %s)', coauthors), '')))
 
 # Create working paper lines
 working_paper_lines = research_data %>%
   filter(type == 'wp') %>%
-  mutate(line = sprintf('\\entry{%s}', headline)) %>%
-  {.$line}
+  mutate(line = sprintf('\\paper{%s}{%s}', headline, abstract)) %>%
+  {.$line} %>%
+  {Reduce(function(x, y) c(x, '\\vskip1em', y), .)}
 
 # Create work in progress lines
 wip_lines = research_data %>%
   filter(type == 'wip') %>%
-  mutate(line = sprintf('\\entry{%s}', headline)) %>%
-  {.$line}
+  mutate(line = sprintf('\\paper{%s}{%s}', headline, abstract)) %>%
+  {.$line} %>%
+  {Reduce(function(x, y) c(x, '\\vskip1em', y), .)}
 
 # Create publication lines
 publication_lines = research_data %>%
   filter(type == 'pub') %>%
-  mutate(line = sprintf('\\datedentry{%s}{%s, \\emph{%s}}', year(date), headline, gsub('[*]', '', outlet))) %>%
-  {.$line}
+  mutate(line = sprintf('\\paper{%s \\\\ \\emph{%s}, %s}{%s}', headline, gsub('[*]', '', outlet), year(date),abstract)) %>%
+  {.$line} %>%
+  {Reduce(function(x, y) c(x, '\\vskip1em', y), .)}
 
-# Create report lines
-report_lines = research_data %>%
-  filter(type == 'report') %>%
-  mutate(line = sprintf('\\datedentry{%s}{%s}', year(date), headline)) %>%
-  {.$line}
+# Create technical note lines
+technical_lines = research_data %>%
+  filter(type == 'tech') %>%
+  mutate(line = sprintf('\\paper{%s}{%s}', headline, abstract)) %>%
+  {.$line} %>%
+  {Reduce(function(x, y) c(x, '\\vskip1em', y), .)}
 
 
 ## Conference presentations ----
@@ -233,15 +239,25 @@ conference_lines = indata$conferences %>%
 ## Collation ----
 
 body = c(
-  '\\chapter{\\theauthor}',
-  '\\thispagestyle{empty}',
+  '{\\Large\\bfseries\\MakeUppercase\\theauthor} \\hfill {\\small\\itshape\\today}',
+  '\\vskip0.25em',
+  '\\hrule',
+  '\\vskip1.5em',
   '',
-  sprintf('Email: \\href{mailto:%s}{%s}', indata$email, indata$email),
-  '',
-  sprintf('Website: \\href{https://%s}{%s}', indata$website, indata$website),
+  'Department of Economics \\hfill \\href{mailto:bldavies@stanford.edu}{bldavies@stanford.edu} \\\\',
+  'Stanford University \\hfill \\href{https://bldavies.com}{bldavies.com} \\\\',
+  'Stanford, CA 94305, USA \\hfill Citizenship: New Zealand',
   '',
   '\\section{Education}',
-  education_lines,
+  '',
+  '\\subsection{Stanford University}',
+  '\\entry{PhD in Economics \\hfill 2020--26 (Expected) \\\\
+    {\\small\\emph{Fields}: Microeconomic Theory, Behavioral and Experimental Economics} \\\\
+    {\\small\\emph{Advisors}: Matthew Jackson (co-primary), Arun Chandrasekhar (co-primary), Steven Callander}
+    }',
+  '',
+  '\\subsection{University of Canterbury}',
+  '\\entry{BSc(Hons, 1st class) in Economics and Mathematics \\hfill 2014--17}',
   '',
   {
     if (length(working_paper_lines) > 0) {
@@ -255,7 +271,6 @@ body = c(
       c()
     }
   },
-  '',
   {
     if (length(wip_lines) > 0) {
       c(
@@ -268,14 +283,12 @@ body = c(
       c()
     }
   },
-  '',
   '\\section{Publications}',
   '',
   publication_lines,
-  '\\section{Technical and Policy Reports}',
+  '\\section{Technical Notes}',
   '',
-  report_lines,
-  '',
+  technical_lines,
   '\\section{Awards}',
   '',
   award_lines,
@@ -286,12 +299,12 @@ body = c(
   '\\section{Teaching Experience}',
   experience_lines$teaching,
   '',
+  '\\section{Professional Service}',
+  '\\entry{Referee for \\emph{Research Policy}}',
+  '',
   '\\section{Conference Presentations}',
   '',
-  conference_lines,
-  '',
-  '\\vskip2em\\vfill',
-  sprintf('{\\itshape Last updated: %s}', format(Sys.Date(), '%B %Y'))
+  conference_lines
 )
 
 
@@ -299,5 +312,4 @@ body = c(
 
 writeLines(c(header, body, footer), 'static/cv.tex')
 system('pdflatex -output-directory static static/cv.tex')
-system('pdflatex -output-directory static static/cv.tex')  # Compile twice to define \thelastpage
 system('rm static/cv.aux static/cv.log static/cv.out')
