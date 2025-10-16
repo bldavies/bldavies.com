@@ -234,6 +234,19 @@ table th {
   text-transform: uppercase;
 }
 
+.paper-title {
+  font-weight: 600;
+}
+
+.paper-title a {
+  border: none;
+  transition: 0s;
+}
+
+.paper-title a:hover {
+  border-bottom: 1px solid #222;
+}
+
 .rounded-link {
   border: 1px solid #ddd;
   border-radius: 0.25rem;

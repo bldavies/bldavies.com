@@ -1,8 +1,9 @@
 <p>
-  {{ if .url }}<a href="{{ .url }}">{{ .title }}</a>{{ else }}{{ .title }}{{ end}}
+  <span class="paper-title">{{ if .url }}<a href="{{ .url }}">{{ .title }}</a>{{ else }}{{ .title }}{{ end}}</span>
   {{- if .coauthors }}</br>(with {{ .coauthors | markdownify }}){{ end -}}
   {{- if .outlet }}</br>{{ .outlet | markdownify }}, {{ if .forthcoming }}forthcoming{{ else }}{{ dateFormat "2006" .date }}{{ end -}}{{ end -}}
   </br>
+  {{ if .url }}<a class="rounded-link" href="{{ .url }}">paper</a>{{ end }}
   {{ if .abstract }}
     <a href="javascript:toggle_abstract('{{ .id }}')" id="{{ .id }}-abstract-toggle" class="rounded-link" style="display: none">abstract [+]</a>
     <script>show_abstract_toggle('{{ .id }}')</script>

@@ -193,7 +193,7 @@ research_data = read_yaml('data/research.yaml') %>%
   arrange(desc(date)) %>%
   mutate(coauthors = gsub('\\[([^]]+)\\]\\([^)]*\\)', '\\1', coauthors),  # Remove URLs
          abstract = gsub('%', '\\\\%', abstract),
-         headline = paste0(ifelse(grepl('http', url), sprintf('\\href{%s}{%s}', url, title), title),
+         headline = paste0(ifelse(grepl('http', url), sprintf('\\href{%s}{\\bfseries %s}', url, title), sprintf('{\\bfseries %s}', title)),
                            ifelse(!is.na(coauthors), sprintf(' (with %s)', coauthors), '')))
 
 # Create working paper lines
