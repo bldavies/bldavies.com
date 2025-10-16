@@ -6,6 +6,12 @@
 
 {{ .Content }}
 
+{{ $jmp := where .Site.Data.research "type" "jmp" }}
+<h2>Job market paper</h2>
+{{ range $jmp }}
+{{ partial "publication.html" . }}
+{{ end }}
+
 {{ $wpList := where .Site.Data.research "type" "wp" }}
 {{ if $wpList }}
 <h2>Working papers</h2>

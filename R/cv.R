@@ -39,11 +39,9 @@ preamble = '\\documentclass[11pt,oneside]{memoir}
 \\raggedright
 \\setlength{\\parindent}{0pt}
 \\setsecnumdepth{part}
-\\titleformat{\\chapter}{\\Large\\bfseries}{}{}{\\MakeUppercase}[\\titlerule]
 \\titleformat{\\section}{\\large\\bfseries}{}{}{}[\\titlerule]
 \\titleformat{\\subsection}{\\bfseries}{}{}{}
-\\titlespacing{\\chapter}{0pt}{-2em}{1em}
-\\titlespacing{\\section}{0pt}{2em}{1em}
+\\titlespacing{\\section}{0pt}{1.5em}{1em}
 \\titlespacing{\\subsection}{0pt}{1em}{0pt}
 
 \\newcommand{\\entry}[1]{\\par\\parbox[t]{\\hsize}{\\strut\\raggedright #1}}
@@ -196,6 +194,13 @@ research_data = read_yaml('data/research.yaml') %>%
          headline = paste0(ifelse(grepl('http', url), sprintf('\\href{%s}{\\bfseries %s}', url, title), sprintf('{\\bfseries %s}', title)),
                            ifelse(!is.na(coauthors), sprintf(' (with %s)', coauthors), '')))
 
+# Create JMP lines
+jmp_lines = research_data %>%
+  filter(type == 'jmp') %>%
+  mutate(line = sprintf('\\paper{%s}{%s}', headline, abstract)) %>%
+  {.$line} %>%
+  {Reduce(function(x, y) c(x, '\\vskip1em', y), .)}
+
 # Create working paper lines
 working_paper_lines = research_data %>%
   filter(type == 'wp') %>%
@@ -258,6 +263,9 @@ body = c(
   '',
   '\\subsection{University of Canterbury}',
   '\\entry{BSc(Hons, 1st class) in Economics and Mathematics \\hfill 2014--17}',
+  '',
+  '\\section{Job Market Paper}',
+  jmp_lines,
   '',
   {
     if (length(working_paper_lines) > 0) {

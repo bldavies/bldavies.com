@@ -1,6 +1,6 @@
 <p>
   <span class="paper-title">{{ if .url }}<a href="{{ .url }}">{{ .title }}</a>{{ else }}{{ .title }}{{ end}}</span>
-  {{- if .coauthors }}</br>(with {{ .coauthors | markdownify }}){{ end -}}
+  {{- if .coauthors }} (with {{ .coauthors | markdownify }}){{ end -}}
   {{- if .outlet }}</br>{{ .outlet | markdownify }}, {{ if .forthcoming }}forthcoming{{ else }}{{ dateFormat "2006" .date }}{{ end -}}{{ end -}}
   </br>
   {{ if .url }}<a class="rounded-link" href="{{ .url }}">paper</a>{{ end }}
