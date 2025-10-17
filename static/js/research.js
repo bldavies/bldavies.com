@@ -11,9 +11,9 @@ function toggle_abstract(id) {
     a.style.display = "none";
   }
   var t = document.getElementById(id.concat('-abstract-toggle'))
-  if (t.innerHTML == "abstract [+]") {
-    t.innerHTML = "abstract [-]";
+  if (t.innerHTML == "Abstract [+]") {
+    t.innerHTML = "Abstract [-]";
   } else {
-    t.innerHTML = "abstract [+]";
+    t.innerHTML = "Abstract [+]";
   }
 }

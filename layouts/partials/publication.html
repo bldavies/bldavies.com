@@ -1,14 +1,14 @@
-<p>
+<div class="publication">
   <span class="paper-title">{{ if .url }}<a href="{{ .url }}">{{ .title }}</a>{{ else }}{{ .title }}{{ end}}</span>
   {{- if .coauthors }} (with {{ .coauthors | markdownify }}){{ end -}}
   {{- if .outlet }}</br>{{ .outlet | markdownify }}, {{ if .forthcoming }}forthcoming{{ else }}{{ dateFormat "2006" .date }}{{ end -}}{{ end -}}
   </br>
-  {{ if .url }}<a class="rounded-link" href="{{ .url }}">paper</a>{{ end }}
+  {{ if .url }}<a class="rounded-link" href="{{ .url }}">Paper</a>{{ end }}
   {{ if .abstract }}
-    <a href="javascript:toggle_abstract('{{ .id }}')" id="{{ .id }}-abstract-toggle" class="rounded-link" style="display: none">abstract [+]</a>
+    <a href="javascript:toggle_abstract('{{ .id }}')" id="{{ .id }}-abstract-toggle" class="rounded-link" style="display: none">Abstract [+]</a>
     <script>show_abstract_toggle('{{ .id }}')</script>
   {{ end }}
-  {{ if .dataCode }}<a class="rounded-link" href="{{ .dataCode }}">data/code</a>{{ end }}
-  {{ if .preprint }}<a class="rounded-link" href="{{ .preprint }}">preprint</a>{{ end }}
+  {{ if .dataCode }}<a class="rounded-link" href="{{ .dataCode }}">Code</a>{{ end }}
+  {{ if .preprint }}<a class="rounded-link" href="{{ .preprint }}">Preprint</a>{{ end }}
   {{ if .abstract }}<span id="{{ .id }}-abstract" class="abstract" style="display: none">{{ .abstract | markdownify }}</span>{{ end }}
-</p>
+</div>

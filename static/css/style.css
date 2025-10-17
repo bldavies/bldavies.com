@@ -212,11 +212,8 @@ table th {
 /* Blog and research pages */
 
 .abstract {
-  background-color: #f8f8f8;
-  border: 1px solid #ddd;
   font-size: 90%;
-  margin: 0.5rem 0;
-  padding: 0.5rem;
+  margin-top: 0.5rem;
 }
 
 .page-index {
@@ -247,6 +244,19 @@ table th {
   border-bottom: 1px solid #222;
 }
 
+.publication {
+  background-color: #f8f8f8;
+  border: 1px solid #ddd;
+  border-radius: 0.25rem;
+  margin: 1rem -1rem;
+  padding: 1rem;
+}
+
+.publication .rounded-link {
+  background-color: #fff;
+  margin-top: 0.5rem;
+}
+
 .rounded-link {
   border: 1px solid #ddd;
   border-radius: 0.25rem;
@@ -257,7 +267,8 @@ table th {
   white-space: nowrap;
 }
 
-.rounded-link:hover {
+.rounded-link:hover,
+.publication .rounded-link:hover {
   background-color: #f8f8f8;
   text-decoration: none;
 }

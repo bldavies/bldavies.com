@@ -6,15 +6,21 @@
 
 {{ .Content }}
 
+<h2>Research</h2>
+
+<p>
+  My research papers are listed below and on <a href="{{ .Site.Params.scholarURL }}">Google Scholar</a>.
+</p>
+
 {{ $jmp := where .Site.Data.research "type" "jmp" }}
-<h2>Job market paper</h2>
+<h3>Job market paper</h3>
 {{ range $jmp }}
 {{ partial "publication.html" . }}
 {{ end }}
 
 {{ $wpList := where .Site.Data.research "type" "wp" }}
 {{ if $wpList }}
-<h2>Working papers</h2>
+<h3>Working papers</h3>
 {{ range sort $wpList "date" "desc" }}
 {{ partial "publication.html" . }}
 {{ end }}
@@ -22,21 +28,21 @@
 
 {{ $wipList := where .Site.Data.research "type" "wip" }}
 {{ if $wipList }}
-<h2>Work in progress</h2>
+<h3>Work in progress</h3>
 {{ range sort $wipList "date" "desc" }}
 {{ partial "publication.html" . }}
 {{ end }}
 {{ end }}
 
 {{ $pubList := where .Site.Data.research "type" "pub" }}
-<h2>Publications</h2>
+<h3>Publications</h3>
 {{ range sort $pubList "date" "desc" }}
 {{ partial "publication.html" . }}
 {{ end }}
 
 {{ $techList := where .Site.Data.research "type" "tech" }}
 {{ if $techList }}
-<h2>Technical notes</h2>
+<h3>Technical notes</h3>
 {{ range sort $techList "date" "desc" }}
 {{ partial "publication.html" . }}
 {{ end }}
@@ -44,14 +50,14 @@
 
 {{ $othList := where .Site.Data.research "type" nil  }}
 {{ if $othList }}
-<h2>Other writing</h2>
+<h3>Other writing</h3>
 {{ range sort $othList "date" "desc" }}
 {{ partial "publication.html" . }}
 {{ end }}
 {{ end }}
 
 {{ $wpList := where .Site.Data.research "type" "old" }}
-<h2>Resting papers</h2>
+<h3>Resting papers</h3>
 {{ range sort $wpList "date" "desc" }}
 {{ partial "publication.html" . }}
 {{ end }}
