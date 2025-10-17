@@ -6,7 +6,10 @@ I am on the 2025--26 academic job market.
 
 You can view my CV [here](/cv.pdf) and contact me at bldavies@stanford.edu.
 
-**Advisors**:  
-[Matthew Jackson](https://web.stanford.edu/~jacksonm/) (co-primary): jacksonm@stanford.edu  
-[Arun Chandrasekhar](https://web.stanford.edu/~arungc/) (co-primary): arungc@stanford.edu  
+### References
+
+[Matthew Jackson](https://web.stanford.edu/~jacksonm/) (co-advisor): jacksonm@stanford.edu
+
+[Arun Chandrasekhar](https://web.stanford.edu/~arungc/) (co-advisor): arungc@stanford.edu
+
 [Steven Callander](https://gsb-faculty.stanford.edu/steven-callander/): sjc@stanford.edu

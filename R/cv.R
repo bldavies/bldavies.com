@@ -258,7 +258,7 @@ body = c(
   '\\subsection{Stanford University}',
   '\\entry{PhD in Economics \\hfill 2020--26 (Expected) \\\\
     {\\small\\emph{Fields}: Microeconomic Theory, Behavioral and Experimental Economics} \\\\
-    {\\small\\emph{Advisors}: Matthew Jackson (co-primary), Arun Chandrasekhar (co-primary), Steven Callander}
+    {\\small\\emph{Committee}: Matthew Jackson (co-advisor), Arun Chandrasekhar (co-advisor), Steven Callander}
     }',
   '',
   '\\subsection{University of Canterbury}',
