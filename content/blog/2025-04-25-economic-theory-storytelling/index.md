@@ -94,4 +94,4 @@ If you love that too, then I recommend becoming a theorist!
 
 ---
 
-*Thanks to [Bing Liu](https://marketdesign.stanford.edu/people/bing-liu) for reading a draft version of this post.*
+*Thanks to [Bing Liu](https://bingliu723.github.io) for reading a draft version of this post.*

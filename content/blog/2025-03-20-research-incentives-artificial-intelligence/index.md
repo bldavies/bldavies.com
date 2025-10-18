@@ -60,4 +60,4 @@ AI discourages them even more: if anyone can use it to fill gaps for free, then 
 They have to keep pushing the frontier.
 So AI could boost the pace of innovation more than Gans suggests!
 
-[^bing]: Thanks to [Bing Liu](https://marketdesign.stanford.edu/people/bing-liu) for pointing this out.
+[^bing]: Thanks to [Bing Liu](https://bingliu723.github.io) for pointing this out.
