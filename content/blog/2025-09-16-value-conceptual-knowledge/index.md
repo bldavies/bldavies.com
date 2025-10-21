@@ -58,7 +58,7 @@ So the less data are available, the better it is to have humans collect and inte
 Our paper also speaks to interventions that give people data.
 They won't work if people don't have the conceptual tools to interpret data.
 So we should give people those tools too.
-Anirudh and I did that with farmers in Uganda (see [here](https://sites.google.com/view/anirudh-sankar)): we gave some both knowledge and data, and others data only.
+Anirudh and I did that with farmers in Uganda (see [here](https://drive.google.com/file/d/11ZYBbbUYx-K0eJmqU4_jaIJIe7F8DdM0/view)): we gave some both knowledge and data, and others data only.
 Farmers with deeper knowledge made more profitable decisions and more accurate predictions.
 
 Finally, our paper positions knowledge as an economic good.

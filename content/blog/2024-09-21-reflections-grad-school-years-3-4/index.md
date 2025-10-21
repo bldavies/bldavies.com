@@ -41,7 +41,7 @@ So we combined our ideas and started working together.
 
 Ani and I have refined our ideas since.
 We've settled on a question that excites us: how do people use conceptual knowledge to learn and make decisions?
-We're answering that question in two papers, [one theoretical](/blog/value-conceptual-knowledge/) and the other empirical.
+We're answering that question in two papers, [one theoretical](/blog/value-conceptual-knowledge/) and [the other empirical](https://drive.google.com/file/d/11ZYBbbUYx-K0eJmqU4_jaIJIe7F8DdM0/view).
 The theory and empirics support and motivate each other.
 Likewise Ani and I support and motivate each other.
 Working with him has been the highlight of my PhD.
