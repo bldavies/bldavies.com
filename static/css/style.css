@@ -222,6 +222,7 @@ table th {
 }
 
 #bio ul {
+  margin: 0;
   padding: 0;
 }
 
@@ -235,11 +236,12 @@ table th {
   box-shadow: 0 0.25rem 0.25rem 0 #ddd;
   display: inline;
   float: none;
-  width: 300px;
+  margin-top: 1.25rem;
+  width: 320px;
 }
 
 @media (max-width: 780px) {
-  
+
   #front {
     display: block;
   }
