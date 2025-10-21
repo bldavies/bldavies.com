@@ -34,16 +34,20 @@
 
 <body>
 <header>
-  <div class="content">
+  {{ if .IsHome }}<div class="content-home">{{ else }}<div class="content">{{ end }}
   <div class="container header">
-    <a href="/">{{ .Site.Title }}</a>
-    <a href="/">Research</a>
-    <a href="/blog/">Blog</a>
-    <a href="/cv.pdf" target="_blank">CV</a>
+    {{ if .IsHome }}
+      <a href="/" style="font-size: 1.5rem;">{{ .Site.Title }}</a>
+    {{ else }}
+      <a href="/">{{ .Site.Title }}</a>
+      <a href="/blog">Blog</a>
+      <a href="/">Research</a>
+      <a href="/cv.pdf" target="_blank">CV</a>
+    {{ end }}
   </div>
   </div>
 </header>
 
 <div class="main">
-<div class="content">
+{{ if .IsHome }}<div class="content-home">{{ else }}<div class="content">{{ end }}
 <div class="container">

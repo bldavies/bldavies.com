@@ -144,10 +144,18 @@ table th {
   margin-bottom: 2rem;
 }
 
-.content {
+.content,
+.content-home {
   margin: 0 auto;
   max-width: 100vw;
+}
+
+.content {
   width: calc(600px + 2rem);
+}
+
+.content-home {
+  width: calc(900px + 2rem);
 }
 
 .container {
@@ -202,18 +210,53 @@ table th {
 
 /* Home page */
 
+#front {
+  align-items: flex-start;
+  display: flex;
+  gap: 2rem;
+  margin: 1rem 0;
+}
+
+#bio {
+  width: 100%;
+}
+
+#bio ul {
+  padding: 0;
+}
+
+#bio li {
+  list-style-type: none;
+  margin: 0.5rem 0;
+}
+
 #portrait {
   border-radius: 1rem;
   box-shadow: 0 0.25rem 0.25rem 0 #ddd;
-  width: 240px;
+  display: inline;
+  float: none;
+  width: 300px;
+}
+
+@media (max-width: 780px) {
+  
+  #front {
+    display: block;
+  }
+
+  #portrait {
+    display: block;
+    width: 240px;
+  }
 }
 
 
 /* Blog and research pages */
 
 .abstract {
+  display: block;
   font-size: 90%;
-  margin-top: 0.5rem;
+  margin: 0.5rem 0;
 }
 
 .page-index {

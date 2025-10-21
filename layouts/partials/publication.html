@@ -4,11 +4,7 @@
   {{- if .outlet }}</br>{{ .outlet | markdownify }}, {{ if .forthcoming }}forthcoming{{ else }}{{ dateFormat "2006" .date }}{{ end -}}{{ end -}}
   </br>
   {{ if .url }}<a class="rounded-link" href="{{ .url }}" target="_blank">Paper</a>{{ end }}
-  {{ if .abstract }}
-    <a href="javascript:toggle_abstract('{{ .id }}')" id="{{ .id }}-abstract-toggle" class="rounded-link" style="display: none">Abstract [+]</a>
-    <script>show_abstract_toggle('{{ .id }}')</script>
-  {{ end }}
   {{ if .dataCode }}<a class="rounded-link" href="{{ .dataCode }}" target="_blank">Code</a>{{ end }}
   {{ if .preprint }}<a class="rounded-link" href="{{ .preprint }}" target="_blank">Preprint</a>{{ end }}
-  {{ if .abstract }}<span id="{{ .id }}-abstract" class="abstract" style="display: none">{{ .abstract | markdownify }}</span>{{ end }}
+  {{ if .abstract }}<span class="abstract">{{ .abstract | markdownify }}</span>{{ end }}
 </div>
