@@ -1,16 +1,18 @@
 - id: DS1
   title: The value of conceptual knowledge
   coauthors: "[Anirudh Sankar](https://sites.google.com/view/anirudh-sankar)"
-  date: 2025-09-12
+  date: 2025-10-21
   type: jmp
   url: https://bldavies.com/jmp.pdf
   abstract: |
-    We formalize what it means to have conceptual knowledge about a statistical decision-making environment.
-    Such knowledge tells agents about the structural relationships among unknown, payoff-relevant states.
-    It allows agents to represent states as combinations of features.
-    Conceptual knowledge is more valuable when states are more "reducible": when their prior variances are explained by fewer features.
-    Its value is non-monotone in the quantity and quality of available data, and vanishes with infinite data.
-    Agents with deeper knowledge can attain the same welfare with less data.
+    We study the instrumental value of conceptual knowledge when making statistical decisions.
+    Such knowledge tells agents how unknown, payoff-relevant states relate.
+    It is distinct from the statistical knowledge gained from observing signals of those states.
+    We formalize this distinction in a tractable framework used by economists and statisticians.
+    Conceptual knowledge is valuable because it empowers agents to design more informative signals.
+    It is more valuable when states are more "reducible": when they can be explained with fewer common concepts.
+    Its value is non-monotone in the number of signals and vanishes when agents have infinitely many signals.
+    Agents who know more concepts can attain the same payoffs with fewer signals.
     This is especially true when states are highly reducible.
 - id: DS2
   title: "How mechanistic explanations reshape learning and behavior:
