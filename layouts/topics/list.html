@@ -2,6 +2,8 @@
 
 <h1>Blog posts on {{ .Title }}</h1>
 
+{{ partial "blog_header.html" . }}
+
 {{ partial "page-index.html" (dict "context" . "posts" .Pages) }}
 
 {{ partial "footer.html" . }}

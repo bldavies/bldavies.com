@@ -1,0 +1,11 @@
+<p>
+  My blog posts are released under a <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> license.
+  They are <a href="../index.xml">available as an RSS feed</a> and their source files are <a href="https://github.com/bldavies/bldavies.com">hosted on GitHub</a>.
+</p>
+<p>
+  Topics:
+  <a class="rounded-link" href="/blog/">all</a>
+  {{ range .Site.Taxonomies.topics }}
+  <a class="rounded-link" href="{{ .Page.Permalink }}">{{ .Page.Title }}</a>
+  {{ end }}
+</p>

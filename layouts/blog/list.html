@@ -1,14 +1,8 @@
 {{ partial "header.html" . }}
 
 <h1>{{ .Title | markdownify }}</h1>
-{{ .Content }}
 
-<p>
-  Topics:
-  {{ range .Site.Taxonomies.topics }}
-  <a class="rounded-link" href="{{ .Page.Permalink }}">{{ .Page.Title }}</a>
-  {{ end }}
-</p>
+{{ partial "blog_header.html" . }}
 
 {{ $posts := where .Pages "Params.hidden" "!=" true }}
 {{ partial "page-index.html" (dict "context" . "posts" $posts) }}
