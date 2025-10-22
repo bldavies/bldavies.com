@@ -269,6 +269,10 @@ table th {
   margin: 0.5rem 0;
 }
 
+.abstract-toggle {
+  width: 5.15rem;
+}
+
 .page-index {
   list-style: none;
   padding: 0;

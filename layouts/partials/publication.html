@@ -1,10 +1,21 @@
+{{ $showAbstract := in (slice "wp" "jmp") .type }}
 <div class="publication">
   <span class="paper-title">{{ if .url }}<a href="{{ .url }}">{{ .title }}</a>{{ else }}{{ .title }}{{ end}}</span>
   {{- if .coauthors }} (with {{ .coauthors | markdownify }}){{ end -}}
   {{- if .outlet }}</br>{{ .outlet | markdownify }}, {{ if .forthcoming }}forthcoming{{ else }}{{ dateFormat "2006" .date }}{{ end -}}{{ end -}}
   </br>
+  {{ if not $showAbstract }}
+    {{ if .abstract }}
+      <a href="javascript:toggle_abstract('{{ .id }}')" id="{{ .id }}-abstract-toggle" class="rounded-link abstract-toggle" style="display: none">Abstract [+]</a>
+      <script>show_abstract_toggle('{{ .id }}')</script>
+    {{ end }}
+  {{ end }}
   {{ if .url }}<a class="rounded-link" href="{{ .url }}" target="_blank">Paper</a>{{ end }}
   {{ if .dataCode }}<a class="rounded-link" href="{{ .dataCode }}" target="_blank">Code</a>{{ end }}
   {{ if .preprint }}<a class="rounded-link" href="{{ .preprint }}" target="_blank">Preprint</a>{{ end }}
-  {{ if .abstract }}<span class="abstract">{{ .abstract | markdownify }}</span>{{ end }}
+  {{ if $showAbstract }}
+    {{ if .abstract }}<span class="abstract">{{ .abstract | markdownify }}</span>{{ end }}
+  {{ else }}
+    {{ if .abstract }}<span id="{{ .id }}-abstract" class="abstract" style="display: none">{{ .abstract | markdownify }}</span>{{ end }}
+  {{ end }}
 </div>
