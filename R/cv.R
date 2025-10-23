@@ -291,7 +291,7 @@ body = c(
       c()
     }
   },
-  '\\section{Publications}',
+  '\\section{Peer-Reviewed Publications}',
   '',
   publication_lines,
   '\\section{Technical Notes}',

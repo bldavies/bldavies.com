@@ -46,7 +46,7 @@
 {{ end }}
 
 {{ $pubList := where .Site.Data.research "type" "pub" }}
-<h3>Publications</h3>
+<h3>Peer-reviewed publications</h3>
 {{ range sort $pubList "date" "desc" }}
 {{ partial "publication.html" . }}
 {{ end }}
