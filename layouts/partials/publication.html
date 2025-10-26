@@ -4,18 +4,14 @@
   {{- if .coauthors }} (with {{ .coauthors | markdownify }}){{ end -}}
   {{- if .outlet }}</br>{{ .outlet | markdownify }}, {{ if .forthcoming }}forthcoming{{ else }}{{ dateFormat "2006" .date }}{{ end -}}{{ end -}}
   </br>
-  {{ if not $showAbstract }}
-    {{ if .abstract }}
-      <a href="javascript:toggle_abstract('{{ .id }}')" id="{{ .id }}-abstract-toggle" class="rounded-link abstract-toggle" style="display: none">Abstract [+]</a>
-      <script>show_abstract_toggle('{{ .id }}')</script>
-    {{ end }}
+  {{ if .abstract }}
+    <a href="javascript:toggle_abstract('{{ .id }}')" id="{{ .id }}-abstract-toggle" class="rounded-link abstract-toggle">Abstract {{ if $showAbstract }}[-]{{ else }}[+]{{ end }}</a>
+    <script>show_abstract_toggle('{{ .id }}')</script>
   {{ end }}
   {{ if .url }}<a class="rounded-link" href="{{ .url }}" target="_blank">Paper</a>{{ end }}
   {{ if .dataCode }}<a class="rounded-link" href="{{ .dataCode }}" target="_blank">Code</a>{{ end }}
   {{ if .preprint }}<a class="rounded-link" href="{{ .preprint }}" target="_blank">Preprint</a>{{ end }}
-  {{ if $showAbstract }}
-    {{ if .abstract }}<span class="abstract">{{ .abstract | markdownify }}</span>{{ end }}
-  {{ else }}
-    {{ if .abstract }}<span id="{{ .id }}-abstract" class="abstract" style="display: none">{{ .abstract | markdownify }}</span>{{ end }}
+  {{ if .abstract }}
+    {{ if $showAbstract }}<span id="{{ .id }}-abstract" class="abstract">{{ else }}<span id="{{ .id }}-abstract" class="abstract" style="display: none">{{ end }}{{ .abstract | markdownify }}</span>
   {{ end }}
 </div>
