@@ -1,5 +1,6 @@
 _*
 .Rproj.user
+*.lock
 *.Rproj
 content/blog/[a-z]*/
 data/cv.yaml
