@@ -1,7 +1,7 @@
 - id: DS1
   title: The value of conceptual knowledge
   coauthors: "[Anirudh Sankar](https://sites.google.com/view/anirudh-sankar)"
-  date: 2025-11-03
+  date: 2025-12-04
   type: jmp
   url: https://bldavies.com/jmp.pdf
   abstract: |
@@ -26,10 +26,10 @@ Evidence from a fertilizer choice experiment in Eastern Uganda"
     Despite their importance, we lack systematic evidence on whether and how mechanistic explanations help lay decision-makers interpret information in complex economic environments.
     We evaluate the causal impact of including mechanistic explanations in an information intervention: public demonstrations of fertilizer use for smallholder tomato farmers in Eastern Uganda.
     In all demonstrations, extension officers showcased the impact of a recommended fertilizer recipe.
-    In the treatment group, officers also explained the mechanisms underlying the recipe’s effects---introducing the language of macronutrients and the causal processes linking nutrients, soil features, and plant growth.
+    In the treatment group, officers also explained the mechanisms underlying the recipe's effects---introducing the language of macronutrients and the causal processes linking nutrients, soil features, and plant growth.
     We collected detailed data on beliefs and behaviors from 797 farmers in a lab-in-the-field experiment conducted at the demonstration site, and followed up with them over two growing seasons.
     In the experiment, treated farmers generalized more effectively and achieved 9% higher simulated profits in an incentivized fertilizer application task.
-    At endline, treated farmers’ real fertilizer choices reflected improved nutrient timing and balance, and their yields were 14% higher.
+    At endline, treated farmers' real fertilizer choices reflected improved nutrient timing and balance, and their yields were 14% higher.
 - id: D5
   title: Estimating sample paths of Gauss-Markov processes from noisy data
   date: 2024-03-31
