@@ -1,6 +1,6 @@
 {{ partial "header.html" . }}
 
-<h1>Blog posts on {{ .Title }}</h1>
+<h1>Blog posts on {{ lower .Title }}</h1>
 
 {{ partial "blog_header.html" . }}
 

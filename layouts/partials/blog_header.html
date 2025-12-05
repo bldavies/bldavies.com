@@ -6,6 +6,6 @@
   Topics:
   <a class="rounded-link" href="/blog/">all</a>
   {{ range .Site.Taxonomies.topics }}
-  <a class="rounded-link" href="{{ .Page.Permalink }}">{{ .Page.Title }}</a>
+  <a class="rounded-link" href="{{ .Page.Permalink }}">{{ lower .Page.Title }}</a>
   {{ end }}
 </p>
