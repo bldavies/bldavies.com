@@ -15,7 +15,7 @@ outputs:
   section: ["HTML"]
 params:
   author: Benjamin Davies
-  description: "Benjamin Davies is a PhD candidate in the economics department at Stanford University. He studies economic theory and behavioral economics. His research explores how people learn, interact, and make decisions under uncertainty."
+  description: "Ben is an economics PhD candidate at Stanford University. His research uses theoretical and empirical tools to study how people learn and interact."
   githubContentURL: "https://github.com/bldavies/bldavies.com/tree/master/content/"
   orcidURL: https://orcid.org/0000-0002-1749-4567
   repecURL: https://ideas.repec.org/f/pda777.html
@@ -27,4 +27,4 @@ pygmentsCodeFences: true
 pygmentsUseClasses: true
 taxonomies:
   topic: topics
-title: Benjamin Davies
+title: Ben Davies
