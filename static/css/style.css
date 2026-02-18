@@ -154,10 +154,6 @@ table th {
   width: calc(600px + 2rem);
 }
 
-.content-home {
-  width: calc(900px + 2rem);
-}
-
 .container {
   margin: 0 1rem;
 }
@@ -194,6 +190,7 @@ table th {
 }
 
 .header #title {
+  font-size: 1.25rem;
   font-weight: 600;
 }
 
@@ -226,6 +223,7 @@ table th {
 }
 
 #bio {
+  margin: auto 0;
   width: 100%;
 }
 
@@ -245,7 +243,7 @@ table th {
   display: inline;
   float: none;
   margin-top: 1.25rem;
-  width: 320px;
+  width: 240px;
 }
 
 @media (max-width: 780px) {

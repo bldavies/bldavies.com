@@ -3,7 +3,7 @@
 # This script builds my CV using data from data/cv.yaml and data/research.yaml.
 #
 # Ben Davies
-# October 2025
+# February 2026
 
 
 # Initialization ----
@@ -256,7 +256,7 @@ body = c(
   '\\section{Education}',
   '',
   '\\subsection{Stanford University}',
-  '\\entry{PhD in Economics \\hfill 2020--26 (Expected) \\\\
+  '\\entry{PhD in Economics \\hfill 2020-- \\\\
     {\\small\\emph{Fields}: Microeconomic Theory, Behavioral and Experimental Economics} \\\\
     {\\small\\emph{Committee}: Matthew Jackson (co-advisor), Arun Chandrasekhar (co-advisor), Steven Callander}
     }',
@@ -264,9 +264,18 @@ body = c(
   '\\subsection{University of Canterbury}',
   '\\entry{BSc(Hons, 1st class) in Economics and Mathematics \\hfill 2014--17}',
   '',
-  '\\section{Job Market Paper}',
-  jmp_lines,
-  '',
+  {
+    if (length(jmp_lines) > 0) {
+      c(
+        '\\section{Job Market Paper}',
+        '',
+        jmp_lines,
+        ''
+      )
+    } else {
+      c()
+    }
+  },
   {
     if (length(working_paper_lines) > 0) {
       c(
@@ -294,9 +303,11 @@ body = c(
   '\\section{Peer-Reviewed Publications}',
   '',
   publication_lines,
+  '',
   '\\section{Technical Notes}',
   '',
   technical_lines,
+  '',
   '\\section{Awards}',
   '',
   award_lines,
@@ -308,6 +319,7 @@ body = c(
   experience_lines$teaching,
   '',
   '\\section{Professional Service}',
+  '',
   '\\entry{Referee for \\emph{Research Policy}}',
   '',
   '\\section{Conference Presentations}',

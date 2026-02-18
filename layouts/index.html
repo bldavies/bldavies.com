@@ -6,14 +6,6 @@
   <img id="portrait" src="square.jpeg">
   <div id="bio">
     {{ .Content }}
-    <p><strong>CV</strong>: <a href="/cv.pdf" target="_blank>">here</a></p>
-    <p><strong>Email</strong>: <a href="mailto:bldavies@stanford.edu">bldavies@stanford.edu</a></p>
-    <strong>References</strong>:
-    <ul>
-      <li><a href="https://web.stanford.edu/~jacksonm/" target="_blank">Matthew Jackson</a> (co-advisor): <a href="mailto:jacksonm@stanford.edu">jacksonm@stanford.edu</a></li>
-      <li><a href="https://web.stanford.edu/~arungc/" target="_blank">Arun Chandrasekhar</a> (co-advisor): <a href="mailto:arungc@stanford.edu">arungc@stanford.edu</a></li>
-      <li><a href="https://gsb-faculty.stanford.edu/steven-callander/" target="_blank">Steven Callander</a>: <a href="mailto:sjc@stanford.edu">sjc@stanford.edu</a></li>
-    </ul>
   </div>
 </div>
 
@@ -24,9 +16,11 @@
 </p>
 
 {{ $jmp := where .Site.Data.research "type" "jmp" }}
+{{ if $jmp }}
 <h3>Job market paper</h3>
 {{ range $jmp }}
 {{ partial "publication.html" . }}
+{{ end }}
 {{ end }}
 
 {{ $wpList := where .Site.Data.research "type" "wp" }}
@@ -55,6 +49,14 @@
 {{ if $techList }}
 <h3>Technical notes</h3>
 {{ range sort $techList "date" "desc" }}
+{{ partial "publication.html" . }}
+{{ end }}
+{{ end }}
+
+{{ $oldList := where .Site.Data.research "type" "old" }}
+{{ if $oldList }}
+<h3>Resting papers</h3>
+{{ range sort $oldList "date" "desc" }}
 {{ partial "publication.html" . }}
 {{ end }}
 {{ end }}
