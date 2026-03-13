@@ -18,17 +18,17 @@
   title: "How mechanistic explanations reshape learning and behavior:
 Evidence from a fertilizer choice experiment in Eastern Uganda"
   coauthors: "[Anirudh Sankar](https://sites.google.com/view/anirudh-sankar), [Robert Dulin](https://sites.google.com/view/robert-dulin), [Vesall Nourani](https://sites.google.com/site/vesallnourani/), [Jess Rudder](https://sites.google.com/ucdavis.edu/jessrudder/home), Abraham Salomon, and Godfrey Taulya"
-  date: 2025-11-16
+  date: 2026-03-08
   type: wp
   url: https://drive.google.com/file/d/11ZYBbbUYx-K0eJmqU4_jaIJIe7F8DdM0/view
   abstract: |
-    Mechanistic explanations---descriptions of a system through the causal interactions of its parts---play a key role in human cognition and scientific progress.
+    Mechanistic explanations play a key role in human cognition and scientific progress.
     Despite their importance, we lack systematic evidence on whether and how mechanistic explanations help lay decision-makers interpret information in complex economic environments.
     We evaluate the causal impact of including mechanistic explanations in an information intervention: public demonstrations of fertilizer use for smallholder tomato farmers in Eastern Uganda.
     In all demonstrations, extension officers showcased the impact of a recommended fertilizer recipe.
     In the treatment group, officers also explained the mechanisms underlying the recipe's effects---introducing the language of macronutrients and the causal processes linking nutrients, soil features, and plant growth.
-    We collected detailed data on beliefs and behaviors from 797 farmers in a lab-in-the-field experiment conducted at the demonstration site, and followed up with them over two growing seasons.
-    In the experiment, treated farmers generalized more effectively and achieved 9% higher simulated profits in an incentivized fertilizer application task.
+    We collected detailed data on beliefs and behaviors from 797 farmers in a lab-in-the-field experiment conducted at the demonstration site and followed up with them over two growing seasons.
+    In the lab-in-the-field, treated farmers generalized more effectively and achieved 9% higher simulated profits in an incentivized fertilizer application task.
     At endline, treated farmers' real fertilizer choices reflected improved nutrient timing and balance, and their yields were 14% higher.
 - id: D5
   title: Estimating sample paths of Gauss-Markov processes from noisy data
@@ -40,15 +40,16 @@ Evidence from a fertilizer choice experiment in Eastern Uganda"
     These moments depend on the process's mean and covariance functions, and on the conditional moments of the sampled points.
     I study the Brownian motion and bridge as special cases.
 - id: D4
-  title: Learning about a changing state
-  date: 2024-01-07
+  title: Persistence, patience and costly information acquisition
+  date: 2026-03-12
   type: wp
-  url: https://arxiv.org/abs/2401.03607
+  url: https://arxiv.org/abs/2603.11453
   abstract: |
-    A long-lived Bayesian agent observes costly signals of a time-varying state.
-    He chooses the signals' precisions sequentially, balancing their costs and marginal informativeness.
-    I compare the optimal myopic and forward-looking precisions when the state follows a Brownian motion.
-    I also compare the myopic precisions induced by other Gaussian processes.
+    A forward-looking agent observes signals of a state that follows a Gaussian AR(1) process.
+    He chooses the signals' precisions sequentially, balancing their marginal cost and informativeness.
+    I characterize his optimal learning strategy, and analyze his steady-state posterior beliefs and welfare.
+    Higher persistence can tighten or loosen these beliefs, but always lowers welfare due to endogenously higher information costs.
+    In contrast, higher patience raises welfare because the agent receives more information from his past selves.
 - id: D3
   title: Why do experts give simple advice?
   date: 2022-09-25
