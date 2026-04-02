@@ -3,7 +3,7 @@
 # This script builds my CV using data from data/cv.yaml and data/research.yaml.
 #
 # Ben Davies
-# March 2026
+# April 2026
 
 
 # Initialization ----
@@ -192,18 +192,16 @@ research_data = read_yaml('data/research.yaml') %>%
   mutate(coauthors = gsub('\\[([^]]+)\\]\\([^)]*\\)', '\\1', coauthors),  # Remove URLs
          abstract = gsub('%', '\\\\%', abstract),
          headline = paste0(ifelse(grepl('http', url), sprintf('\\href{%s}{\\bfseries %s}', url, title), sprintf('{\\bfseries %s}', title)),
-                           ifelse(!is.na(coauthors), sprintf(' (with %s)', coauthors), '')))
-
-# Create JMP lines
-jmp_lines = research_data %>%
-  filter(type == 'jmp') %>%
-  mutate(line = sprintf('\\paper{%s}{%s}', headline, abstract)) %>%
-  {.$line} %>%
-  {Reduce(function(x, y) c(x, '\\vskip1em', y), .)}
+                           case_when(
+                             type == 'jmp' & !is.na(coauthors) ~ sprintf(' (job market paper, with %s)', coauthors),
+                             type == 'jmp' ~ ' (job market paper)',
+                             !is.na(coauthors) ~ sprintf(' (with %s)', coauthors),
+                             T ~ ''
+                           )))
 
 # Create working paper lines
 working_paper_lines = research_data %>%
-  filter(type == 'wp') %>%
+  filter(type %in% c('wp', 'jmp')) %>%
   mutate(line = sprintf('\\paper{%s}{%s}', headline, abstract)) %>%
   {.$line} %>%
   {Reduce(function(x, y) c(x, '\\vskip1em', y), .)}
@@ -264,18 +262,6 @@ body = c(
   '\\subsection{University of Canterbury}',
   '\\entry{BSc(Hons, 1st class) in Economics and Mathematics \\hfill 2014--17}',
   '',
-  {
-    if (length(jmp_lines) > 0) {
-      c(
-        '\\section{Job Market Paper}',
-        '',
-        jmp_lines,
-        ''
-      )
-    } else {
-      c()
-    }
-  },
   {
     if (length(working_paper_lines) > 0) {
       c(

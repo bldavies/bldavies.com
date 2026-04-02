@@ -4,5 +4,4 @@ I am an economics PhD candidate at Stanford University, advised by <a href="http
 
 My research uses theoretical and empirical tools to study how people learn and interact.
 
-**I am on the job market.**
 View my CV [here](/cv.pdf) and reach me at bldavies@stanford.edu.

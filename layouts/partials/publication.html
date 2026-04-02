@@ -1,6 +1,13 @@
 <div class="publication">
   <span class="paper-title">{{ if .url }}<a href="{{ .url }}">{{ .title }}</a>{{ else }}{{ .title }}{{ end}}</span>
-  {{- if .coauthors }} (with {{ .coauthors | markdownify }}){{ end -}}
+  {{ $isJMP := eq .type "jmp" }}
+  {{ if and $isJMP .coauthors }}
+    (job market paper, with {{ .coauthors | markdownify }})
+  {{ else if $isJMP }}
+    (job market paper)
+  {{ else if .coauthors }}
+    (with {{ .coauthors | markdownify }})
+  {{ end -}}
   {{- if .outlet }}</br>{{ .outlet | markdownify }}, {{ if .forthcoming }}forthcoming{{ else }}{{ dateFormat "2006" .date }}{{ end -}}{{ end -}}
   </br>
   {{ if .abstract }}

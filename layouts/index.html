@@ -15,15 +15,7 @@
   My research papers are listed below and on <a href="{{ .Site.Params.scholarURL }}">Google Scholar</a>.
 </p>
 
-{{ $jmp := where .Site.Data.research "type" "jmp" }}
-{{ if $jmp }}
-<h3>Job market paper</h3>
-{{ range $jmp }}
-{{ partial "publication.html" . }}
-{{ end }}
-{{ end }}
-
-{{ $wpList := where .Site.Data.research "type" "wp" }}
+{{ $wpList := where .Site.Data.research "type" "in" (slice "jmp" "wp") }}
 {{ if $wpList }}
 <h3>Working papers</h3>
 {{ range sort $wpList "date" "desc" }}
