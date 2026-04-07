@@ -1,23 +1,18 @@
-<div class="publication">
-  <span class="paper-title">{{ if .url }}<a href="{{ .url }}">{{ .title }}</a>{{ else }}{{ .title }}{{ end}}</span>
-  {{ $isJMP := eq .type "jmp" }}
-  {{ if and $isJMP .coauthors }}
-    (job market paper, with {{ .coauthors | markdownify }})
-  {{ else if $isJMP }}
-    (job market paper)
-  {{ else if .coauthors }}
-    (with {{ .coauthors | markdownify }})
-  {{ end -}}
-  {{- if .outlet }}</br>{{ .outlet | markdownify }}, {{ if .forthcoming }}forthcoming{{ else }}{{ dateFormat "2006" .date }}{{ end -}}{{ end -}}
+<div>
+  <span class="paper-title">{{ if .url }}<a href="{{ .url }}">{{ .title }}</a>{{ else }}{{ .title }}{{ end}}</span>{{ if eq .type "jmp" }} (job market paper){{ end }}
+  {{ if .coauthors }}</br><span class="coauthors">with {{ .coauthors | markdownify }}</span>{{ end }}
+  {{- if .outlet }}</br><span class="outlet">{{ .outlet | markdownify }}, {{ if .forthcoming }}forthcoming{{ else }}{{ dateFormat "2006" .date }}{{ end -}}</span>{{ end -}}
   </br>
+  <span class="paper-links">
+    {{ if .url }}<a href="{{ .url }}" class="paper-link">Paper</a>{{ end }}
+    {{ if .dataCode }}<a href="{{ .dataCode }}" class="paper-link">Code</a>{{ end }}
+    {{ if .preprint }}<a href="{{ .preprint }}" class="paper-link">Preprint</a>{{ end }}
+    {{ if .abstract }}
+      <a href="javascript:toggle_abstract('{{ .id }}')" id="{{ .id }}-abstract-toggle" class="abstract-toggle">Abstract [+]</a>
+      <script>show_abstract_toggle('{{ .id }}')</script>
+    {{ end }}
+  </span>
   {{ if .abstract }}
-    <a href="javascript:toggle_abstract('{{ .id }}')" id="{{ .id }}-abstract-toggle" class="rounded-link abstract-toggle">Abstract [+]</a>
-    <script>show_abstract_toggle('{{ .id }}')</script>
-  {{ end }}
-  {{ if .url }}<a class="rounded-link" href="{{ .url }}" target="_blank">Paper</a>{{ end }}
-  {{ if .dataCode }}<a class="rounded-link" href="{{ .dataCode }}" target="_blank">Code</a>{{ end }}
-  {{ if .preprint }}<a class="rounded-link" href="{{ .preprint }}" target="_blank">Preprint</a>{{ end }}
-  {{ if .abstract }}
-    <span id="{{ .id }}-abstract" class="abstract" style="display: none">{{ .abstract | markdownify }}</span>
+    <div id="{{ .id }}-abstract" class="abstract" style="display: none">{{ .abstract | markdownify }}</div>
   {{ end }}
 </div>

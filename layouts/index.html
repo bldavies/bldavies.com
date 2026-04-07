@@ -6,59 +6,41 @@
   <img id="portrait" src="square.jpeg">
   <div id="bio">
     {{ .Content }}
+    <a href="/cv.pdf" class="rounded-link">Download CV</a>
   </div>
 </div>
-
-<h2>Research</h2>
-
-<p>
-  My research papers are listed below and on <a href="{{ .Site.Params.scholarURL }}">Google Scholar</a>.
-</p>
 
 {{ $wpList := where .Site.Data.research "type" "in" (slice "jmp" "wp") }}
 {{ if $wpList }}
 <h3>Working papers</h3>
-{{ range sort $wpList "date" "desc" }}
-{{ partial "publication.html" . }}
-{{ end }}
+<ul class="paper-list">
+  {{ range sort $wpList "date" "desc" }}
+  <li>{{ partial "publication.html" . }}</li>
+  {{ end }}
+</ul>
 {{ end }}
 
 {{ $wipList := where .Site.Data.research "type" "wip" }}
 {{ if $wipList }}
 <h3>Work in progress</h3>
-{{ range sort $wipList "date" "desc" }}
-{{ partial "publication.html" . }}
-{{ end }}
+<ul class="paper-list">
+  {{ range sort $wipList "date" "desc" }}
+  <li>{{ partial "publication.html" . }}</li>
+  {{ end }}
+</ul>
 {{ end }}
 
 {{ $pubList := where .Site.Data.research "type" "pub" }}
-<h3>Peer-reviewed publications</h3>
-{{ range sort $pubList "date" "desc" }}
-{{ partial "publication.html" . }}
-{{ end }}
+<h3>Published papers</h3>
+<ul class="paper-list">
+  {{ range sort $pubList "date" "desc" }}
+  <li>{{ partial "publication.html" . }}</li>
+  {{ end }}
+</ul>
 
-{{ $techList := where .Site.Data.research "type" "tech" }}
-{{ if $techList }}
-<h3>Technical notes</h3>
-{{ range sort $techList "date" "desc" }}
-{{ partial "publication.html" . }}
-{{ end }}
-{{ end }}
-
-{{ $oldList := where .Site.Data.research "type" "old" }}
-{{ if $oldList }}
-<h3>Resting papers</h3>
-{{ range sort $oldList "date" "desc" }}
-{{ partial "publication.html" . }}
-{{ end }}
-{{ end }}
-
-{{ $othList := where .Site.Data.research "type" nil  }}
-{{ if $othList }}
-<h3>Other writing</h3>
-{{ range sort $othList "date" "desc" }}
-{{ partial "publication.html" . }}
-{{ end }}
-{{ end }}
+<h3>Other papers</h3>
+<p>
+  See <a href="{{ .Site.Params.scholarURL }}">Google Scholar</a> for a complete list.
+</p>
 
 {{ partial "footer.html" . }}
