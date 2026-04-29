@@ -10,11 +10,12 @@
   </div>
 </div>
 
-{{ $wpList := where .Site.Data.research "type" "in" (slice "jmp" "wp") }}
+{{ $wpList := sort (where .Site.Data.research "type" "wp") "date" "desc" }}
+{{ $wpList := where .Site.Data.research "type" "jmp" | append $wpList }}
 {{ if $wpList }}
 <h3>Working papers</h3>
 <ul class="paper-list">
-  {{ range sort $wpList "date" "desc" }}
+  {{ range $wpList }}
   <li>{{ partial "publication.html" . }}</li>
   {{ end }}
 </ul>

@@ -41,15 +41,15 @@ Evidence from a fertilizer choice experiment in Eastern Uganda"
     I study the Brownian motion and bridge as special cases.
 - id: D4
   title: Persistence, patience and costly information acquisition
-  date: 2026-03-12
+  date: 2026-04-27
   type: wp
   url: https://arxiv.org/abs/2603.11453
   abstract: |
     A forward-looking agent observes signals of a state that follows a Gaussian AR(1) process.
-    He chooses the signals' precisions sequentially, balancing their marginal cost and informativeness.
-    I characterize his optimal learning strategy, and analyze his steady-state posterior beliefs and welfare.
-    Higher persistence can tighten or loosen these beliefs, but always lowers welfare due to endogenously higher information costs.
-    In contrast, higher patience raises welfare because the agent receives more information from his past selves.
+    He balances the cost of having imprecise beliefs with the cost of acquiring more precise signals.
+    I characterize his optimal information acquisition policy, and analyze how his steady-state beliefs and costs depend on persistence (the AR(1) parameter) and patience (the agent's discount factor).
+    Higher persistence has a non-monotone effect on belief precision and raises overall costs.
+    Higher patience makes beliefs more precise and lowers overall costs.
 - id: D3
   title: Why do experts give simple advice?
   date: 2022-09-25

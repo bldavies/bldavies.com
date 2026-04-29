@@ -188,7 +188,7 @@ award_lines = indata$awards %>%
 # Extract data
 research_data = read_yaml('data/research.yaml') %>%
   bind_rows() %>%
-  arrange(desc(date)) %>%
+  arrange(type != 'jmp', desc(date)) %>%
   mutate(coauthors = gsub('\\[([^]]+)\\]\\([^)]*\\)', '\\1', coauthors),  # Remove URLs
          abstract = gsub('%', '\\\\%', abstract),
          headline = paste0(ifelse(grepl('http', url), sprintf('\\href{%s}{\\bfseries %s}', url, title), sprintf('{\\bfseries %s}', title)),
