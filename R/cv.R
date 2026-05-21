@@ -3,7 +3,7 @@
 # This script builds my CV using data from data/cv.yaml and data/research.yaml.
 #
 # Ben Davies
-# April 2026
+# May 2026
 
 
 # Initialization ----
@@ -202,7 +202,8 @@ research_data = read_yaml('data/research.yaml') %>%
 # Create working paper lines
 working_paper_lines = research_data %>%
   filter(type %in% c('wp', 'jmp')) %>%
-  mutate(line = sprintf('\\paper{%s}{%s}', headline, abstract)) %>%
+  mutate(headline = ifelse(!is.na(status) & !is.na(outlet), sprintf('%s \\\\ %s at \\emph{%s}', headline, status, outlet), headline),
+         line = sprintf('\\paper{%s}{%s}', headline, abstract)) %>%
   {.$line} %>%
   {Reduce(function(x, y) c(x, '\\vskip1em', y), .)}
 
@@ -216,7 +217,7 @@ wip_lines = research_data %>%
 # Create publication lines
 publication_lines = research_data %>%
   filter(type == 'pub') %>%
-  mutate(line = sprintf('\\paper{%s \\\\ \\emph{%s}, %s}{%s}', headline, gsub('[*]', '', outlet), year(date),abstract)) %>%
+  mutate(line = sprintf('\\paper{%s \\\\ \\emph{%s}, %s}{%s}', headline, outlet, year(date), abstract)) %>%
   {.$line} %>%
   {Reduce(function(x, y) c(x, '\\vskip1em', y), .)}
 
