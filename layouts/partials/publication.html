@@ -1,6 +1,6 @@
 <div>
   <span class="paper-title">{{ if .url }}<a href="{{ .url }}">{{ .title }}</a>{{ else }}{{ .title }}{{ end}}</span>{{ if eq .type "jmp" }} (job market paper){{ end }}
-  {{ if .coauthors }}</br><span class="coauthors">with {{ .coauthors | markdownify }}</span>{{ end }}
+  {{ if .coauthors }}</br><span class="coauthors">(with {{ .coauthors | markdownify }})</span>{{ end }}
   {{- if and (or (eq .type "wp") (eq .type "jmp")) (and .status .outlet) }}</br><span class="outlet">{{ .status | markdownify }} at <em>{{ .outlet }}</em></span>{{ end -}}
   {{- if and (eq .type "pub") .outlet }}</br><span class="outlet"><em>{{ .outlet }}</em>, {{ dateFormat "2006" .date }}</span>{{ end -}}
   </br>

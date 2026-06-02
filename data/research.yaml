@@ -18,7 +18,7 @@
 - id: DS2
   title: "How mechanistic explanations reshape learning and behavior:
 Evidence from a fertilizer choice experiment in Eastern Uganda"
-  coauthors: "[Anirudh Sankar](https://sites.google.com/view/anirudh-sankar), [Robert Dulin](https://sites.google.com/view/robert-dulin), [Vesall Nourani](https://sites.google.com/site/vesallnourani/), [Jess Rudder](https://sites.google.com/ucdavis.edu/jessrudder/home), Abraham Salomon, and Godfrey Taulya"
+  coauthors: "[Anirudh Sankar](https://sites.google.com/view/anirudh-sankar), [Robert Dulin](https://robertdulin.github.io), [Vesall Nourani](https://sites.google.com/site/vesallnourani/), [Jess Rudder](https://sites.google.com/ucdavis.edu/jessrudder/home), Abraham Salomon, and Godfrey Taulya"
   date: 2026-03-08
   type: wp
   url: https://drive.google.com/file/d/11ZYBbbUYx-K0eJmqU4_jaIJIe7F8DdM0/view
@@ -91,7 +91,7 @@ Evidence from a fertilizer choice experiment in Eastern Uganda"
   dataCode: https://github.com/bldavies/nber-sorting
 - id: DGHJ1
   title: Research funding and collaboration
-  coauthors: Jason Gush, Shaun C. Hendy, and Adam B. Jaffe
+  coauthors: "Jason Gush, Shaun C. Hendy, and [Adam B. Jaffe](https://www.motu.nz/about-us/people/adam-jaffe)"
   outlet: Research Policy
   date: 2022-03-01
   type: pub
@@ -107,7 +107,7 @@ Evidence from a fertilizer choice experiment in Eastern Uganda"
   dataCode: https://github.com/moturesearch/marsden-networks
 - id: DM2
   title: Delineating functional labour market areas with estimable classification stabilities
-  coauthors: David C. Maré
+  coauthors: "[David C. Maré](https://www.motu.nz/about-us/people/dave-mare)"
   date: 2020-08-28
   type: tech
   url: https://www.iza.org/publications/dp/13642
@@ -118,7 +118,7 @@ Evidence from a fertilizer choice experiment in Eastern Uganda"
   dataCode: https://github.com/moturesearch/NZ-LMAs
 - id: DG1
   title: COVID-19, lockdown and two-sided uncertainty
-  coauthors: Arthur Grimes
+  coauthors: "[Arthur Grimes](https://www.motu.nz/about-us/people/arthur-grimes)"
   outlet: New Zealand Economic Papers
   date: 2022-04-01
   type: pub
@@ -137,7 +137,7 @@ Evidence from a fertilizer choice experiment in Eastern Uganda"
   url: https://motu.nz/assets/Documents/our-work/environment/climate-change-impacts/Transport-Dialogue-Report.pdf
 - id: DM1
   title: Relatedness, complexity and local growth
-  coauthors: David C. Maré
+  coauthors: "[David C. Maré](https://www.motu.nz/about-us/people/dave-mare)"
   outlet: Regional Studies
   date: 2021-03-04
   type: pub

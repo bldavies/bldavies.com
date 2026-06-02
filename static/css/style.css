@@ -301,6 +301,7 @@ table th {
   border-radius: 0.25rem;
   display: block;
   font-size: 90%;
+  line-height: 1.5;
   margin: 0.5rem 0 0;
   padding: 0.5rem;
 }
@@ -334,10 +335,11 @@ table th {
 
 .paper-link {
   font-size: 90%;
-  margin-right: 0.375rem;
+  margin-right: 0.5rem;
 }
 
 .paper-list {
+  line-height: 1.75;
   list-style-type: none;
   padding: 0;
 }
