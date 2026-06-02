@@ -333,7 +333,8 @@ table th {
 }
 
 .paper-link {
-  margin-right: 0.5rem;
+  font-size: 90%;
+  margin-right: 0.375rem;
 }
 
 .paper-list {
