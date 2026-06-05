@@ -3,7 +3,7 @@
 # This script builds my CV using data from data/cv.yaml and data/research.yaml.
 #
 # Ben Davies
-# May 2026
+# June 2026
 
 
 # Initialization ----
@@ -291,10 +291,10 @@ body = c(
   '',
   publication_lines,
   '',
-  '\\section{Technical Notes}',
-  '',
-  technical_lines,
-  '',
+  # '\\section{Technical Notes}',
+  # '',
+  # technical_lines,
+  # '',
   '\\section{Awards}',
   '',
   award_lines,
