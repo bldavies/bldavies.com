@@ -10,8 +10,7 @@
   </div>
 </div>
 
-{{ $wpList := sort (where .Site.Data.research "type" "wp") "date" "desc" }}
-{{ $wpList := where .Site.Data.research "type" "jmp" | append $wpList }}
+{{ $wpList := where .Site.Data.research "type" "wp" }}
 {{ if $wpList }}
 <h3>Working papers</h3>
 <ul class="paper-list">

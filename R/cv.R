@@ -202,8 +202,7 @@ research_data = read_yaml('data/research.yaml') %>%
 # Create working paper lines
 working_paper_lines = research_data %>%
   filter(type %in% c('wp', 'jmp')) %>%
-  mutate(headline = ifelse(!is.na(status) & !is.na(outlet), sprintf('%s \\\\ %s at \\emph{%s}', headline, status, outlet), headline),
-         line = sprintf('\\paper{%s}{%s}', headline, abstract)) %>%
+  mutate(line = sprintf('\\paper{%s}{%s}', headline, abstract)) %>%
   {.$line} %>%
   {Reduce(function(x, y) c(x, '\\vskip1em', y), .)}
 
