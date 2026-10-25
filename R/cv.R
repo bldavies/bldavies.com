@@ -3,7 +3,7 @@
 # This script builds my CV using data from data/cv.yaml and data/research.yaml.
 #
 # Ben Davies
-# June 2026
+# October 2026
 
 
 # Initialization ----
@@ -11,13 +11,15 @@
 # Load packages
 library(dplyr)
 library(lubridate)
+library(purrr)
+library(tidyr)
 library(yaml)
 
 # Define function for constructing date ranges
 get_period = function(start_date, end_date) {
   x = year(start_date)
   y = year(end_date)
-  ifelse(is.na(y), paste0(x, '--'), ifelse(x < y, paste0(x, '--', y - 2000), x))
+  ifelse(is.na(y), paste0(x, '--present'), ifelse(x < y, paste0(x, '--', y - 2000), x))
 }
 
 # Define preamble
@@ -30,11 +32,11 @@ preamble = '\\documentclass[11pt,oneside]{memoir}
 \\usepackage{mathpazo}
 \\usepackage[T1]{fontenc}
 \\usepackage[utf8]{inputenc}
-\\usepackage[margin=0.6in]{geometry}
+\\usepackage[margin=0.5in]{geometry}
 \\usepackage[colorlinks,urlcolor=blue]{hyperref}
 \\usepackage{titlesec}
 
-\\linespread{1.1}
+\\linespread{1.15}
 \\pagestyle{empty}
 \\raggedright
 \\setlength{\\parindent}{0pt}
@@ -44,9 +46,7 @@ preamble = '\\documentclass[11pt,oneside]{memoir}
 \\titlespacing{\\section}{0pt}{1.5em}{1em}
 \\titlespacing{\\subsection}{0pt}{1em}{0pt}
 
-\\newcommand{\\entry}[1]{\\par\\parbox[t]{\\hsize}{\\strut\\raggedright #1}}
-\\newcommand{\\datedentry}[2]{\\par\\parbox[t]{0.9\\hsize}{\\strut\\raggedright\\hangindent=2em #2\\strut}\\hfill#1}
-\\newcommand{\\paper}[2]{\\par\\entry{#1 \\\\ \\vskip0.25em \\parbox[t]{\\hsize}{\\strut\\small\\emph{Abstract}: #2}}}'
+\\newcommand{\\entry}[1]{\\par\\hangindent=0.25in #1.}'
 
 # Define header
 header = c(
@@ -65,202 +65,114 @@ footer = c(
 
 # Body ----
 
+## Non-research ----
+
 # Import data
 indata = read_yaml('data/cv.yaml')
 
+# Address
+address_tex = indata$coordinates$address %>%
+  paste(collapse = ', ')
 
-## Education ----
+# Email
+email_tex = indata$coordinates$email %>%
+  {sprintf('\\href{mailto:%s}{%s}', ., .)}
 
-# Extract data
-education_data = indata$education %>%
-  lapply(function(x) {
-    x$degrees %>%
-      bind_rows() %>%
-      mutate(institution = x$institution)
-  }) %>%
-  bind_rows() %>%
-  group_by(institution) %>%
-  mutate(min_start_date = min(start_date),
-         degree_pos = dense_rank(desc(start_date))) %>%
-  ungroup() %>%
-  mutate(institution_pos = dense_rank(desc(min_start_date)))
+# Website
+website_tex = indata$coordinates$website %>%
+  {sprintf('\\href{https://%s}{%s}', ., .)}
 
-# Initialize lines
-education_lines = c()
-
-# Create institution headings
-institution_lines = education_data %>%
-  distinct(institution_pos, institution) %>%
-  arrange(institution_pos) %>%
-  mutate(line = sprintf('\\subsection{%s}', institution)) %>%
-  {.$line}
-
-# Iterate over institutions
-for (i in seq_along(institution_lines)) {
-  
-  # Create degree list
-  degree_lines = education_data %>%
-    filter(institution_pos == i) %>%
-    arrange(degree_pos) %>%
-    mutate(line = sprintf('\\datedentry{%s}{%s}', get_period(start_date, end_date), title)) %>%
-    {.$line}
-  
-  # Update lines
-  education_lines = c(
-    education_lines,
-    '',
-    institution_lines[i],
-    degree_lines
-  )
-  
-}
-
-
-## Experience ----
-
-# Extract types
-experience_types = names(indata$experience)
-
-# Iterate over types
-experience_data = list()
-experience_lines = list()
-for (t in experience_types) {
-  
-  # Extract data
-  experience_data[[t]] = indata$experience[[t]] %>%
-    lapply(function(x) {
-      x$roles %>%
-        bind_rows() %>%
-        mutate(employer = x$employer)
-    }) %>%
-    bind_rows() %>%
-    group_by(employer) %>%
-    mutate(min_start_date = min(start_date),
-           role_pos = dense_rank(desc(start_date))) %>%
-    ungroup() %>%
-    mutate(employer_pos = dense_rank(desc(min_start_date)),
-           type = t)
-  
-  
-  # Initialize lines
-  experience_lines[[t]] = c()
-  
-  # Create employer headings
-  employer_lines = experience_data[[t]] %>%
-    distinct(employer_pos, employer) %>%
-    arrange(employer_pos) %>%
-    mutate(line = sprintf('\\subsection{%s}', employer)) %>%
-    {.$line}
-  
-  # Iterate over employers
-  for (i in seq_along(employer_lines)) {
-    
-    # Create degree list
-    role_lines = experience_data[[t]] %>%
-      filter(employer_pos == i) %>%
-      arrange(role_pos) %>%
-      mutate(line = sprintf('\\datedentry{%s}{%s}', get_period(start_date, end_date), title)) %>%
-      {.$line}
-    
-    # Update lines
-    experience_lines[[t]] = c(
-      experience_lines[[t]],
-      '',
-      employer_lines[i],
-      role_lines
-    )
-    
-  }
-}
-
-
-## Awards ----
-
-# Create lines
+# Awards
 award_lines = indata$awards %>%
   bind_rows() %>%
-  mutate(line = sprintf('\\datedentry{%s}{%s}', year, description)) %>%
-  {.$line}
+  mutate(tex = sprintf('\\entry{%s, %s}', description, year)) %>%
+  pull(tex)
+
+# Research and professional experience
+experience_lines = indata$experience %>%
+  lapply(function(x) {
+    x$roles %>%
+      bind_rows() %>%
+      mutate(employer = x$employer)
+  }) %>%
+  bind_rows() %>%
+  arrange(desc(start_date)) %>%
+  mutate(period = map2_chr(start_date, end_date, get_period),
+         tex = sprintf('\\entry{%s, %s, %s}', title, employer, period)) %>%
+  pull(tex)
+
+# Teaching experience
+teaching_lines = indata$teaching %>%
+  lapply(function(x) {
+    institution = ifelse('note' %in% names(x), sprintf('{\\bfseries %s} (%s)', x$institution, x$note), sprintf('{\\bfseries %s}', x$institution))
+    courses = x$courses %>%
+      bind_rows() %>%
+      distinct(title) %>%
+      {paste(sort(.$title), collapse = '; ')}
+    sprintf('\\entry{%s: %s}', institution, courses)
+  }) %>%
+  unlist()
+
+# Presentations
+presentation_lines = indata$presentations %>%
+  bind_rows() %>%
+  mutate(year = year(date),
+         text = ifelse(!is.na(location), sprintf('%s, %s', venue, location), venue)) %>%
+  group_by(year) %>%
+  arrange(venue) %>%
+  summarise(list = paste(text, collapse = '; ')) %>%
+  ungroup() %>%
+  arrange(desc(year)) %>%
+  mutate(tex = sprintf('\\entry{{\\bfseries %s}: %s}', year, list)) %>%
+  pull(tex)
 
 
 ## Research ----
 
-# Extract data
+# Prepare data
 research_data = read_yaml('data/research.yaml') %>%
   bind_rows() %>%
-  arrange(type != 'jmp', desc(date)) %>%
+  arrange(desc(date)) %>%
   mutate(coauthors = gsub('\\[([^]]+)\\]\\([^)]*\\)', '\\1', coauthors),  # Remove URLs
-         abstract = gsub('%', '\\\\%', abstract),
-         headline = paste0(ifelse(grepl('http', url), sprintf('\\href{%s}{\\bfseries %s}', url, title), sprintf('{\\bfseries %s}', title)),
-                           case_when(
-                             type == 'jmp' & !is.na(coauthors) ~ sprintf(' (job market paper, with %s)', coauthors),
-                             type == 'jmp' ~ ' (job market paper)',
-                             !is.na(coauthors) ~ sprintf(' (with %s)', coauthors),
-                             T ~ ''
-                           )))
+         title = paste0(ifelse(grepl('http', url), sprintf('\\href{%s}{%s}', url, title), title)),
+         text = paste0('``',
+                       title,
+                       ifelse(!is.na(coauthors), sprintf("'' (with %s), ", coauthors), ",'' "),
+                       ifelse(!is.na(outlet), sprintf('{\\itshape %s}, ', outlet), ''),
+                       year(date)),
+         tex = sprintf('\\entry{%s}', text))
 
-# Create working paper lines
-working_paper_lines = research_data %>%
-  filter(type %in% c('wp', 'jmp')) %>%
-  mutate(line = sprintf('\\paper{%s}{%s}', headline, abstract)) %>%
-  {.$line} %>%
-  {Reduce(function(x, y) c(x, '\\vskip1em', y), .)}
-
-# Create work in progress lines
-wip_lines = research_data %>%
-  filter(type == 'wip') %>%
-  mutate(line = sprintf('\\paper{%s}{%s}', headline, abstract)) %>%
-  {.$line} %>%
-  {Reduce(function(x, y) c(x, '\\vskip1em', y), .)}
-
-# Create publication lines
+# Publications
 publication_lines = research_data %>%
   filter(type == 'pub') %>%
-  mutate(line = sprintf('\\paper{%s \\\\ \\emph{%s}, %s}{%s}', headline, outlet, year(date), abstract)) %>%
-  {.$line} %>%
-  {Reduce(function(x, y) c(x, '\\vskip1em', y), .)}
+  pull(tex)
 
-# Create technical note lines
-technical_lines = research_data %>%
-  filter(type == 'tech') %>%
-  mutate(line = sprintf('\\paper{%s}{%s}', headline, abstract)) %>%
-  {.$line} %>%
-  {Reduce(function(x, y) c(x, '\\vskip1em', y), .)}
-
-
-## Conference presentations ----
-
-# Create lines
-conference_lines = indata$conferences %>%
-  bind_rows() %>%
-  arrange(desc(date)) %>%
-  mutate(text = ifelse(!is.na(location), sprintf('%s, %s', conf_title, location), conf_title),
-         line = sprintf('\\datedentry{%s}{%s}', year(date), text)) %>%
-  {.$line}
+# Working papers
+working_paper_lines = research_data %>%
+  filter(type == 'wp') %>%
+  pull(tex)
 
 
 ## Collation ----
 
 body = c(
-  '{\\Large\\bfseries\\MakeUppercase\\theauthor} \\hfill {\\small\\itshape\\today}',
-  '\\vskip0.25em',
-  '\\hrule',
-  '\\vskip1.5em',
-  '',
-  'Department of Economics \\hfill \\href{mailto:bldavies@stanford.edu}{bldavies@stanford.edu} \\\\',
-  'Stanford University \\hfill \\href{https://bldavies.com}{bldavies.com} \\\\',
-  'Stanford, CA 94305, USA \\hfill Citizenship: New Zealand',
+  '\\begin{center}',
+  paste('\t', c(
+    '{\\Large\\bfseries\\theauthor} \\\\',
+    '\\vskip0.5em',
+    paste(address_tex, '\\\\'),
+    paste(email_tex, '|', website_tex)
+  )),
+  '\\end{center}',
   '',
   '\\section{Education}',
   '',
-  '\\subsection{Stanford University}',
-  '\\entry{PhD in Economics \\hfill 2020-- \\\\
-    {\\small\\emph{Fields}: Microeconomic Theory, Behavioral and Experimental Economics} \\\\
-    {\\small\\emph{Committee}: Matthew Jackson (co-advisor), Arun Chandrasekhar (co-advisor), Steven Callander}
-    }',
+  '\\entry{PhD in Economics, Stanford University, 2020--27 (expected)}',
+  '\\entry{BSc(Hons, 1st class) in Economics and Mathematics, University of Canterbury, 2014--17}',
   '',
-  '\\subsection{University of Canterbury}',
-  '\\entry{BSc(Hons, 1st class) in Economics and Mathematics \\hfill 2014--17}',
+  '\\section{Publications}',
+  '',
+  publication_lines,
   '',
   {
     if (length(working_paper_lines) > 0) {
@@ -274,39 +186,23 @@ body = c(
       c()
     }
   },
-  {
-    if (length(wip_lines) > 0) {
-      c(
-        '\\section{Work in Progress}',
-        '',
-        wip_lines,
-        ''
-      )
-    } else {
-      c()
-    }
-  },
-  '\\section{Peer-Reviewed Publications}',
-  '',
-  publication_lines,
-  '',
-  # '\\section{Technical Notes}',
-  # '',
-  # technical_lines,
-  # '',
   '\\section{Awards}',
   '',
   award_lines,
   '',
   '\\section{Research and Professional Experience}',
-  c(experience_lines$research, experience_lines$professional),
+  '',
+  experience_lines,
   '',
   '\\section{Teaching Experience}',
-  experience_lines$teaching,
   '',
-  '\\section{Conference Presentations}',
+  teaching_lines,
   '',
-  conference_lines
+  # '\\section{Seminars and Conference Presentations}',
+  # '',
+  # presentation_lines,
+  # '',
+  '\\vfill\\hfill{\\itshape\\small Last updated: \\today}'
 )
 
 
