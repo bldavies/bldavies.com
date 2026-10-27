@@ -15,7 +15,7 @@ outputs:
   section: ["HTML"]
 params:
   author: Benjamin Davies
-  description: "Ben is an economics PhD candidate at Stanford University. His research uses theoretical and empirical tools to study how people learn and interact."
+  description: "Ben is an economics PhD candidate at Stanford University. His research uses theoretical and empirical tools to study how people learn, interact, and use artificial intelligence."
   githubContentURL: "https://github.com/bldavies/bldavies.com/tree/master/content/"
   orcidURL: https://orcid.org/0000-0002-1749-4567
   repecURL: https://ideas.repec.org/f/pda777.html

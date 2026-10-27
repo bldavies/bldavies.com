@@ -3,11 +3,11 @@
 <script src="{{ "js/research.js" | relURL }}"></script>
 
 <div id="front">
-  <img id="portrait" src="square.jpeg">
   <div id="bio">
     {{ .Content }}
     <a href="/cv.pdf" class="rounded-link">Download CV</a>
   </div>
+  <img id="portrait" src="square.jpeg">
 </div>
 
 {{ $wpList := where .Site.Data.research "type" "wp" }}

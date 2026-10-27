@@ -226,32 +226,39 @@ table th {
 #front {
   align-items: flex-start;
   display: flex;
-  gap: 2rem;
-  margin: 1rem 0;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 1rem 0 3rem;
 }
 
 #bio {
+  flex: 1 1 1rem;
   margin: auto 0;
   width: 100%;
 }
 
 #portrait {
-  border-radius: 1rem;
-  box-shadow: 0 0.25rem 0.25rem 0 #ddd;
-  display: inline;
-  float: none;
-  margin-top: 1.25rem;
+  border-radius: 100%;
+  border: 1px solid #ddd;
+  flex: 0 1 auto;
+  margin-top: 2rem;
   width: 240px;
 }
 
 @media (max-width: 780px) {
 
   #front {
-    display: block;
+    flex-direction: column;
+    gap: 0rem;
+    margin-top: 0;
+  }
+
+  #bio {
+    flex: 0 0 auto;
   }
 
   #portrait {
-    display: block;
+    order: -1;
     width: 240px;
   }
 }
