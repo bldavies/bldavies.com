@@ -100,7 +100,7 @@ Evidence from a fertilizer choice experiment in Eastern Uganda"
     Both men and women had more same-gender co-authors than we would expect if co-authorships were random.
     This was especially true for men in Macro/Finance.
   preprint: https://doi.org/10.31235/osf.io/zeb7a
-  dataCode: https://github.com/bldavies/nber-sorting
+  code: https://github.com/bldavies/nber-sorting
 - id: DGHJ1
   title: Research funding and collaboration
   coauthors: "Jason Gush, Shaun C. Hendy, and [Adam B. Jaffe](https://www.motu.nz/about-us/people/adam-jaffe)"
@@ -116,7 +116,7 @@ Evidence from a fertilizer choice experiment in Eastern Uganda"
     This co-authorship rate was not significantly higher among funded pairs.
     However, when we increase post-proposal publication lags towards the length of a typical award, we find that funding, rather than participation, promotes co-authorship.
   preprint: https://www.nber.org/papers/w27916
-  dataCode: https://github.com/moturesearch/marsden-networks
+  code: https://github.com/moturesearch/marsden-networks
 - id: DM2
   title: Delineating functional labour market areas with estimable classification stabilities
   coauthors: "[David C. Maré](https://www.motu.nz/about-us/people/dave-mare)"
@@ -127,7 +127,7 @@ Evidence from a fertilizer choice experiment in Eastern Uganda"
     We describe an unsupervised method for delineating functional labour market areas (LMAs) in national commuting networks.
     Our method uses the Louvain algorithm, which we extend to support top-down hierarchical LMA classification and estimable classification stabilities.
     We demonstrate our method using historical Census commuting data from New Zealand.
-  dataCode: https://github.com/moturesearch/NZ-LMAs
+  code: https://github.com/moturesearch/NZ-LMAs
 - id: DG1
   title: COVID-19, lockdown and two-sided uncertainty
   coauthors: "[Arthur Grimes](https://www.motu.nz/about-us/people/arthur-grimes)"
@@ -160,7 +160,7 @@ Evidence from a fertilizer choice experiment in Eastern Uganda"
     We use our measure to estimate activity and city complexity, and examine the contribution of relatedness and complexity to urban employment growth in New Zealand.
     Relatedness and complexity are complementary in promoting employment growth in New Zealand’s largest cities, but do not contribute to employment growth in its smaller cities.
   preprint: http://motu-www.motu.org.nz/wpapers/19_01.pdf
-  dataCode: https://github.com/moturesearch/relatedness-complexity
+  code: https://github.com/moturesearch/relatedness-complexity
 - id: DW1
   title: Bundling and insurance of independent risks
   coauthors: Richard Watt

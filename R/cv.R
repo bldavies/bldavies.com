@@ -46,7 +46,8 @@ preamble = '\\documentclass[11pt,oneside]{memoir}
 \\titlespacing{\\section}{0pt}{1.5em}{1em}
 \\titlespacing{\\subsection}{0pt}{1em}{0pt}
 
-\\newcommand{\\entry}[1]{\\par\\hangindent=0.25in #1.}'
+\\newcommand{\\npentry}[1]{\\par\\hangindent=0.25in #1}
+\\newcommand{\\entry}[1]{\\npentry{#1.}}'
 
 # Define header
 header = c(
@@ -135,21 +136,18 @@ research_data = read_yaml('data/research.yaml') %>%
   arrange(desc(date)) %>%
   mutate(coauthors = gsub('\\[([^]]+)\\]\\([^)]*\\)', '\\1', coauthors),  # Remove URLs
          title = paste0(ifelse(grepl('http', url), sprintf('\\href{%s}{%s}', url, title), title)),
-         text = paste0('``',
-                       title,
-                       ifelse(!is.na(coauthors), sprintf("'' (with %s), ", coauthors), ",'' "),
-                       ifelse(!is.na(outlet), sprintf('{\\itshape %s}, ', outlet), ''),
-                       year(date)),
-         tex = sprintf('\\entry{%s}', text))
+         paper = paste0('``', title, ifelse(!is.na(coauthors), sprintf("'' (with %s).", coauthors), ".''")))
 
 # Publications
 publication_lines = research_data %>%
   filter(type == 'pub') %>%
+  mutate(tex = sprintf('\\entry{%s {\\itshape %s}, %s}', paper, outlet, year(date))) %>%
   pull(tex)
 
 # Working papers
 working_paper_lines = research_data %>%
   filter(type == 'wp') %>%
+  mutate(tex = sprintf('\\npentry{%s}', paper)) %>%
   pull(tex)
 
 

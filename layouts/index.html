@@ -10,12 +10,18 @@
   <img id="portrait" src="square.jpeg">
 </div>
 
+<h2>Research</h2>
+
+<p>
+  My research papers are listed below and on <a href="{{ .Site.Params.scholarURL }}">Google Scholar</a>.
+</p>
+
 {{ $wpList := where .Site.Data.research "type" "wp" }}
 {{ if $wpList }}
 <h3>Working papers</h3>
 <ul class="paper-list">
   {{ range $wpList }}
-  <li>{{ partial "publication.html" . }}</li>
+  <li>{{ partial "paper.html" .}}</li>
   {{ end }}
 </ul>
 {{ end }}
@@ -25,7 +31,7 @@
 <h3>Work in progress</h3>
 <ul class="paper-list">
   {{ range sort $wipList "date" "desc" }}
-  <li>{{ partial "publication.html" . }}</li>
+  <li>{{ partial "paper.html" . }}</li>
   {{ end }}
 </ul>
 {{ end }}
@@ -34,13 +40,8 @@
 <h3>Published papers</h3>
 <ul class="paper-list">
   {{ range sort $pubList "date" "desc" }}
-  <li>{{ partial "publication.html" . }}</li>
+  <li>{{ partial "paper.html" . }}</li>
   {{ end }}
 </ul>
-
-<h3>Other papers</h3>
-<p>
-  See <a href="{{ .Site.Params.scholarURL }}">Google Scholar</a> for a complete list.
-</p>
 
 {{ partial "footer.html" . }}

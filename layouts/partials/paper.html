@@ -1,0 +1,17 @@
+<div>
+  {{ if .url }}<a href="{{ .url }}" class="paper-title">{{ .title }}</a>{{ else }}{{ .title }}{{ end }}
+  {{- if .coauthors }} <span class="paper-coauthors">(with {{ .coauthors | markdownify }})</span>{{ end }}
+  {{- if and (eq .type "wp") (and .status .outlet) }}<br><span class="paper-outlet">{{ .status | markdownify }} at <em>{{ .outlet }}.</em></span>{{ end -}}
+  {{- if and (eq .type "pub") .outlet }}<br><span class="paper-outlet"><em>{{ .outlet }}</em>, {{ dateFormat "2006" .date }}</span>{{ end -}}
+  <div class="paper-links">
+    {{ if .preprint }}<a href="{{ .preprint }}" class="paper-link">Preprint</a>{{ end }}
+    {{ if .code }}<a href="{{ .code }}" class="paper-link">Code</a>{{ end }}
+    {{ if .abstract }}
+      <a href="javascript:toggle_abstract('{{ .id }}')" id="{{ .id }}-abstract-toggle" class="abstract-toggle">Abstract [+]</a>
+      <script>show_abstract_toggle('{{ .id }}')</script>
+    {{ end }}
+  </div>
+  {{ if .abstract }}
+    <div id="{{ .id }}-abstract" class="abstract" style="display: none">{{ .abstract | markdownify }}</div>
+  {{ end }}
+</div>

@@ -228,7 +228,6 @@ table th {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
-  margin: 1rem 0 3rem;
 }
 
 #bio {
@@ -324,51 +323,43 @@ table th {
   color: #222;
 }
 
-.coauthors,
-.outlet,
-.paper-links {
+.paper-coauthors a {
   color: inherit;
-  font-size: 90%;
 }
 
-.coauthors a {
+.paper-coauthors a:hover {
   border-bottom: 1px solid #ddd;
-  color: #222;
+  color: #888;
 }
 
-.coauthors a:hover {
-  color: #1740b0;
+.paper-links {
+  display: block;
 }
 
-.paper-link {
-  font-size: 90%;
+.paper-links a {
+  font-size: 80%;
   margin-right: 0.5rem;
 }
 
 .paper-list {
-  line-height: 1.75;
   list-style-type: none;
   padding: 0;
 }
 
 .paper-list li {
   border-bottom: 1px solid #ddd;
-  padding: 1.5rem 0;
+  padding: 0.75rem 0;
 }
 
 .paper-list li:first-of-type {
-  padding-top: 0.5rem;
+  padding-top: 0pt;
 }
 
 .paper-list li:last-of-type {
   border: none;
+  padding-bottom: 0pt;
 }
 
-.paper-title a {
-  border-bottom: none;
-  font-weight: 600;
-  transition: 0;
-}
 
 /* Syntax highlighting */
 
